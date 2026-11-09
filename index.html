@@ -1707,9 +1707,7 @@ function boot() {
     orbit.x=event.clientX;orbit.y=event.clientY;
   });
   canvas.addEventListener("lostpointercapture",()=>orbit=null);
-  const roomEndpoint=location.protocol==="file:"
-    ?"https://mongle-land-3d-play.winy23567.chatgpt.site/api/room"
-    :new URL("/api/room",location.href).href;
+  const roomEndpoint="https://mongle-land-3d-play.winy23567.chatgpt.site/api/room";
   const randomHex=()=>Array.from(crypto.getRandomValues(new Uint8Array(16)),n=>n.toString(16).padStart(2,"0")).join("");
   const id=randomHex(), key=randomHex();
   const peers=new Map();
