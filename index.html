@@ -2020,6 +2020,9 @@ function boot() {
   function receiveRiders(players,requested) {
     rideOwners.clear();
     for(const player of players)if(seats[player.ride_seat])rideOwners.set(player.ride_seat,player);
+    if(botState.isHost && botState.active && botState.seat){
+      rideOwners.set(botState.seat, { id: SEOKTAENG_ID, ride_seat: botState.seat, ride_at: botState.rideAt || clock() });
+    }
     if(groundRide && requested===groundRide && self.ride_seat!==undefined && self.ride_seat!==groundRide){
       leaveGroundRide();toast("다른 친구가 먼저 앉았어요. 빈 자리를 골라 보세요.");
     }
@@ -2919,6 +2922,9 @@ function boot() {
     motion: 0,
     gesture: "",
     gestureAt: 0,
+    seat: "",
+    rideAt: 0,
+    onBus: false,
     nextTrickTime: 0,
     lastPlayerActiveAt: performance.now(),
     lastPlayerX: 0,
@@ -2962,9 +2968,11 @@ function boot() {
           play: {
             nickname: "석탱 💜",
             gesture: botState.gesture,
-            gestureAt: botState.gestureAt
+            gestureAt: botState.gestureAt,
+            bus: botState.onBus || undefined,
+            seated: Boolean(botState.seat || botState.onBus) || undefined
           },
-          seat: "",
+          seat: botState.seat || "",
           ...extra
         }),
         credentials: "omit",
@@ -2983,7 +2991,7 @@ function boot() {
       return;
     }
 
-    const pMoved = hypot(state.x - botState.lastPlayerX, state.z - botState.lastPlayerZ) > 0.05 || state.moving;
+    const pMoved = hypot(state.x - botState.lastPlayerX, state.z - botState.lastPlayerZ) > 0.05 || state.moving || groundRide || driving;
     const now = performance.now();
     if (pMoved || keys.size > 0 || joystick.x !== 0 || joystick.y !== 0) {
       botState.lastPlayerActiveAt = now;
@@ -2998,6 +3006,11 @@ function boot() {
       if (botState.active) {
         botState.active = false;
         hideSeoktaengModel();
+        if (botState.seat && rideOwners.get(botState.seat)?.id === SEOKTAENG_ID) {
+          rideOwners.delete(botState.seat);
+          botState.seat = "";
+        }
+        botState.onBus = false;
         if (botState.isHost) {
           postBotRoom({ action: "leave" });
           if (isPlayerIdle && now - botState.toastCooldown > 15000) {
@@ -3024,6 +3037,77 @@ function boot() {
     }
 
     const model = ensureSeoktaengModel();
+
+    // 1. 버스 동승 (플레이어가 버스 운전 중일 때 뒷자리에 나란히 탑승)
+    if (driving === "bus") {
+      const hx = -Math.sin(state.bodyYaw), hz = -Math.cos(state.bodyYaw);
+      botState.x = state.x + hx * 0.95;
+      botState.z = state.z + hz * 0.95;
+      botState.y = vehicles.bus.seat;
+      botState.yaw = state.bodyYaw;
+      botState.moving = false;
+      botState.motion = 2;
+      botState.seat = "";
+      if (!botState.onBus) {
+        botState.onBus = true;
+        toast("석탱이가 버스 뒷자리에 탔어요! 🚌 부릉부릉~");
+      }
+      const botPose = { x: botState.x, y: botState.y, z: botState.z, bodyYaw: botState.yaw };
+      animateAvatar(model, botPose, dt, false, true, -1, false);
+      if (now - botState.pollTimer > 500) {
+        botState.pollTimer = now;
+        postBotRoom();
+      }
+      return;
+    } else if (botState.onBus) {
+      botState.onBus = false;
+      botState.y = 0;
+      botState.x = state.x + 1.6;
+      botState.z = state.z;
+    }
+
+    // 2. 시소 & 그네 같이 타기
+    if (groundRide) {
+      let targetSeat = "";
+      if (groundRide === "see-left") targetSeat = "see-right";
+      else if (groundRide === "see-right") targetSeat = "see-left";
+      else if (groundRide === "swing-left") targetSeat = "swing-right";
+      else if (groundRide === "swing-right") targetSeat = "swing-left";
+
+      if (targetSeat) {
+        if (botState.seat !== targetSeat) {
+          botState.seat = targetSeat;
+          botState.rideAt = clock();
+          const rideName = targetSeat.startsWith("see") ? "시소 맞은편" : "옆자리 그네";
+          toast("석탱이가 " + rideName + "에 쏙 앉았어요! 🎈");
+        }
+        rideOwners.set(targetSeat, { id: SEOKTAENG_ID, ride_seat: targetSeat, ride_at: botState.rideAt });
+        const botPose = { x: botState.x, y: botState.y, z: botState.z, bodyYaw: botState.yaw };
+        ridePose(targetSeat, botPose);
+        botState.x = botPose.x;
+        botState.y = botPose.y;
+        botState.z = botPose.z;
+        botState.yaw = botPose.bodyYaw;
+        botState.moving = false;
+        botState.motion = 2;
+        animateAvatar(model, botPose, dt, false, true, -1, false);
+        if (now - botState.pollTimer > 500) {
+          botState.pollTimer = now;
+          postBotRoom();
+        }
+        return;
+      }
+    } else if (botState.seat) {
+      if (rideOwners.get(botState.seat)?.id === SEOKTAENG_ID) {
+        rideOwners.delete(botState.seat);
+      }
+      botState.seat = "";
+      botState.y = 0;
+      botState.x = state.x + 1.2;
+      botState.z = state.z + 1.2;
+    }
+
+    // 3. 일반 보행 및 따라오기
     const dist = hypot(state.x - botState.x, state.z - botState.z);
     const targetDist = 2.4;
 
