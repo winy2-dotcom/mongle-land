@@ -1378,6 +1378,7 @@ function boot() {
     if(direction.lengthSq()<.015)direction.copy(heading(state.bodyYaw));
     direction.normalize();ballVelocity.copy(direction.multiplyScalar(15));ballVelocity.y=6.5;
     toast("슝! 공을 찼어요.");canvas.focus({preventScroll:true});
+    scheduleRoom(0);
   }
   function ballStep(dt) {
     if(ballVelocity.lengthSq()<.01 && soccer.position.y<=.46)return;
@@ -1460,6 +1461,7 @@ function boot() {
     video.currentTime=0;
     if(musicURL)bgm.currentTime=0;
     tvLed.material=mat(0xf8a2aa,.49);
+    scheduleRoom(0);
   }
   function toggleTV() {
     if(tvOn){stopTV();toast("TV와 음악을 껐어요.");return;}
@@ -1671,6 +1673,7 @@ function boot() {
     if(swingAge!==null || state.ride || flightAge!==null)wire.seated=true;
     if(heldBlock)wire.carry=toyBlocks.indexOf(heldBlock);
     if(moveAge(state)){wire.gesture=move.kind;wire.gestureAt=move.at;}
+    if(tvOn)wire.tv=true;
     return wire;
   }
   function applyPeerPlay(peer) {
@@ -1778,6 +1781,17 @@ function boot() {
       clearInput();
     }
     showPresence("online",result.players.length+"명 접속");
+    const remoteTv=result.players.some(p=>p.id!==id&&p.play?.tv);
+    if(remoteTv&&!tvOn){
+      if(!screen.visible){
+        screen.visible=true;tvLed.material=mat(0x9fe7a2,.49);volumeAtCafe();
+        video.play().catch(()=>{video.muted=true;video.play().catch(()=>{});});
+      }
+    }else if(!remoteTv&&!tvOn){
+      if(screen.visible){
+        screen.visible=false;video.pause();tvLed.material=mat(0xf8a2aa,.49);
+      }
+    }
   }
   function scheduleRoom(delay) {
     if(!state.playing)return;
