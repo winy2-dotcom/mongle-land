@@ -776,7 +776,7 @@ function boot() {
   };
   function cleanNickname(value) {
     if(typeof value!=="string")return "";
-    const spaced=value.normalize("NFC").replace(/\s+/gu," ");
+    const spaced=value.replace(/\u200B?📺/gu,"").normalize("NFC").replace(/\s+/gu," ");
     return Array.from(spaced.replace(/[\u0000-\u001f\u007f-\u009f\u202a-\u202e\u2066-\u2069]/gu,"").trim())
       .slice(0,16).join("").trim();
   }
@@ -1370,7 +1370,7 @@ function boot() {
   const cafeRange=()=>hypot(state.x+20.5,state.z-15.3);
   const air=V(0,0,0), driveSpeed=V(0,0,0);
   let cameraYaw=0,cameraPitch=0,orbit=null,driving=null,heldBlock=null,move=null;
-  let flightAge=null,flightLanding=null,tvOn=false,musicURL="";
+  let flightAge=null,flightLanding=null,tvOn=false,remoteTvOn=false,musicURL="";
   const action=(id,name,label)=>({id,name,label});
   const cafeAction=action("cafe","몽글 카페","의자에 앉아 먹기");
   const things={
@@ -1605,6 +1605,7 @@ function boot() {
     if(musicURL)bgm.play().catch(()=>toast("선택한 음악을 재생하지 못했어요."));
     toast("몽글 카페 TV를 켰어요.");
     canvas.focus({preventScroll:true});
+    scheduleRoom(0);
   }
   $("pickMusic").onclick=()=>$("musicFile").click();
   $("musicFile").onchange=event=>{
@@ -1841,7 +1842,7 @@ function boot() {
     for(const [kind,vehicle] of Object.entries(vehicles)){
       if(nearSpot(vehicle.pose,vehicle.length+1.45)&&state.y<1.2)return things[kind];
     }
-    if(nearSpot(tvAt,3.0))return tvOn?things.tvOff:things.tv;
+    if(nearSpot(tvAt,3.0))return (tvOn||remoteTvOn)?things.tvOff:things.tv;
     if(state.y>4.9 && nearSpot({x:1.15,z:-13.05},2.85))return things.top;
     if(nearSpot(rocketEntry,3.3)||nearSpot({x:launch.x,z:launch.z+2.4},2.6))return things.rocket;
     if(!heldBlock&&toyBlocks.some(b=>b.target.y<1&&nearSpot(b.mesh.position,2.15)))return things.block;
@@ -1872,7 +1873,7 @@ function boot() {
       heldBlock.target.set(state.x+dir.x*.65,state.y+.93,state.z+dir.z*.65);
       heldBlock.angle=state.bodyYaw;
     }
-    ballStep(dt);if(tvOn)volumeAtCafe();
+    ballStep(dt);if(tvOn||remoteTvOn)volumeAtCafe();
   }
   function leaveSpecial() {
     stopCar();leaveGroundRide();stopFishing();landFlight();move=null;
@@ -2793,13 +2794,14 @@ function boot() {
       clearInput();
     }
     showPresence("online",result.players.length+"명 접속");
-    const remoteTv=result.players.some(p=>p.id!==id&&p.play?.tv);
-    if(remoteTv&&!tvOn){
-      if(!screen.visible){
+    remoteTvOn=result.players.some(p=>p.id!==id&&p.play?.nickname?.includes("📺"));
+    const shouldTvPlay=tvOn||remoteTvOn;
+    if(shouldTvPlay){
+      if(!screen.visible||video.paused){
         screen.visible=true;tvLed.material=mat(0x9fe7a2,.49);volumeAtCafe();
         video.play().catch(()=>{video.muted=true;video.play().catch(()=>{});});
       }
-    }else if(!remoteTv&&!tvOn){
+    }else{
       if(screen.visible){
         screen.visible=false;video.pause();tvLed.material=mat(0xf8a2aa,.49);
       }
@@ -2815,7 +2817,7 @@ function boot() {
     return {
       id,key,animal:selected,x:state.x,y:state.y,z:state.z,yaw:wrapAngle(state.bodyYaw),
       motion:state.ride||state.sitting||!state.grounded||driving||fishing?2:state.moving?1:0,
-      play:{...playWire(),nickname},seat:groundRide||"",...extra
+      play:{...playWire(),nickname:(nickname||"")+(tvOn?"\u200B📺":"")},seat:groundRide||"",...extra
     };
   }
   async function pollRoom() {
