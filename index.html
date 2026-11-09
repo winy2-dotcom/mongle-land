@@ -780,7 +780,11 @@ function boot() {
     return Array.from(spaced.replace(/[\u0000-\u001f\u007f-\u009f\u202a-\u202e\u2066-\u2069]/gu,"").trim())
       .slice(0,16).join("").trim();
   }
-  const playerName=(kind,name)=>(cleanNickname(name)||"하리")+" "+animals[kind].name;
+  const playerName=(kind,name)=>{
+    const n=cleanNickname(name);
+    if(n.includes("석탱"))return "석탱 💜";
+    return (n||"하리")+" "+animals[kind].name;
+  };
   let selected="rabbit",nickname="";
   try {
     const stored=localStorage.getItem("mongle-animal");
@@ -1349,6 +1353,7 @@ function boot() {
     }
     updateHud();playHud();showRideTip(paired);updateCamera(dt);
     updatePeople(dt);
+    updateSeoktaengCompanion(dt);
     renderer.render(scene,camera);
     requestAnimationFrame(frame);
   }
@@ -2767,9 +2772,19 @@ function boot() {
     syncAt=performance.now();syncNow=result.now;
     self=me;
     receiveRiders(result.players,requestedSeat);
+
+    const realPlayers = result.players.filter(p => p.id !== SEOKTAENG_ID);
+    const botInRoom = result.players.some(p => p.id === SEOKTAENG_ID);
+    const shouldBotLive = realPlayers.length >= 1 && realPlayers.length <= 2;
+    botState.isHost = shouldBotLive && (realPlayers[0]?.id === id);
+
+    if (realPlayers.length > 2 && botInRoom && realPlayers[0]?.id === id) {
+      postBotRoom({ action: "leave" });
+    }
+
     const alive=new Set();
     for(const entry of result.players){
-      if(entry.id===id || !Object.hasOwn(animals,entry.animal))continue;
+      if(entry.id===id || (botState.isHost && entry.id===SEOKTAENG_ID) || !Object.hasOwn(animals,entry.animal))continue;
       alive.add(entry.id);
       let peer=peers.get(entry.id);
       if(peer && peer.data.animal!==entry.animal){forgetPeer(entry.id,peer);peer=null;}
@@ -2793,7 +2808,8 @@ function boot() {
       danced=self.dance_at;
       clearInput();
     }
-    showPresence("online",result.players.length+"명 접속");
+    const botBadge = (botInRoom || botState.active) ? " + 석탱 💜" : "";
+    showPresence("online", realPlayers.length + "명" + botBadge + " 접속");
     remoteTvOn=result.players.some(p=>p.id!==id&&p.play?.nickname?.includes("📺"));
     const shouldTvPlay=tvOn||remoteTvOn;
     if(shouldTvPlay){
@@ -2862,14 +2878,220 @@ function boot() {
       const p=peer.data, d=hypot(state.x-p.x,state.z-p.z);
       if(d<distance && Math.abs(state.y-p.y)<=1.75){closest=peer;distance=d;}
     }
+    if(botState.isHost && botState.active && seoktaengModel?.root.visible){
+      const d=hypot(state.x-botState.x,state.z-botState.z);
+      if(d<distance && Math.abs(state.y-botState.y)<=1.75){
+        closest={
+          data:{id:SEOKTAENG_ID,animal:"cat",x:botState.x,y:botState.y,z:botState.z,yaw:botState.yaw,motion:botState.motion,dance_at:-1,wave_at:-1,play:{nickname:"석탱 💜"}}
+        };
+      }
+    }
     return closest;
   }
   function socialAction(action) {
     const peer=nearbyPeer();
     if(!peer || nextAction || clock()-self.dance_at<6500)return;
+    if(peer.data.id===SEOKTAENG_ID && botState.isHost){
+      if(action==="wave"){
+        botState.gesture="wave";botState.gestureAt=Math.floor(clock());
+        toast("석탱이가 반갑게 손을 흔들어요! 👋");
+      } else if(action==="dance"){
+        botState.gesture="roll";botState.gestureAt=Math.floor(clock());
+        toast("석탱이와 신나게 춤춰요! ♫");
+      }
+      return;
+    }
     nextAction={action,target:peer.data.id};
     scheduleRoom(0);
   }
+
+  // --- AI 석탱이 자율주행 컴패니언 (2명 이하 접속 시 자동 동행) ---
+  const SEOKTAENG_ID = "73656f6b7461656e67626f7430303131";
+  const SEOKTAENG_KEY = "73656f6b7461656e676b657930303131";
+  let seoktaengModel = null;
+  const botState = {
+    active: false,
+    x: 0, y: 0, z: 20,
+    yaw: Math.PI,
+    velocityY: 0,
+    grounded: true,
+    moving: false,
+    motion: 0,
+    gesture: "",
+    gestureAt: 0,
+    nextTrickTime: 0,
+    lastPlayerActiveAt: performance.now(),
+    lastPlayerX: 0,
+    lastPlayerZ: 0,
+    isHost: false,
+    pollTimer: 0,
+    toastCooldown: 0
+  };
+
+  function ensureSeoktaengModel() {
+    if (!seoktaengModel) {
+      seoktaengModel = mascot("cat", "석탱 💜", false);
+      seoktaengModel.root.name = "seoktaeng-avatar";
+    }
+    seoktaengModel.root.visible = true;
+    seoktaengModel.shadow.visible = true;
+    return seoktaengModel;
+  }
+
+  function hideSeoktaengModel() {
+    if (seoktaengModel) {
+      seoktaengModel.root.visible = false;
+      seoktaengModel.shadow.visible = false;
+    }
+  }
+
+  async function postBotRoom(extra = {}) {
+    if (!connected || !state.playing) return;
+    try {
+      await fetch(roomEndpoint, {
+        method: "POST",
+        body: JSON.stringify({
+          id: SEOKTAENG_ID,
+          key: SEOKTAENG_KEY,
+          animal: "cat",
+          x: Number(botState.x.toFixed(2)),
+          y: Number(botState.y.toFixed(2)),
+          z: Number(botState.z.toFixed(2)),
+          yaw: wrapAngle(botState.yaw),
+          motion: botState.motion,
+          play: {
+            nickname: "석탱 💜",
+            gesture: botState.gesture,
+            gestureAt: botState.gestureAt
+          },
+          seat: "",
+          ...extra
+        }),
+        credentials: "omit",
+        signal: AbortSignal.timeout(4000)
+      });
+    } catch (_) {}
+  }
+
+  function updateSeoktaengCompanion(dt) {
+    if (!state.playing) {
+      if (botState.active) {
+        botState.active = false;
+        hideSeoktaengModel();
+        postBotRoom({ action: "leave" });
+      }
+      return;
+    }
+
+    const pMoved = hypot(state.x - botState.lastPlayerX, state.z - botState.lastPlayerZ) > 0.05 || state.moving;
+    const now = performance.now();
+    if (pMoved || keys.size > 0 || joystick.x !== 0 || joystick.y !== 0) {
+      botState.lastPlayerActiveAt = now;
+      botState.lastPlayerX = state.x;
+      botState.lastPlayerZ = state.z;
+    }
+
+    const idleSeconds = (now - botState.lastPlayerActiveAt) / 1000;
+    const isPlayerIdle = idleSeconds > 10;
+
+    if (isPlayerIdle || !botState.isHost) {
+      if (botState.active) {
+        botState.active = false;
+        hideSeoktaengModel();
+        if (botState.isHost) {
+          postBotRoom({ action: "leave" });
+          if (isPlayerIdle && now - botState.toastCooldown > 15000) {
+            toast("하리가 쉴 땐 석탱이도 잠깐 쉬고 있을게요! 💤");
+            botState.toastCooldown = now;
+          }
+        }
+      }
+      return;
+    }
+
+    if (!botState.active) {
+      botState.active = true;
+      botState.x = state.x + (rand() - 0.5) * 2;
+      botState.z = state.z + 2.2;
+      botState.y = floorAt(botState.x, botState.z, 0);
+      botState.nextTrickTime = now + 4000 + rand() * 3000;
+      ensureSeoktaengModel();
+      if (now - botState.toastCooldown > 15000) {
+        toast("석탱이가 하리랑 같이 놀러 왔어요! 💜");
+        botState.toastCooldown = now;
+      }
+      postBotRoom();
+    }
+
+    const model = ensureSeoktaengModel();
+    const dist = hypot(state.x - botState.x, state.z - botState.z);
+    const targetDist = 2.4;
+
+    if (dist > targetDist + 0.35) {
+      const speed = dist > 6 ? 6.2 : 4.4;
+      const dx = (state.x - botState.x) / dist;
+      const dz = (state.z - botState.z) / dist;
+      const stepX = dx * speed * dt;
+      const stepZ = dz * speed * dt;
+
+      if (walkable(botState.x + stepX, botState.z, botState.y)) botState.x += stepX;
+      if (walkable(botState.x, botState.z + stepZ, botState.y)) botState.z += stepZ;
+
+      botState.yaw = turn(botState.yaw, Math.atan2(-dx, -dz), dt * 10);
+      botState.moving = true;
+      botState.motion = 1;
+    } else {
+      botState.moving = false;
+      botState.motion = 0;
+      botState.yaw = turn(botState.yaw, Math.atan2(-(state.x - botState.x), -(state.z - botState.z)), dt * 6);
+
+      if (now > botState.nextTrickTime) {
+        botState.nextTrickTime = now + 5000 + rand() * 4000;
+        const tricks = ["wave", "jump", "bow", "slide", "roll"];
+        const trick = tricks[Math.floor(rand() * tricks.length)];
+        
+        if (trick === "jump") {
+          if (botState.grounded) {
+            botState.velocityY = 7.5;
+            botState.grounded = false;
+          }
+        } else {
+          botState.gesture = trick;
+          botState.gestureAt = Math.floor(clock());
+        }
+      }
+    }
+
+    botState.velocityY -= 16 * dt;
+    botState.y += botState.velocityY * dt;
+    const floor = floorAt(botState.x, botState.z, botState.y);
+    if (botState.y <= floor) {
+      botState.y = floor;
+      botState.velocityY = 0;
+      botState.grounded = true;
+    }
+
+    if (botState.gesture && (clock() - botState.gestureAt > 1800)) {
+      botState.gesture = "";
+    }
+
+    const botPose = {
+      x: botState.x,
+      y: botState.y,
+      z: botState.z,
+      bodyYaw: botState.yaw,
+      gesture: botState.gesture,
+      gestureAt: botState.gestureAt
+    };
+
+    animateAvatar(model, botPose, dt, botState.moving, false, -1, botState.gesture === "wave");
+
+    if (now - botState.pollTimer > 500) {
+      botState.pollTimer = now;
+      postBotRoom();
+    }
+  }
+
   function updatePeople(dt) {
     for(const peer of peers.values()){
       const {model,pose,data}=peer;
@@ -2901,6 +3123,7 @@ function boot() {
   document.addEventListener("visibilitychange",()=>{if(!document.hidden)scheduleRoom(0);});
   window.addEventListener("pagehide",()=>{
     if(state.playing && connected)navigator.sendBeacon(roomEndpoint,JSON.stringify(roomData({action:"leave"})));
+    if(botState.isHost && botState.active)navigator.sendBeacon(roomEndpoint,JSON.stringify({id:SEOKTAENG_ID,key:SEOKTAENG_KEY,animal:"cat",action:"leave"}));
   });
   requestAnimationFrame(frame);
 }
