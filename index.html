@@ -1441,7 +1441,7 @@ function boot() {
   const video=document.createElement("video");
   video.id="cafeVideo";video.hidden=true;video.loop=true;video.playsInline=true;
   video.preload="none";video.crossOrigin="anonymous";
-  video.src=location.protocol==="file:"?"https://mongle-land-3d-play.winy23567.chatgpt.site/media/cafe-tv.mp4":"/media/cafe-tv.mp4";
+  video.src="https://mongle-land-3d-play.winy23567.chatgpt.site/media/cafe-tv.mp4";
   document.body.append(video);
   const videoMap=new THREE.VideoTexture(video);videoMap.colorSpace=THREE.SRGBColorSpace;
   const screen=add(new THREE.PlaneGeometry(4.34,4.34*250/448),
