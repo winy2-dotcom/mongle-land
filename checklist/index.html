@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>하리네 강화도 여행 패킹 체크리스트</title>
+  <style>
+    :root {
+      --primary: #8b5cf6;
+      --primary-light: #ede9fe;
+      --primary-dark: #6d28d9;
+      --accent-pink: #ec4899;
+      --accent-green: #10b981;
+      --accent-red: #ef4444;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --radius: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Pretendard", "Segoe UI", Roboto, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      padding: 16px;
+      padding-bottom: 90px;
+      max-width: 560px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    header {
+      background: linear-gradient(135deg, #a855f7, #6366f1);
+      color: white;
+      padding: 22px 18px;
+      border-radius: var(--radius);
+      box-shadow: 0 10px 25px -5px rgba(139, 92, 246, 0.3);
+      margin-bottom: 16px;
+      position: relative;
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 6px;
+    }
+
+    header h1 {
+      font-size: 20px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    header p {
+      font-size: 13px;
+      opacity: 0.92;
+    }
+
+    /* Sync Indicator Badge */
+    .sync-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(8px);
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .sync-badge:active {
+      transform: scale(0.95);
+      background: rgba(255, 255, 255, 0.35);
+    }
+
+    .sync-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #4ade80;
+    }
+
+    .sync-dot.syncing {
+      background: #facc15;
+      animation: pulse 1s infinite alternate;
+    }
+
+    .sync-dot.offline {
+      background: #f87171;
+    }
+
+    @keyframes pulse {
+      from { opacity: 0.4; }
+      to { opacity: 1; }
+    }
+
+    /* Progress Card */
+    .progress-box {
+      background: white;
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+      border: 1px solid var(--border);
+    }
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .progress-stats {
+      color: var(--primary-dark);
+      font-size: 15px;
+    }
+
+    .progress-bar-bg {
+      height: 10px;
+      background: #f1f5f9;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #ec4899, #8b5cf6);
+      width: 0%;
+      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 999px;
+    }
+
+    /* Controls & Filter */
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .search-bar {
+      position: relative;
+    }
+
+    .search-bar input {
+      width: 100%;
+      padding: 11px 16px 11px 38px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: white;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .search-bar input:focus {
+      border-color: var(--primary);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    .filter-tabs {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+    }
+    .filter-tabs::-webkit-scrollbar { display: none; }
+
+    .tab-btn {
+      padding: 7px 13px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      background: white;
+      color: var(--text-muted);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+      box-shadow: 0 4px 10px rgba(139, 92, 246, 0.25);
+    }
+
+    .toggle-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 2px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .toggle-switch {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .toggle-switch input {
+      accent-color: var(--primary);
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+
+    /* Category Group */
+    .category-group {
+      background: white;
+      border-radius: var(--radius);
+      margin-bottom: 14px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+      transition: all 0.2s;
+    }
+
+    .category-header {
+      padding: 13px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      background: #fafafa;
+      border-bottom: 1px solid transparent;
+      user-select: none;
+    }
+
+    .category-group.open .category-header {
+      border-bottom-color: var(--border);
+      background: white;
+    }
+
+    .category-title {
+      font-size: 15px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .category-badge {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #f1f5f9;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .category-badge.all-done {
+      background: #dcfce7;
+      color: #15803d;
+    }
+
+    .chevron {
+      font-size: 12px;
+      color: var(--text-muted);
+      transition: transform 0.2s;
+    }
+
+    .category-group.open .chevron {
+      transform: rotate(180deg);
+    }
+
+    .items-list {
+      display: none;
+      padding: 4px 0;
+    }
+
+    .category-group.open .items-list {
+      display: block;
+    }
+
+    /* Item Row */
+    .item-row {
+      display: flex;
+      align-items: center;
+      padding: 11px 16px;
+      gap: 10px;
+      transition: background-color 0.15s;
+      border-bottom: 1px solid #f8fafc;
+    }
+
+    .item-row:last-child {
+      border-bottom: none;
+    }
+
+    .item-checkbox {
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      border: 2px solid #cbd5e1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: white;
+    }
+
+    .item-row.checked .item-checkbox {
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+
+    .item-checkbox svg {
+      width: 14px;
+      height: 14px;
+      fill: none;
+      stroke: white;
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      display: none;
+    }
+
+    .item-row.checked .item-checkbox svg {
+      display: block;
+    }
+
+    .item-content {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      cursor: pointer;
+      min-width: 0;
+    }
+
+    .item-text {
+      font-size: 14px;
+      color: var(--text-main);
+      line-height: 1.4;
+      word-break: break-word;
+      transition: all 0.2s;
+    }
+
+    .item-row.checked .item-text {
+      color: #94a3b8;
+      text-decoration: line-through;
+    }
+
+    .item-tag {
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: #f1f5f9;
+      color: #64748b;
+      font-weight: 500;
+    }
+
+    .item-tag.urgent {
+      background: #fee2e2;
+      color: #ef4444;
+      font-weight: 700;
+    }
+
+    /* Action buttons on item */
+    .item-actions {
+      display: flex;
+      gap: 4px;
+      opacity: 0.6;
+      transition: opacity 0.2s;
+    }
+
+    .item-row:hover .item-actions {
+      opacity: 1;
+    }
+
+    .icon-btn {
+      background: none;
+      border: none;
+      padding: 4px 6px;
+      cursor: pointer;
+      font-size: 13px;
+      color: var(--text-muted);
+      border-radius: 6px;
+      transition: all 0.15s;
+    }
+
+    .icon-btn:hover {
+      background: #f1f5f9;
+      color: var(--text-main);
+    }
+
+    .icon-btn.delete:hover {
+      background: #fee2e2;
+      color: var(--accent-red);
+    }
+
+    /* Category Quick Add */
+    .category-add-row {
+      display: flex;
+      padding: 8px 16px 10px 16px;
+      gap: 6px;
+      border-top: 1px dashed #e2e8f0;
+      background: #fdfdfd;
+    }
+
+    .category-add-row input {
+      flex: 1;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 13px;
+      outline: none;
+    }
+
+    .category-add-row input:focus {
+      border-color: var(--primary);
+    }
+
+    .category-add-row button {
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      border: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    /* Edit Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 999;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-box {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2);
+    }
+
+    .modal-title {
+      font-size: 16px;
+      font-weight: 800;
+      margin-bottom: 12px;
+      color: var(--text-main);
+    }
+
+    .modal-input {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      font-size: 14px;
+      margin-bottom: 14px;
+      outline: none;
+    }
+
+    .modal-input:focus {
+      border-color: var(--primary);
+    }
+
+    .modal-btns {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .modal-btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: white;
+      color: var(--text-muted);
+    }
+
+    .modal-btn.primary {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    /* Bottom actions */
+    .bottom-bar {
+      margin-top: 24px;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .action-btn {
+      padding: 8px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: white;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.9);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+      z-index: 1000;
+      white-space: nowrap;
+    }
+
+    .toast.show {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-top">
+      <h1>🏕️ 하리네 강화도 짐싸기</h1>
+      <div class="sync-badge" id="syncBtn" title="클릭하여 즉시 동기화">
+        <span class="sync-dot" id="syncDot"></span>
+        <span id="syncText">실시간 동기화</span>
+      </div>
+    </div>
+    <p>2026.11.14 ~ 11.16 · 서영 님 & 승연 오빠 실시간 공유 체크리스트</p>
+  </header>
+
+  <!-- Progress Bar -->
+  <div class="progress-box">
+    <div class="progress-header">
+      <span>패킹 진행 상황</span>
+      <span class="progress-stats" id="progressStats">0 / 0 (0%)</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progressBar"></div>
+    </div>
+  </div>
+
+  <!-- Search & Filters -->
+  <div class="controls">
+    <div class="search-bar">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="searchInput" placeholder="물품 검색 (예: 양압기, 핫팩, 수영복)">
+    </div>
+
+    <div class="filter-tabs" id="filterTabs">
+      <button class="tab-btn active" data-filter="all">전체보기</button>
+      <button class="tab-btn" data-filter="health">💊 필수약</button>
+      <button class="tab-btn" data-filter="hari">👧 하리 전용</button>
+      <button class="tab-btn" data-filter="parents">👫 엄빠 개인</button>
+      <button class="tab-btn" data-filter="water">🏊 물놀이</button>
+      <button class="tab-btn" data-filter="food">🍱 음식·식기</button>
+      <button class="tab-btn" data-filter="tech">🔌 전자기기</button>
+      <button class="tab-btn" data-filter="car">🚗 차량·이동</button>
+    </div>
+
+    <div class="toggle-row">
+      <label class="toggle-switch">
+        <input type="checkbox" id="hideCompletedToggle">
+        <span>미완료 짐만 모아보기</span>
+      </label>
+      <span id="remainingCount" style="font-weight: 700; color: #ec4899;"></span>
+    </div>
+  </div>
+
+  <!-- Checklist Groups -->
+  <div id="checklistContainer"></div>
+
+  <!-- Bottom actions -->
+  <div class="bottom-bar">
+    <button class="action-btn" id="expandAllBtn">모두 펼치기</button>
+    <button class="action-btn" id="collapseAllBtn">모두 접기</button>
+    <button class="action-btn" id="manualSyncBtn">🔄 즉시 동기화</button>
+    <button class="action-btn" id="resetBtn" style="color: #ef4444;">초기화</button>
+  </div>
+
+  <!-- Edit Item Modal -->
+  <div class="modal-overlay" id="editModal">
+    <div class="modal-box">
+      <div class="modal-title">✏️ 물품 이름 수정</div>
+      <input type="text" class="modal-input" id="editModalInput" placeholder="물품 이름을 입력하세요">
+      <div class="modal-btns">
+        <button class="modal-btn" id="editModalCancel">취소</button>
+        <button class="modal-btn primary" id="editModalSave">수정 완료</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast">동기화 완료</div>
+
+  <script>
+    // Initial 91 items categorized from 5 photos
+    const INITIAL_CATEGORIES = [
+      {
+        id: "health",
+        name: "💊 필수 건강 & 상비약",
+        tag: "health",
+        items: [
+          { id: "h1", text: "승연 혈압약 넉넉히", urgent: true, tag: "오빠필수", checked: false },
+          { id: "h2", text: "승연 양압기", urgent: true, tag: "오빠수면", checked: false },
+          { id: "h3", text: "승연 두통약", urgent: false, tag: "오빠", checked: false },
+          { id: "h4", text: "챔프 해열제", urgent: true, tag: "하리", checked: false },
+          { id: "h5", text: "하리 먹고있는 병원약", urgent: true, tag: "하리", checked: false },
+          { id: "h6", text: "약병 공병", urgent: false, tag: "하리", checked: false },
+          { id: "h7", text: "체온계", urgent: true, tag: "필수", checked: false },
+          { id: "h8", text: "하리 모기약", urgent: false, tag: "하리", checked: false },
+          { id: "h9", text: "상비약(상추약)", urgent: false, tag: "공용", checked: false },
+          { id: "h10", text: "대일밴드, 습윤밴드, 메디폼", urgent: false, tag: "공용", checked: false },
+          { id: "h11", text: "알디콤", urgent: false, tag: "엄빠", checked: false }
+        ]
+      },
+      {
+        id: "hari_care",
+        name: "👧 하리 케어 & 위생",
+        tag: "hari",
+        items: [
+          { id: "hc1", text: "하리 칫솔, 치약, 양치컵", urgent: false, tag: "위생", checked: false },
+          { id: "hc2", text: "하리 씻길거랑 바를거 (워시/로션)", urgent: false, tag: "목욕", checked: false },
+          { id: "hc3", text: "선크림", urgent: false, tag: "외출", checked: false },
+          { id: "hc4", text: "머리끈과 핀", urgent: false, tag: "뷰티", checked: false },
+          { id: "hc5", text: "물티슈 큰거", urgent: false, tag: "필수", checked: false },
+          { id: "hc6", text: "마이비데 하리거", urgent: false, tag: "배변", checked: false },
+          { id: "hc7", text: "일회용 타올", urgent: false, tag: "위생", checked: false }
+        ]
+      },
+      {
+        id: "hari_clothes",
+        name: "👗 하리 옷 & 침구 & 보온",
+        tag: "hari",
+        items: [
+          { id: "ha1", text: "팬티와 여분바지", urgent: false, tag: "의류", checked: false },
+          { id: "ha2", text: "내복", urgent: false, tag: "의류", checked: false },
+          { id: "ha3", text: "일상복", urgent: false, tag: "의류", checked: false },
+          { id: "ha4", text: "양말", urgent: false, tag: "의류", checked: false },
+          { id: "ha5", text: "슬리퍼", urgent: false, tag: "신발", checked: false },
+          { id: "ha6", text: "신발 여분", urgent: false, tag: "신발", checked: false },
+          { id: "ha7", text: "챙모자", urgent: false, tag: "모자", checked: false },
+          { id: "ha8", text: "겨울 귀도리모자", urgent: false, tag: "방한", checked: false },
+          { id: "ha9", text: "하리 선글라스", urgent: false, tag: "외출", checked: false },
+          { id: "ha10", text: "하리 비옷", urgent: false, tag: "우천대비", checked: false },
+          { id: "ha11", text: "하리 베개와 토끼 이불", urgent: false, tag: "수면", checked: false },
+          { id: "ha12", text: "오피고우 침대가드", urgent: true, tag: "낙상방지", checked: false },
+          { id: "ha13", text: "방수매트", urgent: false, tag: "수면", checked: true },
+          { id: "ha14", text: "하리 핫팩 챙기기", urgent: false, tag: "방한", checked: false },
+          { id: "ha15", text: "유모차용 장갑", urgent: false, tag: "방한", checked: false },
+          { id: "ha16", text: "담요", urgent: false, tag: "방한", checked: false },
+          { id: "ha17", text: "장갑 (가족 모두)", urgent: false, tag: "방한", checked: false }
+        ]
+      },
+      {
+        id: "water_activity",
+        name: "🏊 물놀이 & 수영 & 모래놀이",
+        tag: "water",
+        items: [
+          { id: "w1", text: "하리 수영복", urgent: false, tag: "수영", checked: true },
+          { id: "w2", text: "오빠 수영복", urgent: false, tag: "수영", checked: false },
+          { id: "w3", text: "아쿠아슈즈 하리거", urgent: false, tag: "물놀이", checked: true },
+          { id: "w4", text: "하리 샌들", urgent: false, tag: "물놀이", checked: true },
+          { id: "w5", text: "비치타올 입는거", urgent: false, tag: "물놀이", checked: true },
+          { id: "w6", text: "하리 타월옷", urgent: false, tag: "물놀이", checked: false },
+          { id: "w7", text: "튜브", urgent: false, tag: "물놀이", checked: true },
+          { id: "w8", text: "어른들 모자 물놀이용", urgent: false, tag: "물놀이", checked: false },
+          { id: "w9", text: "모래놀이할 옷", urgent: false, tag: "야외", checked: false }
+        ]
+      },
+      {
+        id: "food_kitchen",
+        name: "🍱 음식 & 식기 & 주방",
+        tag: "food",
+        items: [
+          { id: "f1", text: "김, 햇반", urgent: false, tag: "식사", checked: false },
+          { id: "f2", text: "빨대물컵", urgent: false, tag: "하리", checked: false },
+          { id: "f3", text: "빨대", urgent: false, tag: "하리", checked: false },
+          { id: "f4", text: "하리 숟가락 포크 젓가락 식판", urgent: false, tag: "식기", checked: false },
+          { id: "f5", text: "자일리톨 젤리", urgent: false, tag: "간식", checked: false },
+          { id: "f6", text: "위글위글가방 + 아이스팩", urgent: false, tag: "보냉", checked: false },
+          { id: "f7", text: "지퍼백, 비닐, 아이스팩", urgent: false, tag: "소모품", checked: false },
+          { id: "f8", text: "일회용 젓가락", urgent: false, tag: "식기", checked: false },
+          { id: "f9", text: "휴대용 전기포트", urgent: false, tag: "주방", checked: false }
+        ]
+      },
+      {
+        id: "tech_device",
+        name: "🔌 전자기기 & 충전 & 배터리",
+        tag: "tech",
+        items: [
+          { id: "t1", text: "아이패드 2개와 충전기", urgent: true, tag: "필수", checked: false },
+          { id: "t2", text: "충전기 여러개 usb용!!!", urgent: true, tag: "충전", checked: false },
+          { id: "t3", text: "충전기 usb 분리형", urgent: false, tag: "충전", checked: false },
+          { id: "t4", text: "멀티탭", urgent: true, tag: "숙소필수", checked: false },
+          { id: "t5", text: "보조배터리 (가방/이동용)", urgent: false, tag: "외출", checked: false },
+          { id: "t6", text: "윙크와 충전기", urgent: false, tag: "하리학습", checked: false },
+          { id: "t7", text: "차량용 헤드레스트 자바라!", urgent: false, tag: "차량", checked: false },
+          { id: "t8", text: "보라색 헤드셋", urgent: false, tag: "하리", checked: true }
+        ]
+      },
+      {
+        id: "car_travel",
+        name: "🚗 이동 & 차량 & 편의",
+        tag: "car",
+        items: [
+          { id: "c1", text: "하리 아기변기 (차 이동시)", urgent: true, tag: "차량필수", checked: false },
+          { id: "c2", text: "휴대용 변기커버", urgent: false, tag: "위생", checked: false },
+          { id: "c3", text: "차에 있는 작은 목베개", urgent: false, tag: "차량", checked: false },
+          { id: "c4", text: "에어베개", urgent: false, tag: "휴식", checked: false },
+          { id: "c5", text: "휴대용 유모차", urgent: false, tag: "이동", checked: false },
+          { id: "c6", text: "하리 타는 캐리어", urgent: false, tag: "이동", checked: true },
+          { id: "c7", text: "가습기", urgent: false, tag: "숙소환경", checked: false }
+        ]
+      },
+      {
+        id: "toys_fun",
+        name: "🧸 하리 놀이 & 장난감 & 가방",
+        tag: "hari",
+        items: [
+          { id: "toy1", text: "애착인형", urgent: true, tag: "하리안정", checked: false },
+          { id: "toy2", text: "하리 가방 (인형 넣을용)", urgent: false, tag: "가방", checked: false },
+          { id: "toy3", text: "책", urgent: false, tag: "놀이", checked: false },
+          { id: "toy4", text: "소리나는 책", urgent: false, tag: "놀이", checked: false }
+        ]
+      },
+      {
+        id: "parents_care",
+        name: "👫 엄빠 의류 & 세면 & 뷰티",
+        tag: "parents",
+        items: [
+          { id: "p1", text: "입을옷 + 외투 + 갈아입을옷 (온가족)", urgent: true, tag: "의류", checked: false },
+          { id: "p2", text: "어른 잠옷", urgent: false, tag: "의류", checked: false },
+          { id: "p3", text: "양말, 속옷", urgent: false, tag: "의류", checked: false },
+          { id: "p4", text: "승연, 서영 슬리퍼", urgent: false, tag: "신발", checked: false },
+          { id: "p5", text: "오빠 면도기", urgent: false, tag: "승연", checked: false },
+          { id: "p6", text: "칫솔, 치약 (어른용)", urgent: false, tag: "세면", checked: false },
+          { id: "p7", text: "치간칫솔 ☆하리도필수", urgent: false, tag: "덴탈", checked: false },
+          { id: "p8", text: "어른용 샴푸, 컨디셔너", urgent: false, tag: "세면", checked: false },
+          { id: "p9", text: "화장 지우는거 (클렌징)", urgent: false, tag: "뷰티", checked: false },
+          { id: "p10", text: "화장품 ㅡ 모공 파데 등", urgent: false, tag: "뷰티", checked: false },
+          { id: "p11", text: "쌍커풀 그리기", urgent: false, tag: "뷰티", checked: false },
+          { id: "p12", text: "매직기", urgent: false, tag: "헤어", checked: false },
+          { id: "p13", text: "서영 머리끈", urgent: false, tag: "헤어", checked: false },
+          { id: "p14", text: "어른 선글라스", urgent: false, tag: "외출", checked: false },
+          { id: "p15", text: "생리대 탐폰 기저귀", urgent: false, tag: "위생", checked: false }
+        ]
+      },
+      {
+        id: "pre_trip",
+        name: "📋 출발 전 체크 & 필수 서류",
+        tag: "parents",
+        items: [
+          { id: "pt1", text: "주민등록등본 (가족 할인/증빙)", urgent: true, tag: "서류", checked: false },
+          { id: "pt2", text: "온가족 여행전 손,발톱 깎기", urgent: false, tag: "사전준비", checked: false },
+          { id: "pt3", text: "귀마개", urgent: false, tag: "수면", checked: false },
+          { id: "pt4", text: "입테이프", urgent: false, tag: "수면", checked: false },
+          { id: "pt5", text: "양산 검정거 큰거 / 3단우양산", urgent: false, tag: "외출", checked: false },
+          { id: "pt6", text: "휴대용 가위", urgent: false, tag: "도구", checked: false }
+        ]
+      }
+    ];
+
+    const SYNC_OBJECT_ID = "ff808181a09d98f701a1d41258aa1efd";
+    const API_URL = `https://api.restful-api.dev/objects/${SYNC_OBJECT_ID}`;
+    const LOCAL_KEY = "ganghwa_trip_v2";
+
+    let state = loadLocal();
+    let currentFilter = "all";
+    let hideCompleted = false;
+    let searchQuery = "";
+    let isSyncing = false;
+    let editingCatId = null;
+    let editingItemId = null;
+
+    function loadLocal() {
+      try {
+        const raw = localStorage.getItem(LOCAL_KEY);
+        if (raw) return JSON.parse(raw);
+      } catch (e) {}
+      return {
+        categories: JSON.parse(JSON.stringify(INITIAL_CATEGORIES)),
+        updatedAt: Date.now()
+      };
+    }
+
+    function saveLocal(data) {
+      state = data;
+      try {
+        localStorage.setItem(LOCAL_KEY, JSON.stringify(state));
+      } catch (e) {}
+      render();
+      pushRemote();
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById("toast");
+      t.textContent = msg;
+      t.classList.add("show");
+      setTimeout(() => t.classList.remove("show"), 2000);
+    }
+
+    // Remote Cloud Sync
+    let pushTimeout = null;
+    function pushRemote() {
+      clearTimeout(pushTimeout);
+      setSyncStatus("syncing", "저장 중...");
+      pushTimeout = setTimeout(async () => {
+        try {
+          const res = await fetch(API_URL, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              name: "hari-ganghwa-checklist-2026",
+              data: state
+            })
+          });
+          if (res.ok) {
+            setSyncStatus("online", "실시간 연동 됨");
+          } else {
+            setSyncStatus("offline", "오프라인 (로컬저장)");
+          }
+        } catch (e) {
+          setSyncStatus("offline", "오프라인 (로컬저장)");
+        }
+      }, 400);
+    }
+
+    async function pullRemote(isManual = false) {
+      if (isSyncing) return;
+      isSyncing = true;
+      if (isManual) setSyncStatus("syncing", "동기화 중...");
+
+      try {
+        const res = await fetch(API_URL);
+        if (res.ok) {
+          const json = await res.json();
+          if (json && json.data && json.data.categories) {
+            const remoteTime = json.data.updatedAt || 0;
+            const localTime = state.updatedAt || 0;
+
+            if (remoteTime > localTime) {
+              state = json.data;
+              localStorage.setItem(LOCAL_KEY, JSON.stringify(state));
+              render();
+              if (isManual) showToast("최신 체크 상태로 동기화되었어요!");
+            } else if (remoteTime < localTime && isManual) {
+              pushRemote();
+              showToast("내 변경사항을 클라우드에 올렸어요!");
+            }
+          }
+          setSyncStatus("online", "실시간 연동 됨");
+        } else {
+          setSyncStatus("offline", "오프라인");
+        }
+      } catch (e) {
+        setSyncStatus("offline", "오프라인");
+      } finally {
+        isSyncing = false;
+      }
+    }
+
+    function setSyncStatus(status, text) {
+      const dot = document.getElementById("syncDot");
+      const txt = document.getElementById("syncText");
+      dot.className = "sync-dot " + (status === "syncing" ? "syncing" : (status === "offline" ? "offline" : ""));
+      txt.textContent = text;
+    }
+
+    // Toggle Complete
+    function toggleCheck(catId, itemId) {
+      const nextCats = JSON.parse(JSON.stringify(state.categories));
+      const cat = nextCats.find(c => c.id === catId);
+      if (!cat) return;
+      const item = cat.items.find(i => i.id === itemId);
+      if (!item) return;
+
+      item.checked = !item.checked;
+      saveLocal({
+        categories: nextCats,
+        updatedAt: Date.now()
+      });
+    }
+
+    // Edit Item
+    function openEditModal(catId, itemId) {
+      editingCatId = catId;
+      editingItemId = itemId;
+      const cat = state.categories.find(c => c.id === catId);
+      if (!cat) return;
+      const item = cat.items.find(i => i.id === itemId);
+      if (!item) return;
+
+      const input = document.getElementById("editModalInput");
+      input.value = item.text;
+      document.getElementById("editModal").classList.add("active");
+      setTimeout(() => input.focus(), 100);
+    }
+
+    document.getElementById("editModalCancel").addEventListener("click", () => {
+      document.getElementById("editModal").classList.remove("active");
+    });
+
+    document.getElementById("editModalSave").addEventListener("click", () => {
+      const newText = document.getElementById("editModalInput").value.trim();
+      if (!newText) return;
+
+      const nextCats = JSON.parse(JSON.stringify(state.categories));
+      const cat = nextCats.find(c => c.id === editingCatId);
+      if (cat) {
+        const item = cat.items.find(i => i.id === editingItemId);
+        if (item) {
+          item.text = newText;
+          saveLocal({
+            categories: nextCats,
+            updatedAt: Date.now()
+          });
+          showToast(`'${newText}'(으)로 수정 완료!`);
+        }
+      }
+      document.getElementById("editModal").classList.remove("active");
+    });
+
+    // Delete Item
+    function deleteItem(catId, itemId) {
+      const cat = state.categories.find(c => c.id === catId);
+      if (!cat) return;
+      const item = cat.items.find(i => i.id === itemId);
+      if (!item) return;
+
+      if (!confirm(`'${item.text}' 항목을 삭제할까요?`)) return;
+
+      const nextCats = JSON.parse(JSON.stringify(state.categories));
+      const targetCat = nextCats.find(c => c.id === catId);
+      targetCat.items = targetCat.items.filter(i => i.id !== itemId);
+
+      saveLocal({
+        categories: nextCats,
+        updatedAt: Date.now()
+      });
+      showToast("항목이 삭제되었어요.");
+    }
+
+    // Add Item to Category
+    function addItem(catId, text) {
+      const clean = text.trim();
+      if (!clean) return;
+
+      const nextCats = JSON.parse(JSON.stringify(state.categories));
+      const targetCat = nextCats.find(c => c.id === catId);
+      if (!targetCat) return;
+
+      targetCat.items.push({
+        id: "c_" + Date.now().toString(36) + Math.random().toString(36).substr(2, 4),
+        text: clean,
+        urgent: false,
+        tag: "추가됨",
+        checked: false
+      });
+
+      saveLocal({
+        categories: nextCats,
+        updatedAt: Date.now()
+      });
+      showToast(`'${clean}' 추가 완료!`);
+    }
+
+    // Stats & Progress
+    function updateStats() {
+      let total = 0;
+      let checked = 0;
+
+      state.categories.forEach(cat => {
+        cat.items.forEach(item => {
+          total++;
+          if (item.checked) checked++;
+        });
+      });
+
+      const pct = total === 0 ? 0 : Math.round((checked / total) * 100);
+      document.getElementById("progressStats").textContent = `${checked} / ${total} (${pct}%)`;
+      document.getElementById("progressBar").style.width = `${pct}%`;
+      document.getElementById("remainingCount").textContent = `남은 짐: ${total - checked}개`;
+    }
+
+    // Main Render
+    function render() {
+      updateStats();
+
+      const container = document.getElementById("checklistContainer");
+      container.innerHTML = "";
+
+      let visibleCount = 0;
+
+      state.categories.forEach(cat => {
+        if (currentFilter !== "all" && cat.tag !== currentFilter && currentFilter !== cat.id) {
+          const hasTag = cat.items.some(i => i.tag && i.tag.includes(currentFilter));
+          if (!hasTag) return;
+        }
+
+        const filteredItems = cat.items.filter(item => {
+          if (hideCompleted && item.checked) return false;
+          if (searchQuery && !item.text.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+          return true;
+        });
+
+        if (filteredItems.length === 0 && (hideCompleted || searchQuery)) {
+          return;
+        }
+
+        visibleCount += filteredItems.length;
+
+        const catDoneCount = cat.items.filter(i => i.checked).length;
+        const isAllDone = cat.items.length > 0 && catDoneCount === cat.items.length;
+
+        const groupEl = document.createElement("div");
+        groupEl.className = "category-group open";
+        groupEl.dataset.catId = cat.id;
+
+        groupEl.innerHTML = `
+          <div class="category-header">
+            <div class="category-title">
+              <span>${cat.name}</span>
+              <span class="category-badge ${isAllDone ? 'all-done' : ''}">
+                ${isAllDone ? '✓ 완료' : `${catDoneCount}/${cat.items.length}`}
+              </span>
+            </div>
+            <span class="chevron">▼</span>
+          </div>
+          <div class="items-list">
+            <div class="items-inner"></div>
+            <div class="category-add-row">
+              <input type="text" placeholder="+ 이 그룹에 새 짐 추가..." class="cat-add-input">
+              <button class="cat-add-btn">추가</button>
+            </div>
+          </div>
+        `;
+
+        const headerEl = groupEl.querySelector(".category-header");
+        headerEl.addEventListener("click", () => {
+          groupEl.classList.toggle("open");
+        });
+
+        const itemsInner = groupEl.querySelector(".items-inner");
+
+        filteredItems.forEach(item => {
+          const row = document.createElement("div");
+          row.className = `item-row ${item.checked ? 'checked' : ''}`;
+          row.innerHTML = `
+            <div class="item-checkbox">
+              <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </div>
+            <div class="item-content">
+              <span class="item-text">${item.text}</span>
+              ${item.urgent ? '<span class="item-tag urgent">중요</span>' : ''}
+              ${item.tag ? `<span class="item-tag">${item.tag}</span>` : ''}
+            </div>
+            <div class="item-actions">
+              <button class="icon-btn edit" title="수정">✏️</button>
+              <button class="icon-btn delete" title="삭제">✕</button>
+            </div>
+          `;
+
+          // Checkbox click
+          row.querySelector(".item-checkbox").addEventListener("click", (e) => {
+            e.stopPropagation();
+            toggleCheck(cat.id, item.id);
+          });
+
+          // Text area click -> toggle
+          row.querySelector(".item-content").addEventListener("click", () => {
+            toggleCheck(cat.id, item.id);
+          });
+
+          // Edit click
+          row.querySelector(".icon-btn.edit").addEventListener("click", (e) => {
+            e.stopPropagation();
+            openEditModal(cat.id, item.id);
+          });
+
+          // Delete click
+          row.querySelector(".icon-btn.delete").addEventListener("click", (e) => {
+            e.stopPropagation();
+            deleteItem(cat.id, item.id);
+          });
+
+          itemsInner.appendChild(row);
+        });
+
+        // Add input in category
+        const addInput = groupEl.querySelector(".cat-add-input");
+        const addBtn = groupEl.querySelector(".cat-add-btn");
+
+        const handleAdd = () => {
+          addItem(cat.id, addInput.value);
+          addInput.value = "";
+        };
+
+        addBtn.addEventListener("click", handleAdd);
+        addInput.addEventListener("keypress", (e) => {
+          if (e.key === "Enter") handleAdd();
+        });
+
+        container.appendChild(groupEl);
+      });
+
+      if (visibleCount === 0) {
+        container.innerHTML = `
+          <div style="text-align: center; padding: 40px 16px; color: #64748b; font-size: 14px;">
+            🎉 조건에 맞는 짐이 없거나 모두 챙겼어요!
+          </div>
+        `;
+      }
+    }
+
+    // UI Events
+    document.getElementById("searchInput").addEventListener("input", (e) => {
+      searchQuery = e.target.value.trim();
+      render();
+    });
+
+    document.getElementById("filterTabs").addEventListener("click", (e) => {
+      if (!e.target.classList.contains("tab-btn")) return;
+      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+      e.target.classList.add("active");
+      currentFilter = e.target.dataset.filter;
+      render();
+    });
+
+    document.getElementById("hideCompletedToggle").addEventListener("change", (e) => {
+      hideCompleted = e.target.checked;
+      render();
+    });
+
+    document.getElementById("expandAllBtn").addEventListener("click", () => {
+      document.querySelectorAll(".category-group").forEach(el => el.classList.add("open"));
+    });
+
+    document.getElementById("collapseAllBtn").addEventListener("click", () => {
+      document.querySelectorAll(".category-group").forEach(el => el.classList.remove("open"));
+    });
+
+    document.getElementById("syncBtn").addEventListener("click", () => pullRemote(true));
+    document.getElementById("manualSyncBtn").addEventListener("click", () => pullRemote(true));
+
+    document.getElementById("resetBtn").addEventListener("click", () => {
+      if (confirm("체크리스트를 처음 상태로 되돌릴까요? (서영 님 폰에도 반영됩니다)")) {
+        localStorage.removeItem(LOCAL_KEY);
+        state = {
+          categories: JSON.parse(JSON.stringify(INITIAL_CATEGORIES)),
+          updatedAt: Date.now()
+        };
+        saveLocal(state);
+      }
+    });
+
+    // Initial Start
+    render();
+    pullRemote();
+
+    // Auto Polling every 3.5s for real-time sync between spouses
+    setInterval(() => pullRemote(false), 3500);
+
+    // Sync on app visibility change
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden) pullRemote(false);
+    });
+    window.addEventListener("focus", () => pullRemote(false));
+  </script>
+</body>
+</html>
