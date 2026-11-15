@@ -736,18 +736,18 @@ function sniffRate(u8){
         }
       }
     }
-    // M4A/M4A: mdhd timeScale
-    var scan=Math.min(u8.length-32, 400000);
-    for (var m=0;m<scan;m++){
+    // M4A/M4A: mdhd timeScale (moov가 파일 끝에 있는 경우도 있어 전체를 훑는다)
+    for (var m=0;m<u8.length-32;m++){
       if (u8[m]===0x6D && u8[m+1]===0x64 && u8[m+2]===0x68 && u8[m+3]===0x64){
         var verM=u8[m+4];
         var ts;
         if (verM===1){
-          ts = (u8[m+20]<<24|u8[m+21]<<16|u8[m+22]<<8|u8[m+23])>>>0;
+          ts = (u8[m+24]<<24|u8[m+25]<<16|u8[m+26]<<8|u8[m+27])>>>0;
         } else {
-          ts = (u8[m+12]<<24|u8[m+13]<<16|u8[m+14]<<8|u8[m+15])>>>0;
+          ts = (u8[m+16]<<24|u8[m+17]<<16|u8[m+18]<<8|u8[m+19])>>>0;
         }
         if (COMMON_RATES.indexOf(ts)>=0) return ts;
+        m += 3;
       }
     }
   } catch(e){}
