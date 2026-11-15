@@ -486,7 +486,7 @@ function updateTimeUI(){
   $('curTime').textContent = fmtTime(cur);
   $('totTime').textContent = fmtTime(d);
   var sl = $('seek');
-  if (document.activeElement !== sl){
+  if (!AC.seekDrag){
     var p = d>0 ? (cur/d*1000) : 0;
     sl.value = String(p);
     sl.style.setProperty('--p', p/10+'%');
@@ -499,6 +499,7 @@ function cachedBuffer(key){
   return null;
 }
 function speedKey(s){ return s.toFixed(2); }
+function getMono(){ if (!ST.mono) ST.mono = makeMono(ST.pcm); return ST.mono; }
 
 function renderPreviewBuffer(speed, token){
   var key = speedKey(speed);
@@ -507,10 +508,11 @@ function renderPreviewBuffer(speed, token){
   var hit = cachedBuffer(key);
   if (hit) return Promise.resolve(hit);
   if (AC.rendering && AC.rendering.key === key) return AC.rendering.promise;
+  if (AC.rendering) AC.rendering.cancel();   // 이전 속도 렌더는 버린다
 
   var job = { key:key, cancelled:false };
   var p = (function(){
-    return renderStretch(ST.pcm, ST.mono, speed, ST.rate, function(ratio){
+    return renderStretch(ST.pcm, getMono(), speed, ST.rate, function(ratio){
       if (job.cancelled) return;
       if (token !== undefined && token !== AC.token) return;
       setPlayLabel('준비 '+Math.round(ratio*100)+'%', true);
@@ -524,7 +526,8 @@ function renderPreviewBuffer(speed, token){
     });
   })();
   AC.rendering = { key:key, promise:p, cancel:function(){ job.cancelled=true; } };
-  p.finally(function(){ if (AC.rendering && AC.rendering.key===key) AC.rendering=null; });
+  var clear = function(){ if (AC.rendering && AC.rendering.key===key) AC.rendering=null; };
+  p.then(clear, clear);
   return p;
 }
 
@@ -552,6 +555,7 @@ function play(){
           playBuffer(buf, from);
         }).catch(function(e){
           if (token !== AC.token) return;
+          if (String(e && e.message).indexOf('cancelled') >= 0) return;
           setPlayLabel('▶');
           toast('미리듣기 준비에 실패했어요: '+e.message, true);
         });
@@ -1065,9 +1069,8 @@ async function doExport(kind){
       var r = await renderNatural(ST.speed);
       chans = r.chans; len = r.len;
     } else {
-      if (!ST.mono) ST.mono = makeMono(ST.pcm);
       progress(true, 0.05, '속도 처리 중 (음높이 유지)…');
-      var res = await renderStretch(ST.pcm, ST.mono, ST.speed, ST.rate, function(ratio){
+      var res = await renderStretch(ST.pcm, getMono(), ST.speed, ST.rate, function(ratio){
         progress(true, 0.05 + ratio*0.6, '속도 처리 중 (음높이 유지)… '+Math.round(ratio*100)+'%');
       }, job);
       chans = res.chans; len = res.len;
@@ -1166,6 +1169,12 @@ function bind(){
   // 재생/탐색
   $('playBtn').addEventListener('click', togglePlay);
   var seek=$('seek');
+  ['pointerdown','mousedown','touchstart'].forEach(function(ev){
+    seek.addEventListener(ev, function(){ AC.seekDrag = true; });
+  });
+  ['pointerup','mouseup','touchend','pointercancel'].forEach(function(ev){
+    seek.addEventListener(ev, function(){ AC.seekDrag = false; });
+  });
   seek.addEventListener('input', function(){
     if (!ST.buffer) return;
     var t = parseFloat(seek.value)/1000*outDur();
