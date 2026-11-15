@@ -404,6 +404,7 @@ var AC = {
   src:null,
   playing:false,
   pos:0, startCtx:0, clockRate:1,
+  audioSpeed:1,    // 미리듣기가 실제로 쓰고 있는 속도
   token:0,
   tick:null,
   cache:null,      // {key:speed, buffer:AudioBuffer}
@@ -438,7 +439,7 @@ function stopSources(){
 function currentTimeLogical(){
   if (!AC.playing) return AC.pos;
   var el = AC.ctx ? Math.max(0, AC.ctx.currentTime - AC.startCtx) : 0;
-  return clamp(AC.pos + el*AC.clockRate, 0, outDur());
+  return clamp(AC.pos + el*AC.clockRate, 0, ST.origDur/AC.audioSpeed);
 }
 function pausePlayback(){
   if (!AC.playing) return;
@@ -460,6 +461,7 @@ function playNative(from){
   var off = clamp(from*ST.speed, 0, Math.max(0, ST.buffer.duration-0.005));
   s.start(0, off);
   AC.src=s; AC.playing=true; AC.pos=from; AC.startCtx=AC.ctx.currentTime; AC.clockRate=ST.speed;
+  AC.audioSpeed=ST.speed;
   setPlayLabel('❚❚');
   startTick();
 }
@@ -473,6 +475,7 @@ function playBuffer(buf, from){
   };
   s.start(0, clamp(from, 0, Math.max(0, buf.duration-0.005)));
   AC.src=s; AC.playing=true; AC.pos=from; AC.startCtx=AC.ctx.currentTime; AC.clockRate=1;
+  AC.audioSpeed=ST.speed;
   setPlayLabel('❚❚');
   startTick();
 }
@@ -762,6 +765,7 @@ async function loadFile(file){
   $('dropHint').textContent = file.name;
   pausePlayback();
   AC.pos=0;
+  AC.audioSpeed = ST.speed;
   try {
     var ab = await file.arrayBuffer();
     var head = new Uint8Array(ab);
@@ -842,28 +846,31 @@ function syncSpeedUI(){
 function setSpeed(v, silent){
   v = Math.round(v*20)/20;
   v = clamp(v, 0.5, 2);
-  var changed = Math.abs(v-ST.speed) > 1e-9;
   ST.speed = v;
   syncSpeedUI();
-  if (changed && !silent) onSpeedCommitted();
+  if (!silent) commitSpeed();
 }
-function onSpeedCommitted(){
-  if (!AC.playing) return;
-  var t = currentTimeLogical();
-  AC.pos = t;
-  if (ST.mode === 'natural'){
-    // 실시간 반영
-    if (AC.src){
-      AC.pos = clamp(AC.pos, 0, outDur());
-      AC.startCtx = AC.ctx.currentTime;
-      AC.clockRate = ST.speed;
-      try{ AC.src.playbackRate.value = ST.speed; }catch(e){}
-    }
+// 슬라이더를 놓았을 때: 재생 중이면 속도를 실제로 반영한다
+function commitSpeed(){
+  if (Math.abs(ST.speed - AC.audioSpeed) < 1e-9){ updateTimeUI(); return; }
+  var cur = currentTimeLogical();          // 지금 재생 중인 타임라인 기준 위치
+  var content = cur * AC.audioSpeed;       // 원본 오디오 기준 위치(초)
+  AC.pos = clamp(content / ST.speed, 0, outDur());
+  if (!AC.playing){
+    AC.audioSpeed = ST.speed;
+    updateTimeUI();
+    return;
+  }
+  if (ST.mode === 'natural' && AC.src){
+    AC.startCtx = AC.ctx.currentTime;
+    AC.clockRate = ST.speed;
+    AC.audioSpeed = ST.speed;
+    try{ AC.src.playbackRate.value = ST.speed; }catch(e){}
   } else {
-    // 피치 유지 모드는 새 속도 렌더가 필요 → 위치 유지하고 다시 재생
     AC.token++;
     stopSources();
-    AC.playing=false;
+    AC.playing = false;
+    AC.audioSpeed = ST.speed;
     play();
   }
   updateTimeUI();
@@ -1148,10 +1155,11 @@ function bind(){
   // 속도
   var sl=$('speedSlider');
   sl.addEventListener('input', function(){
-    setSpeed(parseFloat(sl.value), true);   // 드래그 중: 미리보기만
+    setSpeed(parseFloat(sl.value), true);            // 드래그 중: 화면만
+    if (AC.playing && ST.mode === 'natural') commitSpeed();   // 자연 배속은 즉시
   });
   sl.addEventListener('change', function(){
-    setSpeed(parseFloat(sl.value), false);  // 놓으면 반영
+    setSpeed(parseFloat(sl.value), false);           // 놓으면 반영
   });
 
   document.querySelectorAll('.preset').forEach(function(b){
