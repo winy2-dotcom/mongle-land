@@ -806,6 +806,8 @@ async function loadFile(file){
     $('titleInput').value = ST.title;
     $('againWrap').classList.add('hidden');
     $('progressWrap').classList.add('hidden');
+    $('playHint').textContent = '미리듣기는 저장 파일과 똑같은 방식으로 처리돼요.';
+    $('saveHint').innerHTML = '저장을 누르면 자동으로 다운로드되고, 아래 <b>다시 다운로드</b> 버튼으로 한 번 더 받을 수 있어요.';
     syncSpeedUI();
     updateTimeUI();
     toast('불러왔어요 · '+fmtTime(ST.origDur));
@@ -882,12 +884,11 @@ function setMode(m, silent){
   ST.mode = m;
   var btns=document.querySelectorAll('.mode');
   for (var i=0;i<btns.length;i++) btns[i].classList.toggle('active', btns[i].dataset.mode===m);
+  $('playHint').textContent = (m==='preserve')
+    ? '음높이 유지 — 저장 파일과 같은 방식(WSOLA)이에요.'
+    : '자연 배속 — 음높이도 함께 바뀌어요.';
   if (wasPlaying){
     AC.pos = t; AC.token++; stopSources(); AC.playing=false; play();
-  } else if (!silent){
-    $('playHint').textContent = (m==='preserve')
-      ? '음높이 유지 — 저장 파일과 같은 방식(WSOLA)이에요.'
-      : '자연 배속 — 음높이도 함께 바뀌어요.';
   }
 }
 
