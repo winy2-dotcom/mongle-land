@@ -1400,14 +1400,14 @@ function drawSoldier(ctx, x, y, s, c, type, team, t, u){
   const yy = y + bob + lift;
 
   // 그림자
-  ellipse(ctx, x, y+1.2*s, 8.4*s, 3.2*s, 'rgba(0,0,0,.36)');
+  ellipse(ctx, x, y+1.2*s, 8.4*s, 3.2*s, 'rgba(0,0,0,.34)');
   // 진영 발판 (아군 청록 / 적군 적색)
   const me = team === 'me';
-  ctx.beginPath(); ctx.ellipse(x, y+1, 9.6*s, 4.4*s, 0, 0, Math.PI*2);
-  ctx.fillStyle = me ? 'rgba(70,225,195,.42)' : 'rgba(255,88,68,.46)';
+  ctx.beginPath(); ctx.ellipse(x, y+1, 11.6*s, 5.2*s, 0, 0, Math.PI*2);
+  ctx.fillStyle = me ? 'rgba(58,238,198,.60)' : 'rgba(255,72,55,.64)';
   ctx.fill();
-  ctx.strokeStyle = me ? 'rgba(160,255,235,.85)' : 'rgba(255,168,148,.9)';
-  ctx.lineWidth = 1.1; ctx.stroke();
+  ctx.strokeStyle = me ? 'rgba(190,255,240,.95)' : 'rgba(255,196,180,.95)';
+  ctx.lineWidth = 1.4; ctx.stroke();
 
   if (type === 'cav'){
     // 말
@@ -1500,6 +1500,12 @@ function drawSoldier(ctx, x, y, s, c, type, team, t, u){
     ctx.strokeStyle = '#cfc7b4'; ctx.lineWidth = 1.2*s;
     ctx.beginPath(); ctx.moveTo(x+4*s, yy-5*s); ctx.lineTo(x+6.6*s, yy-13*s); ctx.stroke();
   }
+  // 진영 투구 띠 (한눈에 아군/적군 구분)
+  ctx.fillStyle = me ? '#3ef0c6' : '#ff5f48';
+  if (type === 'gen') ctx.fillRect(x-3.4*s, yy-19.8*s, 6.8*s, 1.9*s);
+  else if (type === 'cav') ctx.fillRect(x-2.8*s, yy-18.6*s, 5.6*s, 1.7*s);
+  else if (type === 'arch') ctx.fillRect(x-2.8*s, yy-12.8*s, 5.6*s, 1.7*s);
+  else ctx.fillRect(x-2.8*s, yy-12.6*s, 5.6*s, 1.7*s);
 }
 
 function drawUnit(u, time){
