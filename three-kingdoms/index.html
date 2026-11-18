@@ -77,8 +77,8 @@
 
   /* ---------- overlays ---------- */
   .overlay{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;
-    padding:16px 14px;background:radial-gradient(circle at 50% 30%,rgba(16,24,34,.93),rgba(4,7,10,.97));
-    backdrop-filter:blur(3px);overflow-y:auto;gap:10px}
+    padding:16px 14px;background:radial-gradient(circle at 50% 30%,rgba(14,21,30,.88),rgba(4,7,10,.95));
+    backdrop-filter:blur(2px);overflow-y:auto;gap:10px}
   .overlay.hidden{display:none}
   .title{font-size:25px;font-weight:900;letter-spacing:.14em;color:#f6ecd2;margin:2px 0 0;
     text-shadow:0 0 24px rgba(230,194,90,.28)}
@@ -250,6 +250,10 @@
 <script>
 (function(){
 'use strict';
+
+window.__errs = [];
+window.addEventListener('error', function(e){ window.__errs.push(String(e.message || e.error)); });
+window.addEventListener('unhandledrejection', function(e){ window.__errs.push(String(e.reason)); });
 
 /* =========================================================
    기본 유틸
@@ -585,7 +589,7 @@ function buildStatic(){
 
   // 비네트
   const vg = bg.createRadialGradient(w/2, h/2, Math.min(w,h)*0.36, w/2, h/2, Math.max(w,h)*0.78);
-  vg.addColorStop(0,'rgba(0,0,0,0)'); vg.addColorStop(1,'rgba(0,0,0,.52)');
+  vg.addColorStop(0,'rgba(0,0,0,0)'); vg.addColorStop(1,'rgba(0,0,0,.40)');
   bg.fillStyle = vg; bg.fillRect(0,0,w,h);
 
   staticCanvas = c;
@@ -1248,7 +1252,7 @@ function hpBar(ctx, x, y, w, ratio, color, hh){
 
 function drawBuilding(b, time){
   const p = proj(b.x, b.y);
-  const s = p.s;
+  const s = p.s * 1.22;
   const fac = FACTIONS[b.team === 'me' ? state.me.faction : state.foe.faction];
   const c = fac.colors;
   const flash = b.hitFlash > 0;
@@ -1482,7 +1486,7 @@ function drawSoldier(ctx, x, y, s, c, type, team, t, u){
 
 function drawUnit(u, time){
   const p = proj(u.x, u.y);
-  const s = p.s;
+  const s = p.s * 1.45;
   const fac = FACTIONS[u.team === 'me' ? state.me.faction : state.foe.faction];
   const c = fac.colors;
   const selected = u.team === 'me' && state.selection.has(u.id);
@@ -1849,9 +1853,7 @@ function tryDeploy(cardId, w){
 
 function trySkill(w){
   const ok = castSkill(w.x, w.y);
-  if (ok){
-    state.pending = null; setPending(null);
-  }
+  state.pending = null; setPending(null);
   syncCards();
 }
 
