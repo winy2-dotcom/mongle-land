@@ -1240,7 +1240,15 @@ function isoBox(ctx, x, y, hw, hd, hgt, top, left, right){
   ctx.beginPath(); ctx.moveTo(x+hw, ty); ctx.lineTo(x, ty+hd); ctx.lineTo(x, y+hd); ctx.lineTo(x+hw, y); ctx.closePath();
   ctx.fillStyle = right; ctx.fill();
 }
-function hpBar(ctx, x, y, w, ratio, color, hh){
+function teamRing(x, y, rx, ry, team){
+  g.beginPath(); g.ellipse(x, y, rx, ry, 0, 0, Math.PI*2);
+  g.fillStyle = team === 'me' ? 'rgba(70,225,195,.16)' : 'rgba(255,88,68,.16)';
+  g.fill();
+  g.strokeStyle = team === 'me' ? 'rgba(150,240,220,.55)' : 'rgba(255,140,120,.6)';
+  g.lineWidth = 1.1; g.stroke();
+}
+
+
   const h = hh || 3.4;
   ctx.fillStyle = 'rgba(0,0,0,.62)';
   roundRect(ctx, x-w/2, y, w, h, h/2); ctx.fill();
@@ -1260,6 +1268,7 @@ function drawBuilding(b, time){
   if (b.kind === 'base'){
     const w = 74*s, hh = 26*s;
     ellipse(g, p.x, p.y+6*s, w*0.56, hh*0.34, 'rgba(0,0,0,.38)');
+    teamRing(p.x, p.y+4*s, w*0.56, hh*0.34, b.team);
     ellipse(g, p.x, p.y+2*s, w*0.52, hh*0.30, '#4a4436');
     ellipse(g, p.x, p.y, w*0.50, hh*0.28, '#5b5342');
     // 성벽
@@ -1300,6 +1309,7 @@ function drawBuilding(b, time){
   } else if (b.kind === 'tower'){
     const w = 15*s, hh = 7*s;
     ellipse(g, p.x, p.y+2*s, w*1.5, hh*0.85, 'rgba(0,0,0,.34)');
+    teamRing(p.x, p.y+2*s, w*1.5, hh*0.85, b.team);
     isoBox(g, p.x, p.y+1*s, w*1.28, hh*0.72, 20*s, '#7d7466', '#4f4a40', '#615b4e');
     isoBox(g, p.x, p.y+1*s, w, hh*0.56, 27*s, '#8f8676', '#5b5548', '#6e6759');
     // 총안
@@ -1323,6 +1333,7 @@ function drawBuilding(b, time){
   } else if (b.kind === 'depot'){
     const w = 20*s, hh = 10*s;
     ellipse(g, p.x, p.y+2*s, w*1.3, hh*0.7, 'rgba(0,0,0,.32)');
+    teamRing(p.x, p.y+2*s, w*1.3, hh*0.7, b.team);
     isoBox(g, p.x, p.y+1*s, w, hh*0.55, 12*s, '#8a6b45', '#4e3a26', '#674d31');
     // 지푸라기 지붕
     const ry = p.y - 12*s;
@@ -1390,6 +1401,13 @@ function drawSoldier(ctx, x, y, s, c, type, team, t, u){
 
   // 그림자
   ellipse(ctx, x, y+1.2*s, 8.4*s, 3.2*s, 'rgba(0,0,0,.36)');
+  // 진영 발판 (아군 청록 / 적군 적색)
+  const me = team === 'me';
+  ctx.beginPath(); ctx.ellipse(x, y+1, 9.6*s, 4.4*s, 0, 0, Math.PI*2);
+  ctx.fillStyle = me ? 'rgba(70,225,195,.42)' : 'rgba(255,88,68,.46)';
+  ctx.fill();
+  ctx.strokeStyle = me ? 'rgba(160,255,235,.85)' : 'rgba(255,168,148,.9)';
+  ctx.lineWidth = 1.1; ctx.stroke();
 
   if (type === 'cav'){
     // 말
@@ -1941,7 +1959,7 @@ function syncCards(){
     const b = document.getElementById('card-' + c.id);
     if (!b) continue;
     const lack = state.me.elixir < c.cost;
-    const locked = (c.id === 'gen' && genAlive);
+    const locked = (c.id === 'gen' && genAlive && state.phase === 'playing');
     b.classList.toggle('disabled', lack && state.phase === 'playing' && !locked);
     b.classList.toggle('active', !!(state.pending && state.pending.card === c.id));
     b.classList.toggle('locked', locked);
