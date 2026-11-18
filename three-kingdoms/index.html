@@ -523,6 +523,13 @@ function buildStatic(){
   bg.strokeStyle = 'rgba(205,195,155,.16)'; bg.lineWidth = 1.4;
   bg.beginPath(); bg.moveTo(ra.x,ra.y); bg.lineTo(rb.x,rb.y); bg.stroke();
   bg.beginPath(); bg.moveTo(rd.x,rd.y); bg.lineTo(rc.x,rc.y); bg.stroke();
+  // 물가 모래톱
+  const bankTop = proj(0, r1-0.012), bankTopR = proj(1, r1-0.012);
+  bg.strokeStyle = 'rgba(196,178,132,.20)'; bg.lineWidth = 5;
+  bg.beginPath(); bg.moveTo(bankTop.x,bankTop.y); bg.lineTo(bankTopR.x,bankTopR.y); bg.stroke();
+  const bankBot = proj(0, r2+0.012), bankBotR = proj(1, r2+0.012);
+  bg.strokeStyle = 'rgba(196,178,132,.16)'; bg.lineWidth = 5;
+  bg.beginPath(); bg.moveTo(bankBot.x,bankBot.y); bg.lineTo(bankBotR.x,bankBotR.y); bg.stroke();
 
   // 다리
   const bx1 = 0.352, bx2 = 0.648, by1 = 0.432, by2 = 0.568;
@@ -559,6 +566,17 @@ function buildStatic(){
   bg.beginPath(); bg.moveTo(t1.x,t1.y); bg.lineTo(t2.x,t2.y); bg.stroke();
   const t3 = proj(0.5,0.56), t4 = proj(0.5,0.88);
   bg.beginPath(); bg.moveTo(t3.x,t3.y); bg.lineTo(t4.x,t4.y); bg.stroke();
+
+  // 땅 색 변화 패치
+  for (let i=0;i<20;i++){
+    const x = rng(), y = rng();
+    if (y > 0.42 && y < 0.58) continue;
+    const p = proj(x,y);
+    bg.fillStyle = rng() < 0.5 ? 'rgba(18,36,26,.15)' : 'rgba(96,136,94,.07)';
+    bg.beginPath();
+    bg.ellipse(p.x, p.y, 22+rng()*46, (22+rng()*46)*0.40, rng()*3, 0, Math.PI*2);
+    bg.fill();
+  }
 
   // 잔디·돌 장식
   for (let i=0;i<150;i++){
@@ -1260,7 +1278,7 @@ function hpBar(ctx, x, y, w, ratio, color, hh){
 
 function drawBuilding(b, time){
   const p = proj(b.x, b.y);
-  const s = p.s * 1.22;
+  const s = p.s * 1.32;
   const fac = FACTIONS[b.team === 'me' ? state.me.faction : state.foe.faction];
   const c = fac.colors;
   const flash = b.hitFlash > 0;
@@ -1510,7 +1528,7 @@ function drawSoldier(ctx, x, y, s, c, type, team, t, u){
 
 function drawUnit(u, time){
   const p = proj(u.x, u.y);
-  const s = p.s * 1.62;
+  const s = p.s * 1.78;
   const fac = FACTIONS[u.team === 'me' ? state.me.faction : state.foe.faction];
   const c = fac.colors;
   const selected = u.team === 'me' && state.selection.has(u.id);
