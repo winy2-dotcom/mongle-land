@@ -640,9 +640,9 @@ function setupBuildings(){
   addBuilding('me','base',0.5,0.078);
   addBuilding('me','tower',0.255,0.175);
   addBuilding('me','tower',0.745,0.175);
-  addBuilding('foe','base',0.5,0.922);
-  addBuilding('foe','tower',0.255,0.825);
-  addBuilding('foe','tower',0.745,0.825);
+  addBuilding('foe','base',0.5,0.906);
+  addBuilding('foe','tower',0.255,0.812);
+  addBuilding('foe','tower',0.745,0.812);
   addBuilding('foe','depot',0.80,0.695);
 }
 
@@ -1486,7 +1486,7 @@ function drawSoldier(ctx, x, y, s, c, type, team, t, u){
 
 function drawUnit(u, time){
   const p = proj(u.x, u.y);
-  const s = p.s * 1.45;
+  const s = p.s * 1.62;
   const fac = FACTIONS[u.team === 'me' ? state.me.faction : state.foe.faction];
   const c = fac.colors;
   const selected = u.team === 'me' && state.selection.has(u.id);
@@ -1741,9 +1741,9 @@ function render(time){
   drawFlags(time);
 
   // 상단·하단 페이드
-  const tg = g.createLinearGradient(0,0,0,cvh*0.12);
-  tg.addColorStop(0,'rgba(4,7,10,.55)'); tg.addColorStop(1,'rgba(4,7,10,0)');
-  g.fillStyle = tg; g.fillRect(0,0,cvw,cvh*0.12);
+  const tg = g.createLinearGradient(0,0,0,cvh*0.08);
+  tg.addColorStop(0,'rgba(4,7,10,.5)'); tg.addColorStop(1,'rgba(4,7,10,0)');
+  g.fillStyle = tg; g.fillRect(0,0,cvw,cvh*0.08);
   const bg2 = g.createLinearGradient(0,cvh*0.88,0,cvh);
   bg2.addColorStop(0,'rgba(4,7,10,0)'); bg2.addColorStop(1,'rgba(4,7,10,.55)');
   g.fillStyle = bg2; g.fillRect(0,cvh*0.88,cvw,cvh*0.12);
@@ -2170,8 +2170,8 @@ function frame(ts){
   let dt = lastT ? Math.min(0.05, t - lastT) : 0.016;
   if (dt < 0) dt = 0.016;
   lastT = t;
-  if (state.phase === 'playing') update(dt);
-  else updateIdle(dt);
+  if (state.phase === 'playing'){ if (!(window.__tk && window.__tk.freeze)) update(dt); }
+  else if (!(window.__tk && window.__tk.freeze)) updateIdle(dt);
   updateHud(dt);
   render(state.t);
   requestAnimationFrame(frame);
@@ -2190,7 +2190,7 @@ setupBuildings();
 syncCards();
 requestAnimationFrame(frame);
 
-window.__tk = { state, CFG, FACTIONS, startMatch, castSkill, spawnUnit, layout, proj };
+window.__tk = { state, CFG, FACTIONS, startMatch, castSkill, castVolley, spawnUnit, layout, proj, freeze:false };
 })();
 </script>
 </body>
