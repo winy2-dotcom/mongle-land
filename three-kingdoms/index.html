@@ -1528,7 +1528,7 @@ function drawSoldier(ctx, x, y, s, c, type, team, t, u){
 
 function drawUnit(u, time){
   const p = proj(u.x, u.y);
-  const s = p.s * 1.78;
+  const s = p.s * 1.95;
   const fac = FACTIONS[u.team === 'me' ? state.me.faction : state.foe.faction];
   const c = fac.colors;
   const selected = u.team === 'me' && state.selection.has(u.id);
