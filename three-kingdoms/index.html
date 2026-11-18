@@ -333,7 +333,7 @@ const CFG = {
   baseHp: 1250,
   towerHp: 520,
   depotHp: 300,
-  towerDmg: 20,
+  towerDmg: 22,
   towerInterval: 1.0,
   towerRange: 0.205,
   buildWeight: { base:3, tower:1.4, depot:0.8, infirmary:0.15 },
@@ -372,7 +372,7 @@ const UNIT_STATS = {
   inf:  { name:'보병', hp:155, dmg:14, atk:1.05, range:0.038, speed:0.072, aggro:0.115, rad:0.022, ranged:false },
   arch: { name:'궁병', hp:92,  dmg:15, atk:1.25, range:0.135, speed:0.066, aggro:0.145, rad:0.020, ranged:true  },
   cav:  { name:'기병', hp:240, dmg:25, atk:1.15, range:0.042, speed:0.105, aggro:0.125, rad:0.026, ranged:false },
-  gen:  { name:'장수', hp:640, dmg:36, atk:1.15, range:0.046, speed:0.080, aggro:0.130, rad:0.030, ranged:false }
+  gen:  { name:'장수', hp:520, dmg:30, atk:1.15, range:0.046, speed:0.080, aggro:0.130, rad:0.030, ranged:false }
 };
 
 const BSTAT = {
@@ -965,7 +965,7 @@ function aiThink(dt){
   const A = state.foe;
   const fac = FACTIONS[state.foe.faction];
   const elapsed = CFG.matchTime - state.timeLeft;
-  const ramp = 0.9 + (elapsed > 55 ? 0.14 : 0) + (elapsed > 100 ? 0.16 : 0);
+  const ramp = 1.0 + (elapsed > 55 ? 0.12 : 0) + (elapsed > 100 ? 0.14 : 0);
   A.elixir = Math.min(CFG.elixirMax, A.elixir + dt / CFG.elixirRegen * ramp * (fac.elixirMul || 1));
 
   ai.timer -= dt;
