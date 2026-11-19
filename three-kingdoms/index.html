@@ -275,7 +275,7 @@
         <b>병력 소환</b>카드를 누르고 내 진영을 탭하면 그 위치에 소환됩니다.<br>
         <b>선택</b>내 병력·장수를 탭하면 발밑에 금색 링이 표시됩니다.<br>
         <b>이동</b>선택 상태에서 바닥을 탭하면 깃발 지점으로 이동합니다.<br>
-        <b>집중 공격</b>선택 상태에서 적 병력·탑·건물·본영을 탭하면 빨간 타겟 링이 붙고 점사합니다.<br>
+        <b>집중 공격</b>선택 상태에서 적 병력·탑·건물·본성을 탭하면 빨간 타겟 링이 붙고 점사합니다.<br>
         <b>빠른 선택</b>전체 / 장수 / 원거리 버튼으로 부대를 한 번에 선택합니다.<br>
         <b>대장군 스킬</b>스킬 버튼 → 전장 탭. 쿨타임 22초.<br>
         <b>별(★) 진화</b>주력 병종 바를 누르면 코스트로 ★2·★3 각성. 고구려 개마무사(관통→중갑 밀치기), 백제 백제신궁(사거리·연사→불화살 화상), 신라 화랑검객(발업→광역 베기).<br>
@@ -1624,8 +1624,8 @@ function endMatch(reason, loser){
 
   let result = 'draw', title = '무승부', sub = '';
   if (reason === 'base'){
-    if (loser === 'foe'){ result = 'win'; title = '승리'; sub = '적 본영을 함락했습니다.'; }
-    else { result = 'lose'; title = '패배'; sub = '내 본영이 함락되었습니다.'; }
+    if (loser === 'foe'){ result = 'win'; title = '승리'; sub = '적 본성을 함락했습니다.'; }
+    else { result = 'lose'; title = '패배'; sub = '내 본성이 함락되었습니다.'; }
   } else {
     const diff = myScore - foeScore;
     if (diff > 0.08){ result = 'win'; title = '승리'; sub = '시간 종료 — 파괴 판정 우세'; }
@@ -2816,8 +2816,8 @@ function renderResult(){
   const rows = [
     ['파괴한 적 건물', state.stats.foeDown + '채'],
     ['잃은 아군 건물', state.stats.meDown + '채'],
-    ['적 본영 잔여', foeBase ? Math.max(0, Math.round(foeBase.hp / foeBase.maxHp * 100)) + '%' : '0%'],
-    ['내 본영 잔여', myBase ? Math.max(0, Math.round(myBase.hp / myBase.maxHp * 100)) + '%' : '0%'],
+    ['적 본성 잔여', foeBase ? Math.max(0, Math.round(foeBase.hp / foeBase.maxHp * 100)) + '%' : '0%'],
+    ['내 본성 잔여', myBase ? Math.max(0, Math.round(myBase.hp / myBase.maxHp * 100)) + '%' : '0%'],
     ['소환 병력', state.stats.meSummon + '기'],
     ['남은 시간', Math.round(state.timeLeft) + '초']
   ];
