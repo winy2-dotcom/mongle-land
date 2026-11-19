@@ -106,6 +106,7 @@
   .fmeta .hero{font-size:11px;color:#cfd9e6}
   .fmeta .hero em{font-style:normal;color:#93a3b6;font-size:10px;margin-left:4px}
   .fmeta .perk{font-size:10px;color:#8e9db0;line-height:1.35}
+  .fmeta .adv{font-size:9px;color:#7d90a3;line-height:1.3;margin-top:1px}
   .fcheck{margin-left:auto;font-size:15px;color:#ffd76e;opacity:0;transition:opacity .15s}
   .fcard.on .fcheck{opacity:1}
   .bigbtn{width:100%;max-width:340px;padding:13px;border-radius:14px;border:1px solid rgba(255,215,120,.55);
@@ -158,12 +159,28 @@
   .fever.pop{animation:feverPop .55s ease-out}
   @keyframes feverPop{0%{transform:scale(.7);opacity:0}55%{transform:scale(1.14)}100%{transform:scale(1);opacity:1}}
   #elixNum{font-size:12px;font-weight:800;color:#e7b8ff;min-width:16px;text-align:right;font-variant-numeric:tabular-nums}
+  .upg{display:flex;margin:0 0 5px}
+  .upgbtn{flex:1;display:flex;align-items:center;gap:7px;padding:4px 8px;border-radius:10px;min-width:0;
+    border:1px solid rgba(255,205,110,.40);background:linear-gradient(180deg,rgba(48,39,22,.92),rgba(20,17,11,.92));
+    color:#ffe6a8;cursor:pointer;transition:transform .08s,opacity .15s}
+  .upgbtn:active{transform:scale(.985)}
+  .upgbtn.dis{opacity:.55}
+  .upgbtn.max{border-color:rgba(255,225,150,.7);box-shadow:0 0 14px rgba(255,200,90,.18)}
+  .upgbtn .ustars{font-size:12px;color:#ffd76e;letter-spacing:.02em;flex:0 0 auto;text-shadow:0 0 8px rgba(255,200,90,.55)}
+  .upgbtn .utxt{display:flex;flex-direction:column;align-items:flex-start;line-height:1.2;min-width:0;flex:1}
+  .upgbtn .utxt b{font-size:10.5px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+  .upgbtn .utxt i{font-size:8.5px;font-style:normal;color:#c6b68e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+  .upgbtn .ucost{font-size:11px;font-weight:900;color:#f2c7ff;background:rgba(120,50,160,.55);border-radius:7px;padding:1px 6px;flex:0 0 auto}
+  .upgbtn.max .ucost{color:#ffe6a8;background:rgba(160,120,30,.6)}
+
   .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
   .card{position:relative;min-width:0;padding:3px 1px 2px;border-radius:9px;cursor:pointer;
     border:1px solid rgba(255,255,255,.11);background:linear-gradient(180deg,#1a2129,#121820);
     display:flex;flex-direction:column;align-items:center;gap:1px;transition:transform .08s,box-shadow .15s,border-color .15s;
     color:#dfe8f2;overflow:hidden}
-  .card .ic{width:17px;height:17px;display:block;color:#b9c8d8}
+  .card .ic{width:18px;height:18px;display:block;color:var(--fac,#b9c8d8);filter:drop-shadow(0 0 3px rgba(0,0,0,.6))}
+  .card.mainline{border-color:rgba(255,205,110,.5);background:linear-gradient(180deg,#232019,#15140f)}
+  .card.mainline .nm{color:#ffe9b0}
   .card .nm{font-size:8px;font-weight:700;letter-spacing:-.04em;white-space:nowrap;color:#cfdae6}
   .card .rl{font-size:6.5px;letter-spacing:-.03em;color:#7d8b9b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
   .card .cost{position:absolute;top:2px;right:3px;font-size:9px;font-weight:900;color:#f2c7ff;
@@ -233,12 +250,13 @@
       <details class="guide" id="startGuide">
         <summary style="cursor:pointer;color:#c3d0de;font-size:11px;font-weight:700;letter-spacing:.05em">조작 안내 보기</summary>
         <div style="margin-top:6px">
-          <b>1. 병력 소환</b>아래 카드를 눌러 고르고 <span>내 진영</span>을 탭하면 소환됩니다. 코스트는 저절로 회복됩니다.<br>
-          <b>2. 8종 병종</b>검병·장창병·연노궁·철갑기병·화차·의무병·척후병·대장군. 역할과 사거리가 모두 다릅니다.<br>
-          <b>3. 공격탑</b>왼쪽 <span>공격탑</span> 버튼 → 내 진영을 탭하면 화살을 쏘는 탑이 서고, 최대 3기까지 세울 수 있습니다.<br>
-          <b>4. 직접 지휘</b>내 병력을 탭해 선택 → 바닥을 탭하면 <span>이동</span>, 적을 탭하면 <span>집중 공격</span>.<br>
-          <b>5. 3개 성</b>좌·우 성을 먼저 부숴야 가운데 <span>본성</span> 보호막이 풀립니다. 한쪽 성이 무너지면 그 라인 병력은 본성으로 진격합니다.<br>
-          <b>6. 5분 결전</b>남은 3분부터 코스트 <span>×1.5</span>, 남은 1분부터 <span>×2.0</span>.
+          <b>1. 병력 소환</b>아래 8종 카드를 눌러 고르고 <span>내 진영</span>을 탭하면 소환됩니다. 코스트는 저절로 회복됩니다.<br>
+          <b>2. 세력 고유 병종</b>고구려는 개마무사(기병), 백제는 백제신궁(궁수), 신라는 화랑검객(전사)이 주력입니다. 카드 8종의 이름과 특성이 세력마다 다릅니다.<br>
+          <b>3. 별(★) 진화</b>카드 위 <span>주력 병종 바</span>를 눌러 코스트로 ★2 → ★3 각성. 세력별 고유 스킬(관통·불화살·발업 등)이 열립니다.<br>
+          <b>4. 공격탑</b>왼쪽 <span>공격탑</span> 버튼 → 내 진영을 탭하면 화살을 쏘는 탑이 서고, 최대 3기까지 세울 수 있습니다.<br>
+          <b>5. 직접 지휘</b>내 병력을 탭해 선택 → 바닥을 탭하면 <span>이동</span>, 적을 탭하면 <span>집중 공격</span>.<br>
+          <b>6. 3개 성</b>좌·우 성을 먼저 부숴야 가운데 <span>본성</span> 보호막이 풀립니다. 한쪽 성이 무너지면 그 라인 병력은 본성으로 진격합니다.<br>
+          <b>7. 5분 결전</b>남은 3분부터 코스트 <span>×1.5</span>, 남은 1분부터 <span>×2.0</span>.
         </div>
       </details>
     </div>
@@ -260,6 +278,7 @@
         <b>집중 공격</b>선택 상태에서 적 병력·탑·건물·본영을 탭하면 빨간 타겟 링이 붙고 점사합니다.<br>
         <b>빠른 선택</b>전체 / 장수 / 원거리 버튼으로 부대를 한 번에 선택합니다.<br>
         <b>대장군 스킬</b>스킬 버튼 → 전장 탭. 쿨타임 22초.<br>
+        <b>별(★) 진화</b>주력 병종 바를 누르면 코스트로 ★2·★3 각성. 고구려 개마무사(관통→중갑 밀치기), 백제 백제신궁(사거리·연사→불화살 화상), 신라 화랑검객(발업→광역 베기).<br>
         <b>공격탑</b>왼쪽 '공격탑' 버튼 → 내 진영 탭. 코스트 5, 최대 3기. 사거리 안의 적을 자동 사격합니다.<br>
         <b>3개 성</b>좌성·우성 중 하나가 무너지기 전까지 가운데 본성은 보호막으로 막혀 있습니다. 성이 무너진 쪽 라인의 병력은 본성으로 진격합니다.<br>
         <b>피버</b>남은 시간 3:00부터 코스트 회복 ×1.5, 1:00부터 ×2.0.
@@ -272,6 +291,13 @@
     <div class="elix">
       <div class="elixBar" id="elixBar"><div id="elixFill"></div><div class="ticks"></div></div>
       <span id="elixNum">5</span>
+    </div>
+    <div class="upg">
+      <button class="upgbtn" id="btnUpg">
+        <span class="ustars" id="upgStars">★☆☆</span>
+        <span class="utxt"><b id="upgName">주력 병종</b><i id="upgDesc">별을 올려 병종을 진화</i></span>
+        <span class="ucost" id="upgCost">5</span>
+      </button>
     </div>
     <div class="cards" id="cards"></div>
   </footer>
@@ -390,28 +416,73 @@ function feverMul(left){
 const FACTIONS = {
   goguryeo: {
     key:'goguryeo', name:'고구려', hero:'을지문덕', heroTitle:'기동대장',
-    perk:'이동 +12% · 코스트 회복 +10%',
-    desc:'빠른 기동과 동원. 값싼 병력으로 전선을 밀어붙입니다.',
+    perk:'기병 체력 +20% · 돌진 가속',
+    adv:'기병 특화 — 개마무사가 달릴수록 빨라지고, ★를 올리면 직선 관통과 중갑 밀치기를 얻습니다.',
+    desc:'빠른 기동과 동원. 기병으로 전선을 밀어붙입니다.',
     colors:{ main:'#2f8b86', deep:'#173f3f', accent:'#d4452c', metal:'#a9b4b8', roof:'#1f4f4c', banner:'#d4452c', light:'#7fc9c2' },
     speedMul:1.12, elixirMul:1.10, hpMul:1, buildingHpMul:1, atkSpeedMul:1,
+    roster:{
+      sword:   { name:'갑옷병',   role:'선봉 탱커' },
+      spear:   { name:'장창수',   role:'기병 카운터' },
+      arbalest:{ name:'연노수',   role:'연사 원거리' },
+      ironCav: { name:'개마무사', role:'중기병 돌격' },
+      hwacha:  { name:'화차',     role:'공성·범위' },
+      medic:   { name:'의병',     role:'아군 치유' },
+      scout:   { name:'척후기병', role:'후방 교란' },
+      gen:     { name:'을지문덕', role:'고유 스킬' }
+    },
+    main:{ type:'ironCav', line:'개마무사', tag:'기병' },
     skill:{ name:'매복 기습', area:0.085, desc:'지점에 매복 타격 + 주변 아군 6초 강화' }
   },
   baekje: {
     key:'baekje', name:'백제', hero:'계백', heroTitle:'결사대장',
-    perk:'건물 체력 +20% · 병력 체력 +8%',
-    desc:'단단한 방어와 공성. 버티면서 결정적인 한 방을 만듭니다.',
+    perk:'궁수 사거리 +8% · 연사 강화',
+    adv:'궁수 특화 — 백제신궁이 멀리서 빠르게 쏘고, ★3에서 불화살 화상이 붙습니다.',
+    desc:'단단한 방어와 원거리 화력. 버티면서 결정적인 한 방을 만듭니다.',
     colors:{ main:'#4e9b83', deep:'#255448', accent:'#c9a15a', metal:'#e6d9bd', roof:'#38695a', banner:'#c9a15a', light:'#9fd8c1' },
     speedMul:1, elixirMul:1, hpMul:1.08, buildingHpMul:1.20, atkSpeedMul:1,
-    skill:{ name:'결사 돌파', area:0.075, desc:'장수가 돌진해 광역 피해 + 보호막' }
+    roster:{
+      sword:   { name:'백제 검병', role:'선봉 탱커' },
+      spear:   { name:'창병',     role:'기병 카운터' },
+      arbalest:{ name:'백제신궁', role:'저격 궁수' },
+      ironCav: { name:'철기병',   role:'돌진 충격' },
+      hwacha:  { name:'석포',     role:'공성·범위' },
+      medic:   { name:'의병',     role:'아군 치유' },
+      scout:   { name:'척후병',   role:'후방 교란' },
+      gen:     { name:'계백',     role:'고유 스킬' }
+    },
+    main:{ type:'arbalest', line:'백제신궁', tag:'궁수' },
+    skill:{ name:'결사 돌파', area:0.075, desc:'대장군이 돌진해 광역 피해 + 보호막' }
   },
   silla: {
     key:'silla', name:'신라', hero:'김유신', heroTitle:'화랑 선봉',
-    perk:'아군 공격속도 +10% · 돌격 버프',
+    perk:'전사 체력·공격력 강화 · 발업',
+    adv:'보병 특화 — 화랑검객이 기개로 빨라지고, ★3에서 광역 베기를 터뜨립니다.',
     desc:'사기를 모아 한 번에 몰아치는 돌격. 짧은 교전에 강합니다.',
     colors:{ main:'#c9a13a', deep:'#6d5314', accent:'#bf3a2b', metal:'#f0e2b6', roof:'#2a3f6e', banner:'#bf3a2b', light:'#f2d987' },
     speedMul:1, elixirMul:1, hpMul:1, buildingHpMul:1, atkSpeedMul:1.10,
+    roster:{
+      sword:   { name:'화랑검객', role:'선봉 전사' },
+      spear:   { name:'창병',     role:'기병 카운터' },
+      arbalest:{ name:'궁수',     role:'연사 원거리' },
+      ironCav: { name:'철기병',   role:'돌진 충격' },
+      hwacha:  { name:'화차',     role:'공성·범위' },
+      medic:   { name:'의관',     role:'아군 치유' },
+      scout:   { name:'낭도',     role:'후방 교란' },
+      gen:     { name:'김유신',   role:'고유 스킬' }
+    },
+    main:{ type:'sword', line:'화랑검객', tag:'전사' },
     skill:{ name:'화랑 사기 돌격', area:0.09, desc:'주변 아군 7초 돌격 강화 + 지정 지점으로 돌격' }
   }
+};
+// 세력별 주력 병종 별(★) 진화
+const STAR_UP = {
+  goguryeo: { type:'ironCav', line:'개마무사', cost2:5, cost3:8,
+    s2:'직선 관통 · 돌진 가속', s3:'중갑 · 밀치기(넉백)' },
+  baekje:   { type:'arbalest', line:'백제신궁', cost2:5, cost3:8,
+    s2:'사거리 +1 · 연사 강화', s3:'불화살 · 화상 도트' },
+  silla:    { type:'sword', line:'화랑검객', cost2:5, cost3:8,
+    s2:'발업 · 기개 오라', s3:'광역 베기' }
 };
 const ENEMY_OF = { goguryeo:'baekje', baekje:'silla', silla:'goguryeo' };
 
@@ -442,25 +513,80 @@ const BSTAT = {
   infirmary:{ hp:260, rad:0.026, label:'의무막사' }
 };
 
-// 8종 카드 덱 (4×2)
+// 8종 병종 카드 (이름·설명은 세력별 roster로 치환)
 const CARDS = [
-  { id:'sword',   kind:'unit', type:'sword',   name:'검병',    role:'선봉 탱커', cost:3, icon:'shield' },
-  { id:'spear',   kind:'unit', type:'spear',   name:'장창병',  role:'기병 카운터', cost:3, icon:'spear' },
-  { id:'arbalest',kind:'unit', type:'arbalest',name:'연노궁',  role:'연사 원거리', cost:3, icon:'crossbow' },
-  { id:'ironCav', kind:'unit', type:'ironCav', name:'철갑기병',role:'돌진 충격', cost:5, icon:'horse' },
-  { id:'hwacha',  kind:'unit', type:'hwacha',  name:'화차',    role:'공성·범위', cost:5, icon:'flame' },
-  { id:'medic',   kind:'unit', type:'medic',   name:'의무병',  role:'아군 치유', cost:3, icon:'heal' },
-  { id:'scout',   kind:'unit', type:'scout',   name:'척후병',  role:'후방 교란', cost:3, icon:'dagger' },
-  { id:'gen',     kind:'unit', type:'gen',     name:'대장군',  role:'고유 스킬', cost:7, icon:'flag' }
+  { id:'sword',   kind:'unit', type:'sword',    cost:3, icon:'shield' },
+  { id:'spear',   kind:'unit', type:'spear',    cost:3, icon:'spear' },
+  { id:'arbalest',kind:'unit', type:'arbalest', cost:3, icon:'crossbow' },
+  { id:'ironCav', kind:'unit', type:'ironCav',  cost:5, icon:'horse' },
+  { id:'hwacha',  kind:'unit', type:'hwacha',   cost:5, icon:'flame' },
+  { id:'medic',   kind:'unit', type:'medic',    cost:3, icon:'heal' },
+  { id:'scout',   kind:'unit', type:'scout',    cost:3, icon:'dagger' },
+  { id:'gen',     kind:'unit', type:'gen',      cost:7, icon:'flag' }
 ];
+function deckOf(facKey){
+  const f = FACTIONS[facKey] || FACTIONS.goguryeo;
+  return CARDS.map(c=>{
+    const r = f.roster[c.type] || { name:c.type, role:'' };
+    return { ...c, name:r.name, role:r.role };
+  });
+}
+
+// 세력·별 등급에 따른 병종 보정
+function unitMods(team, type){
+  const facKey = team === 'me' ? state.me.faction : state.foe.faction;
+  const su = STAR_UP[facKey];
+  const star = (su && su.type === type) ? (team === 'me' ? state.me.star : state.foe.star) : 1;
+  const m = { hp:1, dmg:1, range:0, speed:1, atk:1, splash:0, burn:0,
+              knock:false, pierce:false, accel:false, aura:false, heavy:false };
+  if (facKey === 'goguryeo' && type === 'ironCav'){
+    m.hp = 1.20;                                  // 기본: 기병 체력 +20%
+    if (star >= 2){ m.dmg = 1.15; m.accel = true; m.pierce = true; }
+    if (star >= 3){ m.heavy = true; m.speed *= 0.93; m.hp *= 1.15; m.knock = true; }
+  } else if (facKey === 'baekje' && type === 'arbalest'){
+    m.dmg = 1.08; m.range = 0.008;                // 기본: 궁수 강화
+    if (star >= 2){ m.range += 0.022; m.atk = 0.84; }
+    if (star >= 3){ m.burn = 7; m.dmg *= 1.10; }
+  } else if (facKey === 'silla' && type === 'sword'){
+    m.hp = 1.12; m.dmg = 1.08;                    // 기본: 전사 강화
+    if (star >= 2){ m.speed = 1.25; m.atk = 0.80; m.aura = true; }  // 발업
+    if (star >= 3){ m.splash = 0.052; }            // 광역 베기
+  }
+  return { star, m };
+}
+
+// 별 업그레이드 시 이미 나와 있는 주력 병종에도 즉시 반영
+function refreshStarmods(team){
+  const facKey = team === 'me' ? state.me.faction : state.foe.faction;
+  const fac = FACTIONS[facKey];
+  const su = STAR_UP[facKey];
+  if (!su) return;
+  for (const u of state.units){
+    if (!u.alive || u.team !== team || u.type !== su.type) continue;
+    const st = UNIT_STATS[u.type];
+    const { star, m } = unitMods(team, u.type);
+    const ratio = u.maxHp ? u.hp / u.maxHp : 1;
+    u.maxHp = Math.round(st.hp * (fac.hpMul || 1) * m.hp);
+    u.hp = Math.min(u.maxHp, Math.max(1, Math.round(u.maxHp * ratio)));
+    u.dmg = st.dmg * m.dmg;
+    u.range = st.range + m.range;
+    u.speed = st.speed * (fac.speedMul || 1) * m.speed;
+    u.atkInterval = st.atk * m.atk;
+    u.star = star; u.heavy = m.heavy; u.knock = m.knock; u.pierce = m.pierce;
+    u.accel = m.accel; u.burn = m.burn; u.aura = m.aura;
+    u.splash = Math.max(st.splash || 0, m.splash);
+    state.effects.push({ type:'skillburst', x:u.x, y:u.y, t:0, life:0.75, color: fac.colors.light });
+  }
+}
 
 /* =========================================================
    상태
    ========================================================= */
 const state = {
   phase:'menu',
-  me:{ faction:'goguryeo', elixir:CFG.elixirStart, spent:0, summoned:0 },
-  foe:{ faction:'baekje', elixir:CFG.elixirStart, summoned:0 },
+  me:{ faction:'goguryeo', elixir:CFG.elixirStart, spent:0, summoned:0, star:1 },
+  foe:{ faction:'baekje', elixir:CFG.elixirStart, summoned:0, star:1 },
+  deck:[],
   units:[], buildings:[], projectiles:[], effects:[], flags:[], zones:[],
   selection:new Set(),
   pending:null,
@@ -765,6 +891,10 @@ function startMatch(facKey){
   state.generalReadyAt = 0;
   state.nextId = 1;
   state.fever = 1; state.feverPop = 0;
+  state.me.star = 1; state.foe.star = 1;
+  state.deck = deckOf(facKey);
+  buildCards();
+  syncUpg();
   ai.timer = 3.2; ai.genUsed = false;
   setupBuildings();
   updateFactionUI();
@@ -784,7 +914,9 @@ function startMatch(facKey){
 function effSpeed(u, t){
   let m = 1;
   for (const b of u.buffs) if (b.until > t && b.speed) m *= b.speed;
-  return u.speed * m;
+  // 고구려 ★2: 달릴수록 가속
+  const accel = u.accel ? 1 + Math.min(0.40, (u.accelT || 0) * 0.062) : 1;
+  return u.speed * m * accel;
 }
 function effDmg(u, t){
   let m = 1;
@@ -801,21 +933,24 @@ function spawnUnit(team, type, x, y, silent){
   const st = UNIT_STATS[type];
   const facK = team==='me' ? state.me.faction : state.foe.faction;
   const fac = FACTIONS[facK];
-  const hp = Math.round(st.hp * (fac.hpMul || 1));
+  const { star, m } = unitMods(team, type);
+  const hp = Math.round(st.hp * (fac.hpMul || 1) * m.hp);
   const u = {
-    id: state.nextId++, ent:'unit', team, type, name:st.name,
+    id: state.nextId++, ent:'unit', team, type, name:STAR_UP[facK] && STAR_UP[facK].type === type ? STAR_UP[facK].line : st.name,
     x: clamp(x, 0.06, 0.94), y: clamp(y, -0.02, 1.02),
     hp, maxHp:hp,
-    dmg: st.dmg, range: st.range,
-    speed: st.speed * (fac.speedMul || 1),
+    dmg: st.dmg * m.dmg, range: st.range + m.range,
+    speed: st.speed * (fac.speedMul || 1) * m.speed,
     aggro: st.aggro, rad: st.rad,
-    atkInterval: st.atk, atkTimer: rand(0.1,0.5),
+    atkInterval: st.atk * m.atk, atkTimer: rand(0.1,0.5),
     ranged: st.ranged,
-    splash: st.splash || 0, siege: st.siege || 1, antiCav: st.antiCav || 1,
+    splash: Math.max(st.splash || 0, m.splash), siege: st.siege || 1, antiCav: st.antiCav || 1,
     healer: !!st.healer, preferBack: !!st.preferBack,
     chargeLeft: st.charge ? 1 : 0,
     healTimer: rand(0.35, 0.9),
     lane: clamp(x,0.06,0.94) < 0.5 ? 'L' : 'R',
+    star, heavy: m.heavy, knock: m.knock, pierce: m.pierce, accel: m.accel, aura: m.aura,
+    burn: m.burn, accelT: 0, burnUntil: 0, burnDps: 0, burnAcc: 0, knockT: 0,
     alive:true, order:null, moving:false,
     buffs:[], shield:0, shieldUntil:0,
     hitFlash:0, anim:0, seed: Math.random()*9.7, spawnT:0,
@@ -911,6 +1046,7 @@ function moveToward(u, gx, gy, dt){
   u.x = clamp(u.x, 0.035, 0.965);
   u.y = clamp(u.y, 0.012, 0.988);
   u.moving = true;
+  if (u.accel) u.accelT = Math.min(6.6, (u.accelT || 0) + dt);
 }
 
 function attack(u, target){
@@ -933,12 +1069,47 @@ function attack(u, target){
       x0:from.x, y0:from.y, x:from.x, y:from.y,
       tx:target.x, ty:target.y, t:0,
       dur: Math.max(0.16, distXY(from.x,from.y,target.x,target.y) * 1.05 + 0.12),
-      dmg, team:u.team, targetId:target.id, kind: u.splash ? 'rocket' : 'arrow',
-      arc: 0.5 + Math.random()*0.3, splash: u.splash
+      dmg, team:u.team, targetId:target.id,
+      kind: u.burn ? 'fire' : (u.splash ? 'rocket' : 'arrow'),
+      arc: 0.5 + Math.random()*0.3, splash: u.splash, burn: u.burn
     });
     if (u.splash) Sfx.boom(); else Sfx.bow();
   } else {
     hitEntity(target, dmg, u);
+    // 신라 ★3: 광역 베기
+    if (u.splash){
+      state.effects.push({ type:'cleave', x:target.x, y:target.y, t:0, life:0.3, r:u.splash, team:u.team });
+      for (const o of state.units){
+        if (!o.alive || o.team === u.team || o.id === target.id) continue;
+        if (distXY(o.x,o.y,target.x,target.y) < u.splash) hitEntity(o, dmg*0.62, u);
+      }
+      Sfx.hit();
+    }
+    // 고구려 ★2: 직선 관통
+    if (u.pierce){
+      const dx = target.x - u.x, dy = target.y - u.y;
+      const len = Math.hypot(dx*field.ax, dy) || 1;
+      const nx = dx/len, ny = dy/len;
+      for (const o of state.units){
+        if (!o.alive || o.team === u.team || o.id === target.id) continue;
+        const ox = o.x - target.x, oy = o.y - target.y;
+        const along = ox*nx + oy*ny;
+        const perp = Math.abs(ox*ny - oy*nx);
+        if (along > 0 && along < 0.075 && perp < 0.03){
+          hitEntity(o, dmg*0.7, u);
+          state.effects.push({ type:'slash', x:o.x, y:o.y, t:0, life:0.2, team:u.team, ang: Math.atan2(dy,dx) });
+        }
+      }
+    }
+    // 고구려 ★3: 밀치기(넉백)
+    if (u.knock && target.ent === 'unit'){
+      const dx = target.x - u.x, dy = target.y - u.y;
+      const d = Math.hypot(dx,dy) || 1;
+      target.x = clamp(target.x + (dx/d)*0.026, 0.03, 0.97);
+      target.y = clamp(target.y + (dy/d)*0.026, 0.02, 0.98);
+      target.knockT = 0.28;
+      state.effects.push({ type:'shock', x:target.x, y:target.y, t:0, life:0.3, r:0.030 });
+    }
     state.effects.push({ type:'slash', x:target.x, y:target.y, t:0, life:0.22, team:u.team, ang: rand(0,Math.PI*2) });
     if (charge){
       state.effects.push({ type:'shock', x:target.x, y:target.y, t:0, life:0.45, r:0.055 });
@@ -1053,6 +1224,17 @@ function unitThink(u, dt){
   // 버프 정리
   if (u.buffs.length) u.buffs = u.buffs.filter(b=> b.until > state.t);
   if (u.shieldUntil && u.shieldUntil < state.t) u.shield = 0;
+  if (u.knockT) u.knockT = Math.max(0, u.knockT - dt);
+
+  // 화상 도트 (백제 ★3 불화살)
+  if (u.burnUntil > state.t){
+    u.burnAcc += dt;
+    if (u.burnAcc >= 0.5){
+      u.burnAcc -= 0.5;
+      hitEntity(u, u.burnDps * 0.5, null);
+      if (Math.random() < 0.7) state.effects.push({ type:'burn', x:u.x, y:u.y, t:0, life:0.45 });
+    }
+  }
 
   // 의무병: 주기적 범위 치유
   if (u.healer){
@@ -1170,6 +1352,19 @@ function aiThink(dt){
   if (ai.timer > 0) return;
   ai.timer = rand(0.85, 1.5);
 
+  // 적 AI도 시간이 지나면 주력 병종 별을 올린다
+  if (elapsed > 95 && state.foe.star < 2){
+    state.foe.star = 2; refreshStarmods('foe');
+    const su = STAR_UP[state.foe.faction];
+    toast('적 ' + FACTIONS[state.foe.faction].name + ' ' + su.line + ' ★2 각성 — ' + su.s2);
+    Sfx.tick();
+  } else if (elapsed > 185 && state.foe.star < 3){
+    state.foe.star = 3; refreshStarmods('foe');
+    const su = STAR_UP[state.foe.faction];
+    toast('적 ' + FACTIONS[state.foe.faction].name + ' ' + su.line + ' ★3 각성 — ' + su.s3 + '!');
+    Sfx.skill();
+  }
+
   const costs = { sword:3, spear:3, arbalest:3, ironCav:5, hwacha:5, medic:3, scout:3, gen:7 };
   const myUnits = state.units.filter(u=> u.alive && u.team === 'foe');
   const threats = state.units.filter(u=> u.alive && u.team === 'me' && u.y > 0.38);
@@ -1273,7 +1468,13 @@ function update(dt){
     p.y = lerp(p.y0, p.ty, e) - Math.sin(Math.PI*e) * p.arc * 0.03;
     if (p.t >= 1){
       const tgt = byId(p.targetId);
-      if (tgt && tgt.alive) hitEntity(tgt, p.dmg, null);
+      if (tgt && tgt.alive){
+        hitEntity(tgt, p.dmg, null);
+        if (p.burn && tgt.ent === 'unit' && tgt.alive){
+          tgt.burnUntil = state.t + 3;
+          tgt.burnDps = Math.max(tgt.burnDps || 0, p.burn);
+        }
+      }
       if (p.splash){
         for (const o of state.units){
           if (!o.alive || o.team === p.team || o.id === p.targetId) continue;
@@ -1637,6 +1838,19 @@ function drawSoldier(ctx, x, y, s, c, type, team, t, u){
     ctx.beginPath(); ctx.moveTo(x+1.4*s, yy-5*s); ctx.lineTo(x+8.6*s, yy-25*s); ctx.stroke();
     ctx.fillStyle = '#eae3cf';
     ctx.beginPath(); ctx.moveTo(x+8.6*s, yy-25*s); ctx.lineTo(x+10.6*s, yy-29.4*s); ctx.lineTo(x+7*s, yy-26*s); ctx.closePath(); ctx.fill();
+    // 고구려 ★3: 말 갑옷
+    if (u && u.heavy){
+      ctx.fillStyle = '#98a2aa';
+      roundRect(ctx, x-7.6*s, yy-9.8*s, 5.6*s, 5.4*s, 1.2*s); ctx.fill();
+      roundRect(ctx, x+0.8*s, yy-10*s, 6.8*s, 5.6*s, 1.2*s); ctx.fill();
+      ctx.strokeStyle = 'rgba(255,255,255,.4)'; ctx.lineWidth = 0.7*s;
+      roundRect(ctx, x-7.6*s, yy-9.8*s, 5.6*s, 5.4*s, 1.2*s); ctx.stroke();
+      roundRect(ctx, x+0.8*s, yy-10*s, 6.8*s, 5.6*s, 1.2*s); ctx.stroke();
+      ctx.fillStyle = '#a7b1b8';
+      ctx.beginPath(); ctx.moveTo(x+10.2*s, yy-14.6*s); ctx.lineTo(x+13.8*s, yy-12.6*s); ctx.lineTo(x+11.2*s, yy-9.4*s); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = c.accent;
+      ctx.beginPath(); ctx.arc(x-4.8*s, yy-7.2*s, 1.1*s, 0, Math.PI*2); ctx.fill();
+    }
   } else if (type === 'spear'){
     // 장창병: 긴 창 + 작은 방패
     ctx.fillStyle = c.main;
@@ -1800,6 +2014,30 @@ function drawUnit(u, time){
 
   drawSoldier(g, p.x, p.y, s, c, u.type, u.team, time, u);
 
+  // 별(★) 등급 오라 — 한눈에 구분
+  if (u.star > 1){
+    const pulse = 0.5 + Math.sin(time*4 + u.seed)*0.22;
+    const strong = u.star >= 3;
+    g.save();
+    g.strokeStyle = c.light;
+    g.globalAlpha = clamp(0.55 + pulse*0.3, 0, 1);
+    g.lineWidth = strong ? 2.1 : 1.4;
+    g.beginPath(); g.ellipse(p.x, p.y+1, (strong ? 17 : 14)*s, (strong ? 8 : 6.6)*s, 0, 0, Math.PI*2); g.stroke();
+    if (strong){
+      g.globalAlpha = 0.30 + pulse*0.22;
+      g.setLineDash([3,4]);
+      g.beginPath(); g.ellipse(p.x, p.y+1, 21*s, 9.6*s, time*0.7, 0, Math.PI*2); g.stroke();
+      g.setLineDash([]);
+      g.globalAlpha = 0.8;
+      g.fillStyle = c.light;
+      for (let i=0;i<2;i++){
+        const a = time*1.7 + i*Math.PI + u.seed;
+        g.beginPath(); g.arc(p.x + Math.cos(a)*14*s, p.y - 7*s + Math.sin(a*1.3)*7*s, 1.5*s, 0, Math.PI*2); g.fill();
+      }
+    }
+    g.restore();
+  }
+
   if (u.shield > 0 && u.shieldUntil > state.t){
     g.strokeStyle = 'rgba(255,230,160,.55)'; g.lineWidth = 1.4;
     g.beginPath(); g.arc(p.x, p.y-10*s, 12*s, Math.PI*1.08, Math.PI*1.92); g.stroke();
@@ -1813,6 +2051,17 @@ function drawUnit(u, time){
     g.globalAlpha = Math.min(0.55, u.hitFlash*4);
     g.fillStyle = '#fff';
     g.beginPath(); g.ellipse(p.x, p.y-10*s, 8*s, 11*s, 0, 0, Math.PI*2); g.fill();
+    g.restore();
+  }
+  // 불화살 화상
+  if (u.burnUntil > state.t){
+    g.save();
+    g.globalAlpha = 0.8;
+    for (let i=0;i<3;i++){
+      const a = time*7 + i*2.1 + u.seed;
+      g.fillStyle = i % 2 ? 'rgba(255,140,50,.9)' : 'rgba(255,220,120,.9)';
+      g.beginPath(); g.ellipse(p.x + Math.sin(a)*3.6*s, p.y - (7 + i*4.2)*s, 1.7*s, 2.8*s, 0, 0, Math.PI*2); g.fill();
+    }
     g.restore();
   }
   if (u.hp < u.maxHp){
@@ -1840,6 +2089,20 @@ function drawEffects(time){
       g.strokeStyle = 'rgba(190,230,255,'+(0.85*(1-k)).toFixed(2)+')';
       g.lineWidth = 2*(1-k)+0.6;
       g.beginPath(); g.ellipse(p.x, p.y-6*p.s, (16+38*k)*p.s, (11+24*k)*p.s, 0, Math.PI, Math.PI*2); g.stroke();
+    } else if (e.type === 'cleave'){
+      const rr = e.r*2*field.halfWBot*p.s;
+      g.strokeStyle = 'rgba(255,246,214,'+(0.9*(1-k)).toFixed(2)+')';
+      g.lineWidth = 3.2*(1-k)+1;
+      g.beginPath(); g.ellipse(p.x, p.y-6*p.s, rr*(0.45+k*0.95), rr*0.62*(0.4+k*0.8), 0, -0.55, Math.PI+0.55); g.stroke();
+      g.strokeStyle = 'rgba(255,210,120,'+(0.5*(1-k)).toFixed(2)+')';
+      g.lineWidth = 1.4;
+      g.beginPath(); g.ellipse(p.x, p.y-6*p.s, rr*0.8*(0.5+k), rr*0.5*(0.5+k), 0, -0.4, Math.PI+0.4); g.stroke();
+    } else if (e.type === 'burn'){
+      g.save();
+      g.globalAlpha = (1-k)*0.9;
+      g.fillStyle = '#ffb457';
+      g.beginPath(); g.ellipse(p.x, p.y - (6+15*k)*p.s, (2.6-1.3*k)*p.s, (4.2-2*k)*p.s, 0, 0, Math.PI*2); g.fill();
+      g.restore();
     } else if (e.type === 'puff'){
       g.fillStyle = e.color;
       g.globalAlpha = 1-k;
@@ -1968,14 +2231,20 @@ function drawProjectiles(){
   for (const p of state.projectiles){
     const q = proj(p.x, p.y);
     const q0 = proj(lerp(p.x0,p.tx,Math.max(0,p.t-0.045)), lerp(p.y0,p.ty,Math.max(0,p.t-0.045)) - Math.sin(Math.PI*Math.max(0,p.t-0.045))*p.arc*0.03);
-    if (p.kind === 'rocket'){
+    if (p.kind === 'rocket' || p.kind === 'fire'){
+      const fire = p.kind === 'fire';
       g.strokeStyle = p.team === 'me' ? 'rgba(255,190,110,.85)' : 'rgba(255,150,110,.85)';
-      g.lineWidth = 2.6*q.s;
+      g.lineWidth = (fire ? 2.0 : 2.6)*q.s;
       g.beginPath(); g.moveTo(q0.x, q0.y - 12*q.s); g.lineTo(q.x, q.y - 12*q.s); g.stroke();
-      const grd = g.createRadialGradient(q.x, q.y-12*q.s, 0.5, q.x, q.y-12*q.s, 7*q.s);
-      grd.addColorStop(0,'rgba(255,245,200,.95)'); grd.addColorStop(.45,'rgba(255,160,60,.85)'); grd.addColorStop(1,'rgba(255,90,30,0)');
+      const grd = g.createRadialGradient(q.x, q.y-12*q.s, 0.5, q.x, q.y-12*q.s, (fire ? 5.4 : 7)*q.s);
+      grd.addColorStop(0,'rgba(255,250,225,.98)');
+      grd.addColorStop(.4, fire ? 'rgba(255,120,50,.9)' : 'rgba(255,160,60,.85)');
+      grd.addColorStop(1,'rgba(255,70,20,0)');
       g.fillStyle = grd;
-      g.beginPath(); g.arc(q.x, q.y-12*q.s, 7*q.s, 0, Math.PI*2); g.fill();
+      g.beginPath(); g.arc(q.x, q.y-12*q.s, (fire ? 5.4 : 7)*q.s, 0, Math.PI*2); g.fill();
+      if (fire && Math.random() < 0.6){
+        state.effects.push({ type:'burn', x:p.x, y:p.y, t:0, life:0.3 });
+      }
     } else {
       g.strokeStyle = p.team === 'me' ? 'rgba(255,240,190,.9)' : 'rgba(255,180,150,.9)';
       g.lineWidth = 1.6*q.s;
@@ -2138,7 +2407,7 @@ function withinBuild(w){
 }
 
 function tryDeploy(cardId, w){
-  const card = CARDS.find(c=> c.id === cardId);
+  const card = state.deck.find(c=> c.id === cardId);
   if (!card) return;
   if (!withinDeploy(w)){ toast('내 진영의 빈 땅에 배치하세요'); return; }
   if (state.me.elixir < card.cost){ toast('코스트가 부족합니다'); return; }
@@ -2189,6 +2458,11 @@ const el = {
   fever: document.getElementById('feverBadge'),
   btnBuild: document.getElementById('btnBuild'),
   phase: document.getElementById('phaseLabel'),
+  btnUpg: document.getElementById('btnUpg'),
+  upgStars: document.getElementById('upgStars'),
+  upgName: document.getElementById('upgName'),
+  upgDesc: document.getElementById('upgDesc'),
+  upgCost: document.getElementById('upgCost'),
   cards: document.getElementById('cards'),
   selCount: document.getElementById('selCount'),
   skillBtn: document.getElementById('skillBtn'),
@@ -2223,15 +2497,19 @@ const ICONS = {
 
 function buildCards(){
   el.cards.innerHTML = '';
-  for (const c of CARDS){
+  const fac = FACTIONS[state.me.faction] || FACTIONS.goguryeo;
+  const su = STAR_UP[state.me.faction] || STAR_UP.goguryeo;
+  const deck = (state.deck && state.deck.length) ? state.deck : deckOf(state.me.faction);
+  for (const c of deck){
     const b = document.createElement('button');
-    b.className = 'card' + (c.kind === 'support' ? ' support' : '');
+    b.className = 'card' + (c.type === su.type ? ' mainline' : '');
     b.id = 'card-' + c.id;
     b.dataset.card = c.id;
+    b.style.setProperty('--fac', fac.colors.light);
     b.innerHTML =
-      '<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' + ICONS[c.icon] + '</svg>' +
+      '<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + ICONS[c.icon] + '</svg>' +
       '<span class="nm">' + c.name + '</span>' +
-      '<span class="rl">' + c.role + '</span>' +
+      '<span class="rl">' + (c.type === su.type ? '★☆☆' : c.role) + '</span>' +
       '<span class="cost">' + c.cost + '</span>' +
       '<span class="lock" style="display:none">출전 중</span>';
     b.addEventListener('click', ()=> onCard(c.id));
@@ -2242,7 +2520,7 @@ function buildCards(){
 function onCard(id){
   if (state.phase !== 'playing') return;
   Sfx.init();
-  const card = CARDS.find(c=> c.id === id);
+  const card = state.deck.find(c=> c.id === id);
   if (!card) return;
   if (state.pending && state.pending.card === id){
     state.pending = null; setPending(null); syncCards(); return;
@@ -2264,7 +2542,9 @@ function setPending(text){
 
 function syncCards(){
   const genAlive = state.units.some(u=> u.alive && u.team === 'me' && u.type === 'gen');
-  for (const c of CARDS){
+  const su = STAR_UP[state.me.faction];
+  const st = state.me.star || 1;
+  for (const c of state.deck){
     const b = document.getElementById('card-' + c.id);
     if (!b) continue;
     const lack = state.me.elixir < c.cost;
@@ -2274,7 +2554,13 @@ function syncCards(){
     b.classList.toggle('locked', locked);
     const lk = b.querySelector('.lock');
     if (lk) lk.style.display = locked ? 'flex' : 'none';
+    if (su && c.type === su.type){
+      const rl = b.querySelector('.rl');
+      const txt = '★'.repeat(st) + '☆'.repeat(Math.max(0, 3 - st));
+      if (rl && rl.textContent !== txt) rl.textContent = txt;
+    }
   }
+  syncUpg();
   // 스킬 버튼
   const gen = state.units.find(u=> u.alive && u.team === 'me' && u.type === 'gen');
   const fac = FACTIONS[state.me.faction];
@@ -2321,6 +2607,49 @@ function updateFactionUI(){
   el.foeName.textContent = f.name;
   el.foeHero.textContent = f.hero + ' · ' + f.heroTitle;
   el.foeChip.style.background = f.colors.main;
+}
+
+function syncUpg(){
+  if (!el.btnUpg) return;
+  const su = STAR_UP[state.me.faction];
+  if (!su){ el.btnUpg.style.display = 'none'; return; }
+  el.btnUpg.style.display = '';
+  const s = state.me.star || 1;
+  el.upgStars.textContent = '★'.repeat(s) + '☆'.repeat(Math.max(0, 3 - s));
+  el.upgName.textContent = su.line + ' ★' + s;
+  if (s >= 3){
+    el.upgDesc.textContent = '최대 진화 완료 — ' + su.s3;
+    el.upgCost.textContent = 'MAX';
+    el.btnUpg.classList.add('max');
+    el.btnUpg.classList.remove('dis');
+    return;
+  }
+  el.btnUpg.classList.remove('max');
+  el.upgDesc.textContent = s === 1 ? su.s2 : su.s3;
+  const cost = s === 1 ? su.cost2 : su.cost3;
+  el.upgCost.textContent = String(cost);
+  el.btnUpg.classList.toggle('dis', !(state.phase === 'playing' && state.me.elixir >= cost));
+}
+
+function purchaseStar(){
+  if (state.phase !== 'playing') return false;
+  const su = STAR_UP[state.me.faction];
+  const s = state.me.star || 1;
+  if (s >= 3){ toast(su.line + '은(는) 이미 ★3 최대입니다'); return false; }
+  const cost = s === 1 ? su.cost2 : su.cost3;
+  if (state.me.elixir < cost){ toast('코스트가 부족합니다 (필요 ' + cost + ')'); return false; }
+  state.me.elixir -= cost;
+  state.me.star = s + 1;
+  state.me.spent += cost;
+  refreshStarmods('me');
+  const label = state.me.star === 2 ? su.s2 : su.s3;
+  toast(su.line + ' ★' + state.me.star + ' 각성! ' + label);
+  Sfx.skill();
+  const base = state.buildings.find(b=> b.team === 'me' && b.kind === 'base');
+  const bx = base ? base.x : 0.5, by = base ? base.y : 0.08;
+  state.effects.push({ type:'skillburst', x:bx, y:by, t:0, life:1.0, color: FACTIONS[state.me.faction].colors.light });
+  syncUpg(); syncCards();
+  return true;
 }
 
 let uiAcc = 0;
@@ -2385,10 +2714,17 @@ function buildFactionList(){
       '<span class="fswatch" style="background:linear-gradient(160deg,' + f.colors.main + ',' + f.colors.deep + ' 70%);border-left:5px solid ' + f.colors.accent + '"></span>' +
       '<div class="fmeta"><b>' + f.name + '</b>' +
       '<div class="hero">' + f.hero + '<em>' + f.heroTitle + '</em></div>' +
-      '<div class="perk">' + f.perk + '</div></div>' +
+      '<div class="perk">' + f.perk + '</div>' +
+      '<div class="adv">' + f.adv + '</div></div>' +
       '<span class="fcheck">✓</span>';
     d.addEventListener('click', ()=>{
       selectedFaction = k;
+      state.me.faction = k;
+      state.foe.faction = ENEMY_OF[k] || 'baekje';
+      state.deck = deckOf(k);
+      buildCards();
+      syncUpg();
+      updateFactionUI();
       wrap.querySelectorAll('.fcard').forEach(x=> x.classList.toggle('on', x.dataset.f === k));
       Sfx.init(); Sfx.tick();
     });
@@ -2474,6 +2810,9 @@ el.quick.addEventListener('click', (e)=>{
   Sfx.select();
   el.quick.querySelectorAll('button').forEach(x=> x.classList.toggle('on', x === b));
 });
+
+// 주력 병종 별 업그레이드
+el.btnUpg.addEventListener('click', ()=>{ Sfx.init(); purchaseStar(); });
 
 // 공격탑 건설
 el.btnBuild.addEventListener('click', ()=>{
@@ -2561,6 +2900,7 @@ function frame(ts){
 /* =========================================================
    부트
    ========================================================= */
+state.deck = deckOf(selectedFaction);
 buildCards();
 buildFactionList();
 state.me.faction = selectedFaction;
@@ -2574,6 +2914,7 @@ requestAnimationFrame(frame);
 window.__tk = {
   state, CFG, FACTIONS, CARDS, startMatch, castSkill, spawnUnit, layout, proj, buildStatic,
   marchTarget, baseProtected, castlesOf, towerCount, feverMul, tryBuild, tryDeploy,
+  purchaseStar, unitMods, STAR_UP, deckOf,
   setTimeLeft(v){ state.timeLeft = v; }, freeze:false
 };
 })();
