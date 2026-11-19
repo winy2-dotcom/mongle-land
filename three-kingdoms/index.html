@@ -387,13 +387,13 @@ const CFG = {
   elixirMax: 10,
   elixirRegen: 2.6,        // 코스트 1 회복까지 걸리는 초
 
-  baseHp: 1500,            // 가운데 본성
-  castleHp: 640,           // 좌·우 성
+  baseHp: 2200,            // 가운데 본성
+  castleHp: 1100,          // 좌·우 성
   towerHp: 460,            // 공격탑(건설)
   depotHp: 300,
 
-  towerDmg: 24, towerInterval: 1.0, towerRange: 0.200,
-  castleDmg: 18, castleInterval: 1.05, castleRange: 0.185,
+  towerDmg: 26, towerInterval: 0.95, towerRange: 0.200,
+  castleDmg: 28, castleInterval: 0.85, castleRange: 0.195,
 
   towerCost: 5,            // 공격탑 건설 코스트
   towerCap: 3,             // 진영당 최대 건설 수
@@ -883,7 +883,7 @@ function startMatch(facKey){
   state.selection.clear();
   state.pending = null; state.hover = null;
   state.timeLeft = CFG.matchTime;
-  state.me.elixir = CFG.elixirStart; state.foe.elixir = CFG.elixirStart;
+  state.me.elixir = CFG.elixirStart; state.foe.elixir = 3;
   state.me.spent = 0; state.me.summon = 0;
   state.stats = { meDown:0, foeDown:0, meSummon:0 };
   state.result = null;
@@ -895,7 +895,7 @@ function startMatch(facKey){
   state.deck = deckOf(facKey);
   buildCards();
   syncUpg();
-  ai.timer = 3.2; ai.genUsed = false;
+  ai.timer = 7; ai.genUsed = false;
   setupBuildings();
   updateFactionUI();
   document.getElementById('endScreen').classList.add('hidden');
@@ -1350,7 +1350,7 @@ function aiThink(dt){
 
   ai.timer -= dt;
   if (ai.timer > 0) return;
-  ai.timer = rand(0.85, 1.5);
+  ai.timer = elapsed < 60 ? rand(1.5, 2.4) : rand(1.0, 1.7);
 
   // 적 AI도 시간이 지나면 주력 병종 별을 올린다
   if (elapsed > 95 && state.foe.star < 2){
@@ -1367,6 +1367,8 @@ function aiThink(dt){
 
   const costs = { sword:3, spear:3, arbalest:3, ironCav:5, hwacha:5, medic:3, scout:3, gen:7 };
   const myUnits = state.units.filter(u=> u.alive && u.team === 'foe');
+  // 병력이 이미 많으면 더 소환하지 않는다 (한쪽 라인 폭주 방지)
+  if (myUnits.length >= 9 && Math.random() < 0.85) return;
   const threats = state.units.filter(u=> u.alive && u.team === 'me' && u.y > 0.38);
   const hasGen = myUnits.some(u=> u.type === 'gen');
   const medics = myUnits.filter(u=> u.type === 'medic').length;
