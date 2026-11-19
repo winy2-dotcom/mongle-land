@@ -1416,6 +1416,77 @@ function aiThink(dt){
    전술 지원 / 스킬
    ========================================================= */
 /* =========================================================
+   대장군 고유 스킬
+   ========================================================= */
+function castSkill(x, y){
+  const facKey = state.me.faction;
+  const fac = FACTIONS[facKey];
+  const mine = state.units.filter(u=> u.alive && u.team === 'me');
+  const gen = mine.find(u=> u.type === 'gen');
+  if (!gen){ toast('대장군이 전장에 없습니다'); return false; }
+  if (state.t - state.lastSkillAt < CFG.skillCd){ toast('아직 쿨타임입니다'); return false; }
+  state.lastSkillAt = state.t;
+  Sfx.skill();
+
+  const area = fac.skill.area;
+  state.effects.push({ type:'skillburst', x, y, t:0, life:0.9, color: fac.colors.light, r: area*1.9 });
+
+  if (facKey === 'goguryeo'){
+    // 매복 기습: 지점 광역 피해 + 주변 아군 강화
+    for (const u of state.units){
+      if (!u.alive || u.team === 'me') continue;
+      if (distXY(u.x,u.y,x,y) < area) hitEntity(u, 95, gen);
+    }
+    for (const b of state.buildings){
+      if (b.alive && b.team === 'foe' && b.kind !== 'base' && distXY(b.x,b.y,x,y) < area) hitEntity(b, 40, gen);
+    }
+    for (const u of mine){
+      if (distXY(u.x,u.y,x,y) < area*1.9){
+        u.buffs.push({ until: state.t + 6, speed:1.45, dmg:1.3 });
+        state.effects.push({ type:'buffring', x:u.x, y:u.y, t:0, life:0.7, color:'#7fe3d2' });
+      }
+    }
+    toast('매복 기습! 주변 아군 강화');
+  } else if (facKey === 'baekje'){
+    // 결사 돌파: 대장군 돌진 + 광역 피해 + 보호막
+    const nx = clamp(x, 0.08, 0.92), ny = clamp(y, 0.06, 0.94);
+    state.effects.push({ type:'dash', x0:gen.x, y0:gen.y, x1:nx, y1:ny, t:0, life:0.28, color:'#e6d9bd' });
+    gen.x = nx; gen.y = ny;
+    for (const u of state.units){
+      if (!u.alive || u.team === 'me') continue;
+      if (distXY(u.x,u.y,nx,ny) < area) hitEntity(u, 120, gen);
+    }
+    for (const b of state.buildings){
+      if (b.alive && b.team === 'foe' && b.kind !== 'base' && distXY(b.x,b.y,nx,ny) < area) hitEntity(b, 55, gen);
+    }
+    gen.shield = 220; gen.shieldUntil = state.t + 6;
+    for (const u of mine){
+      if (distXY(u.x,u.y,nx,ny) < area*1.8){
+        u.shield = Math.max(u.shield, 80); u.shieldUntil = state.t + 6;
+        state.effects.push({ type:'buffring', x:u.x, y:u.y, t:0, life:0.7, color:'#ffe6b0' });
+      }
+    }
+    state.effects.push({ type:'shock', x:nx, y:ny, t:0, life:0.5, r:area*1.4 });
+    toast('결사 돌파! 보호막 전개');
+  } else {
+    // 화랑 사기 돌격
+    for (const u of mine){
+      if (distXY(u.x,u.y,x,y) < area*2.0){
+        u.buffs.push({ until: state.t + 7, speed:1.55, atk:1.45, dmg:1.12 });
+        u.order = { type:'move', x, y };
+        state.effects.push({ type:'buffring', x:u.x, y:u.y, t:0, life:0.8, color:'#ffd76e' });
+      }
+    }
+    for (const u of state.units){
+      if (!u.alive || u.team === 'me') continue;
+      if (distXY(u.x,u.y,x,y) < area*0.9) hitEntity(u, 55, gen);
+    }
+    toast('화랑 사기 돌격! 전군 돌격');
+  }
+  return true;
+}
+
+/* =========================================================
    이펙트 헬퍼
    ========================================================= */
 function puff(x, y, team, n){
