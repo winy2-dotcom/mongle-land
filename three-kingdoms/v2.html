@@ -540,11 +540,11 @@ const BSTAT = {
   tower:  { hp: CFG.towerHp, rad: 0.026, label: '공격탑' }
 };
 
-/* tick: AI 소환 주기 배율(클수록 느림) / res: AI 식량 수급 배율 */
+/* tick: AI 소환 주기 배율(클수록 느림) / res: AI 식량 수급 배율 / army: AI가 유지하는 자동 웨이브 외 병력 상한 */
 const DIFF = {
-  easy: { label:'쉬움', tick:2.6, res:0.78 },
-  normal: { label:'보통', tick:2.0, res:0.92 },
-  hard: { label:'어려움', tick:1.4, res:1.12 }
+  easy: { label:'쉬움', tick:2.6, res:0.78, army:6 },
+  normal: { label:'보통', tick:2.0, res:0.92, army:10 },
+  hard: { label:'어려움', tick:1.4, res:1.12, army:14 }
 };
 const ENEMY_OF = { goguryeo:'baekje', baekje:'silla', silla:'goguryeo' };
 
@@ -2003,7 +2003,11 @@ function aiThink(dt){
   const A = state.foe;
   ai.timer -= dt;
   if (ai.timer > 0) return;
-  ai.timer = rand(1.2, 1.9) * (DIFF[state.diff]||DIFF.normal).tick;
+  const D = DIFF[state.diff] || DIFF.normal;
+  ai.timer = rand(1.2, 1.9) * D.tick;
+
+  /* 눈덩이 방지: 자동 웨이브를 뺀 소환 병력이 상한을 넘으면 더 부르지 않는다 */
+  if (armyOf('foe').filter(u=> !u.wave).length >= (D.army || 10)) return;
 
   if (A.genCd <= 0 && !armyOf('foe').some(u=> u.type==='general') && A.food >= CFG.genCost.food && Math.random() < 0.45){
     A.food -= CFG.genCost.food;
