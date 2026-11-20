@@ -1219,6 +1219,26 @@ function drawRuin(r, time){
   g.fillStyle = scorch;
   g.beginPath(); g.ellipse(p.x, p.y + 1 * s, w * 0.78, hh * 0.95, 0, 0, Math.PI * 2); g.fill();
 
+  // 부서진 벽체 실루엣 (남은 석축 더미)
+  const wallW = w * 0.36, wallH = 15 * s * big;
+  g.fillStyle = 'rgba(38,34,29,.96)';
+  g.beginPath();
+  g.moveTo(p.x - wallW * 0.95, p.y + 1 * s);
+  g.lineTo(p.x - wallW * 0.92, p.y - wallH * 0.72);
+  g.lineTo(p.x - wallW * 0.50, p.y - wallH * 1.02);
+  g.lineTo(p.x - wallW * 0.16, p.y - wallH * 0.52);
+  g.lineTo(p.x + wallW * 0.20, p.y - wallH * 0.86);
+  g.lineTo(p.x + wallW * 0.68, p.y - wallH * 0.30);
+  g.lineTo(p.x + wallW * 0.92, p.y + 1 * s);
+  g.closePath(); g.fill();
+  g.strokeStyle = 'rgba(126,118,102,.32)'; g.lineWidth = 0.9;
+  for (let i = 0; i < 3; i++){
+    const wy2 = p.y - wallH * (0.18 + i * 0.24);
+    g.beginPath(); g.moveTo(p.x - wallW * 0.86, wy2); g.lineTo(p.x + wallW * 0.84, wy2); g.stroke();
+  }
+  g.fillStyle = 'rgba(150,142,124,.20)';
+  g.fillRect(p.x - wallW * 0.50, p.y - wallH * 1.02, wallW * 0.18, wallH * 0.14);
+
   // 부서진 석축 조각
   const seedR = mulberry32(700 + (r.id % 97));
   for (let i = 0; i < 9; i++){
