@@ -109,7 +109,6 @@
   .kline.big.ally{text-shadow:0 0 8px rgba(80,240,190,.35)}
   .kline.big.enemy{text-shadow:0 0 8px rgba(255,110,70,.30)}
   .kline.minor{opacity:.68}
-  .kline .vcount{font-weight:800;color:#ffd0a8;margin-left:2px}
   .kline.sys{color:#7f97a8;font-size:8.5px}
   @keyframes klIn{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
 
@@ -1581,7 +1580,6 @@ function atkDesc(src){
 function killogClear(){
   const body = document.getElementById('killogBody');
   if (body) body.innerHTML = '';
-  klLastVill = null;
 }
 function killogSys(text){
   const body = document.getElementById('killogBody');
@@ -1592,39 +1590,28 @@ function killogSys(text){
   body.appendChild(row);
   while (body.children.length > KILLOG_MAX) body.removeChild(body.firstChild);
 }
-let klLastVill = null;   // 같은 적에게 연속으로 죽은 백성은 한 줄에 누적
 function killogPush(victim, src){
   const body = document.getElementById('killogBody');
   if (!body || !victim) return;
+  if (victim.ent === 'unit' && victim.type === 'villager') return;   // 백성 사망은 기존 토스트·HUD로만 안내
   const a = atkDesc(src);
   const side = a.team === 'me' ? 'ally' : a.team === 'foe' ? 'enemy' : 'neutral';
   const aTag = a.team === 'me' ? '<span class="tag m">아군</span>'
              : a.team === 'foe' ? '<span class="tag f">적</span>' : '<span class="tag">?</span>';
   const vTag = victim.team === 'me' ? '<span class="tag m">아군</span>' : '<span class="tag f">적</span>';
-  const isVill = victim.ent === 'unit' && victim.type === 'villager';
-  if (isVill && klLastVill && klLastVill.key === (a.team + '|' + a.name) && klLastVill.el.parentNode === body){
-    klLastVill.n++;
-    klLastVill.el.querySelector('.vcount').textContent = klLastVill.n + '명';
-    return;
-  }
   let vName, act = '처치', big = false, mark = '';
   if (victim.ent === 'building'){
     vName = victim.label || (BSTAT[victim.kind] ? BSTAT[victim.kind].label : '건물');
     act = '파괴'; big = true; mark = '💥';
   } else if (victim.type === 'general'){
     vName = (victim.name || '장군') + ' 장군'; big = true; mark = '★';
-  } else if (isVill){
-    vName = null;
   } else {
     vName = victim.name || '병사';
   }
   const row = document.createElement('div');
-  row.className = 'kline ' + side + (big ? ' big' : '') + (isVill ? ' minor' : '');
-  row.innerHTML = aTag + '<b>' + a.name + '</b><i>→</i>' + vTag
-    + (isVill ? '<b>백성</b><span class="vcount">1명</span> 전사'
-              : '<b>' + mark + vName + '</b> ' + act);
+  row.className = 'kline ' + side + (big ? ' big' : '');
+  row.innerHTML = aTag + '<b>' + a.name + '</b><i>→</i>' + vTag + '<b>' + mark + vName + '</b> ' + act;
   body.appendChild(row);
-  klLastVill = isVill ? { key: a.team + '|' + a.name, el: row, n: 1 } : null;
   while (body.children.length > KILLOG_MAX) body.removeChild(body.firstChild);
 }
 
