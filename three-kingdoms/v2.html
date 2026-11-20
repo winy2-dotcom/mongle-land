@@ -2463,7 +2463,7 @@ function triggerGeneralSkill(gen){
       .sort((a,b)=> distXY(a.x,a.y,gen.x,gen.y) - distXY(b.x,b.y,gen.x,gen.y))
       .slice(0, sk.sword.count);
     for (const o of foes){
-      skillFx({ type:'sword', x0:gen.x, y0:gen.y, x1:o.x, y1:o.y, life:0.5, color:sk.color });
+      skillFx({ type:'sword', x:gen.x, y:gen.y, x0:gen.x, y0:gen.y, x1:o.x, y1:o.y, life:0.5, color:sk.color });
       hitEntity(o, sk.sword.dmg, gen); hit++;
     }
     detail = `아군 ${healed}기 회복·사기↑ · 금빛 검기 적 ${hit}기`;
