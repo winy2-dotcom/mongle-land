@@ -127,6 +127,11 @@
   .kline.big.enemy{text-shadow:0 0 8px rgba(255,110,70,.30)}
   .kline.minor{opacity:.68}
   .kline.sys{color:#7f97a8;font-size:8.5px}
+  .kline.skill{font-size:9.5px;line-height:1.3;font-weight:800;border-radius:3px;padding:1px 3px 2px;
+    background:linear-gradient(90deg,rgba(255,215,110,.17),rgba(255,215,110,0));box-shadow:inset 2px 0 0 #ffd76e}
+  .kline.skill.ally{color:#ffe9a8}
+  .kline.skill.enemy{color:#ffc7a8;box-shadow:inset 2px 0 0 #ff8a3c;background:linear-gradient(90deg,rgba(255,138,60,.17),rgba(255,138,60,0))}
+  .kline.skill small{display:block;font-size:8px;font-weight:600;color:#c6d6e2;opacity:.92;letter-spacing:-.01em}
   @keyframes klIn{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
 
   /* ---------- overlays ---------- */
@@ -150,6 +155,10 @@
   .fmeta .hero{font-size:10.5px;color:#cfd9e6}
   .fmeta .hero em{font-style:normal;color:#93a3b6;font-size:9.5px;margin-left:4px}
   .fmeta .perk{font-size:9.5px;color:#8e9db0;line-height:1.3}
+  .fmeta .fskill{display:flex;align-items:center;gap:3px;margin-top:2px;font-size:9px;line-height:1.25;color:#a9b8c8}
+  .fmeta .fskill b{font-size:9px;font-weight:800;color:#ffd76e;white-space:nowrap}
+  .fmeta .fskill span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .fcard.on .fskill b{color:#fff0c0}
   .fcheck{margin-left:auto;font-size:15px;color:#ffd76e;opacity:0}
   .fcard.on .fcheck{opacity:1}
 
@@ -227,7 +236,7 @@
   .genbtn img{width:26px;height:26px;border-radius:50%;object-fit:cover;border:1.5px solid #ffd76e;background:#111}
   .genbtn .gt{display:flex;flex-direction:column;align-items:flex-start;line-height:1.15}
   .genbtn .gt b{font-size:9.5px;font-weight:800;white-space:nowrap}
-  .genbtn .gt i{font-size:8px;font-style:normal;color:#c9a98a;white-space:nowrap}
+  .genbtn .gt i{font-size:8px;font-style:normal;color:#c9a98a;white-space:nowrap;max-width:104px;overflow:hidden;text-overflow:ellipsis}
   .genbtn.on{border-color:rgba(120,245,220,.9)}
 
   .upgbtn{flex:1;display:flex;align-items:center;gap:5px;padding:3px 7px;border-radius:10px;min-width:0;
@@ -348,8 +357,8 @@
     </div>
 
     <div class="overlay" id="startScreen">
-      <div class="title">삼국 <span>전략</span> <small style="font-size:12px;color:#ffd76e;letter-spacing:0">v2.3 · 단일 식량 · 웨이브</small></div>
-      <div class="sub">🌾식량 단일 자원 · 고정 마법 2장 · 5초마다 전사 3기 자동 출격 · 3/6/9분 갑옷 진화</div>
+      <div class="title">삼국 <span>전략</span> <small style="font-size:12px;color:#ffd76e;letter-spacing:0">v2.4 · 장군 고유 스킬</small></div>
+      <div class="sub">🌾식량 단일 자원 · 고정 마법 2장 · 5초마다 전사 3기 자동 출격 · 장군 3종 필살기</div>
       <div class="factions" id="factionList"></div>
       <div class="deckPick">
         <div class="dpHead"><b>전투 덱 편성 <span id="deckCount">유닛 6/6 · 마법 2/2</span></b><button id="btnReco">추천 덱</button></div>
@@ -373,14 +382,18 @@
     </div>
 
     <div class="overlay hidden" id="helpScreen">
-      <div class="title" style="font-size:19px">전술 가이드 (v2.3)</div>
+      <div class="title" style="font-size:19px">전술 가이드 (v2.4)</div>
       <div class="guide">
         <b>1. 단일 자원 🌾식량</b>모든 유닛·전술 마법·공성병기·공격탑·대장간·★진화가 <span>🌾식량</span> 하나만 씁니다. 백성 10명이 곡물밭에서 식량을 캐 오고, 시간이 지나면 자동으로 조금씩 회복됩니다.<br>
         <b>2. 3단계 곡물 전진 채취</b>백성은 <span>본진 곡물밭</span> → <span>앞마당 곡물밭</span> → <span>중앙 중립지대 섬</span> 순서로만 전진합니다. 앞 단계 밭이 모두 비면 다음 단계로 옮겨 가고, 중앙 섬 곡물은 <span>수확량 1.5배</span>입니다. 논이 줄어들면 다음 자리를 미리 확보하세요.<br>
         <b>3. 유닛 로테이션 + 고정 마법</b>유닛 6장은 4장씩 순환 등장하며, 마법 2장은 우측 고정 슬롯에서 쿨타임(12초)마다 언제든 쓸 수 있습니다.<br>
         <b>4. 묵직한 전술 템포 & 기병 밀어주기</b>유닛 이동속도를 80%로 조정해 교전 호흡을 살렸습니다. 느린 <span>방패병(2인조)</span> 뒤에 <span>기병</span>을 붙이면 밀어주기 돌진이 발동합니다.
         <b>5. 전사 자동 웨이브 & 갑옷 진화</b>전사는 <span>5초마다 3기씩</span> 자동 출격하며, 한 팀당 필드에 <span>최대 21기</span>까지만 남습니다. 우상단 <span>전사 좌·중·우</span>로 내 전사의 다리를 정하고, 3·6·9분이 지나면 양군 전사가 경갑 → 중갑 → 정예 중무장으로 강화됩니다.
-        <b>6. 장군 지휘</b>장군은 느리게 걸으며 출진하면 주변 아군이 곁으로 결집합니다. 장군 반경 0.15 안의 아군은 <span>공격력 +20% · 받는 피해 -15%</span> 지휘 오라를 받습니다(발밑 금빛 링).
+        <b>6. 장군 지휘</b>장군은 느리게 걸으며 출진하면 주변 아군이 곁으로 결집합니다. 장군 반경 0.15 안의 아군은 <span>공격력 +20% · 받는 피해 -15%</span> 지휘 오라를 받습니다(발밑 금빛 링).<br>
+        <b>7. 장군 고유 스킬 (v2.4)</b>장군은 교전 중 <span>8~12초</span>마다 자기 세력의 필살기를 자동 발동합니다. 발동하면 머리 위 스킬명과 좌상단 전투 기록에 한 줄로 표시됩니다.<br>
+        <span>⚡ 을지문덕 「살수 대첩의 물결」</span> — 전방으로 푸른 수문 파동을 퍼뜨려 적 다수를 때리고 둔화시키며, 주변 아군에게 방패 보호막을 씌웁니다.<br>
+        <span>🔥 계백 「황산벌 결사대」</span> — 체력이 줄수록 강해지는 결사 패시브. 적에게 돌진해 참격을 날리고 주변 아군의 공격속도를 끌어올립니다.<br>
+        <span>✧ 김유신 「화랑의 빛」</span> — 넓은 범위 아군을 회복시키고 사기를 진작하며, 적에게 금빛 검기를 날립니다.
       </div>
       <button class="bigbtn" id="btnHelpClose">닫기</button>
     </div>
@@ -613,7 +626,13 @@ const FACTIONS = {
     alias:{ cavalry:'개마무사' }, beast:'wolf',
     defaultUnits:['scout','archer','cavalry','shieldman','specialForces','repairer'],
     defaultSpells:['arrowRain','shipBombard'],
-    skill:{ name:'매복 기습', area:0.085 }
+    skill:{ name:'살수 대첩의 물결', short:'살수 대첩', glyph:'⚡', kind:'wave',
+            cd:10, radius:0.145, dmg:92,
+            slow:{ spd:0.62, atk:0.78, dur:4.2 },
+            ally:{ shield:0.35, dur:6, heal:0.10 },
+            color:'#5fe0ff', ring:'#c8f6ff',
+            passive:'수성·역습 — 교전 시 아군 방패 보호막',
+            line:'전방 수계 파동 — 광역 피해 + 적 둔화 + 아군 보호막' }
   },
   baekje: {
     key:'baekje', name:'백제', hero:'계백', heroTitle:'결사대장',
@@ -623,7 +642,13 @@ const FACTIONS = {
     alias:{ archer:'백제신궁' }, beast:'eagle',
     defaultUnits:['giant','archer','sniper','shieldman','repairer','oldSiege'],
     defaultSpells:['rainRitual','arrowRain'],
-    skill:{ name:'결사 돌파', area:0.075 }
+    skill:{ name:'황산벌 결사대', short:'황산벌', glyph:'🔥', kind:'berserk',
+            cd:9, radius:0.105, dash:0.075, dmg:152,
+            rage:{ dmg:2.2, dur:5 },
+            ally:{ atkSpeed:1.35, dur:5 },
+            color:'#ff8a3c', ring:'#ffd0a0', berserk:true,
+            passive:'결사 패시브 — 체력이 낮을수록 공격력·공속 상승',
+            line:'돌진 일격 + 분노 함성 — 주변 아군 공격속도 급상승' }
   },
   silla: {
     key:'silla', name:'신라', hero:'김유신', heroTitle:'화랑 선봉',
@@ -633,7 +658,13 @@ const FACTIONS = {
     alias:{ warrior:'화랑검객' }, beast:'tiger',
     defaultUnits:['sniper','archer','monk','cavalry','giant','repairer'],
     defaultSpells:['shamanWish','arrowRain'],
-    skill:{ name:'화랑 사기 돌격', area:0.09 }
+    skill:{ name:'화랑의 빛', short:'화랑의 빛', glyph:'✧', kind:'bless',
+            cd:11, radius:0.20, dmg:68, heal:0.18,
+            morale:{ dmg:1.30, spd:1.18, atkSpeed:1.20, dur:6 },
+            sword:{ dmg:72, r:0.19, count:3 },
+            color:'#ffd76e', ring:'#fff3c4',
+            passive:'삼한일통 — 아군 회복·사기 진작 지원',
+            line:'광역 아군 회복+사기 진작 · 금빛 검기 투사' }
   }
 };
 
@@ -1668,6 +1699,93 @@ function drawWarriorArmor(x, yy, s, tier, c, me, time){
   }
 }
 
+/* 장군 진영별 오라 — 고구려 水紋·청록 군기 / 백제 결사 불꽃 / 신라 금빛 광선·깃털 + 스킬 쿨다운 아크 */
+function drawGeneralAura(u, p, time, me, fac, s){
+  const x = p.x, y = p.y;
+  const sk = u.skill || fac.skill;
+  const ar = AURA_R * 2 * field.halfWBot * p.s;
+  const col = fac.key==='goguryeo' ? '#5fe0ff' : fac.key==='baekje' ? '#ff8a3c' : '#ffd76e';
+  const fill = fac.key==='goguryeo' ? 'rgba(95,224,255,.10)'
+             : fac.key==='baekje' ? 'rgba(255,120,60,.11)' : 'rgba(255,215,110,.11)';
+  g.save();
+  // 지휘 오라 범위 링 (반경 0.15 월드 좌표)
+  g.globalAlpha = 0.30 + 0.12*Math.sin(time*2.2);
+  g.strokeStyle = col; g.lineWidth = 1.6;
+  g.setLineDash([5, 4]); g.lineDashOffset = -time*14;
+  g.beginPath(); g.ellipse(x, y+1, ar, ar*0.55, 0, 0, Math.PI*2); g.stroke();
+  g.setLineDash([]); g.lineDashOffset = 0;
+  g.fillStyle = fill; g.fill();
+
+  if (fac.key === 'goguryeo'){
+    // 푸른 수문 파동 — 발치에서 피어오르는 3중 물결
+    for (let i=0;i<3;i++){
+      const ph = (time*0.55 + i*0.34) % 1;
+      g.globalAlpha = (1 - ph) * 0.6;
+      g.strokeStyle = '#7fe8ff'; g.lineWidth = 1.3;
+      g.beginPath(); g.ellipse(x, y+1, (7 + ph*21)*p.s, (3 + ph*9)*p.s, 0, 0, Math.PI*2); g.stroke();
+    }
+    // 좌우 청록 군기
+    g.globalAlpha = 0.95;
+    for (const side of [-1, 1]){
+      const bx = x + side*13*p.s, by = y + 2*p.s;
+      g.strokeStyle = '#8a6a3e'; g.lineWidth = Math.max(1, 1.4*p.s);
+      g.beginPath(); g.moveTo(bx, by); g.lineTo(bx + side*2*p.s, by - 24*p.s); g.stroke();
+      const wave = Math.sin(time*3 + side)*1.6*p.s;
+      g.fillStyle = '#26c6da';
+      g.beginPath();
+      g.moveTo(bx + side*2*p.s, by - 24*p.s);
+      g.lineTo(bx + side*12*p.s + wave, by - 21*p.s);
+      g.lineTo(bx + side*2*p.s, by - 15*p.s);
+      g.closePath(); g.fill();
+    }
+  } else if (fac.key === 'baekje'){
+    // 결사 불꽃 오라
+    for (let i=0;i<6;i++){
+      const ph = (time*1.35 + i*0.17) % 1;
+      const fx2 = x + Math.sin(i*2.1 + time*2)*5*p.s;
+      const fy = y + 1 - ph*22*p.s;
+      g.globalAlpha = (1 - ph) * 0.78;
+      g.fillStyle = i % 2 ? '#ff8a3c' : '#ffd05a';
+      g.beginPath(); g.ellipse(fx2, fy, Math.max(0.6, (1.7 - ph)*p.s), Math.max(1, (3.6 - ph*2.2)*p.s), 0, 0, Math.PI*2); g.fill();
+    }
+    g.globalAlpha = 0.34 + 0.2*Math.sin(time*5);
+    g.strokeStyle = '#ff7a3c'; g.lineWidth = 1.6;
+    const ra = (time*3) % (Math.PI*2);
+    g.beginPath(); g.arc(x, y - 10*p.s, 15*p.s, ra, ra + 1.5); g.stroke();
+  } else {
+    // 신라 금빛 광선 + 깃털
+    for (let i=0;i<8;i++){
+      const a2 = time*0.9 + i*Math.PI/4;
+      g.globalAlpha = 0.16 + 0.12*Math.sin(time*3 + i);
+      g.strokeStyle = '#ffe9a3'; g.lineWidth = 1.2;
+      g.beginPath();
+      g.moveTo(x + Math.cos(a2)*6*p.s, y - 8*p.s + Math.sin(a2)*3*p.s);
+      g.lineTo(x + Math.cos(a2)*22*p.s, y - 8*p.s + Math.sin(a2)*11*p.s);
+      g.stroke();
+    }
+    for (let i=0;i<3;i++){
+      const ph = (time*0.8 + i*0.33) % 1;
+      g.globalAlpha = (1 - ph) * 0.85;
+      g.fillStyle = '#fff0b8';
+      const fx2 = x + Math.sin(i*2.4 + time*1.5)*8*p.s;
+      const fy = y + 2 - ph*26*p.s;
+      g.beginPath(); g.ellipse(fx2, fy, Math.max(0.5, 1.1*p.s), Math.max(1, 3*p.s), 0.5, 0, Math.PI*2); g.fill();
+    }
+  }
+
+  // 스킬 쿨다운 아크 — 준비 완료 시 세력 색으로 점등
+  const cd = sk.cd || CFG.skillCd;
+  const since = (u.lastAutoSkill === undefined || u.lastAutoSkill === null) ? -99 : u.lastAutoSkill;
+  const frac = clamp((state.t - since) / cd, 0, 1);
+  g.globalAlpha = 0.92; g.lineWidth = 2.2;
+  g.strokeStyle = 'rgba(10,18,24,.55)';
+  g.beginPath(); g.arc(x, y - 20*p.s, 9*p.s, -Math.PI/2, Math.PI*1.5); g.stroke();
+  g.strokeStyle = frac >= 1 ? sk.color : 'rgba(255,255,255,.48)';
+  g.beginPath(); g.arc(x, y - 20*p.s, 9*p.s, -Math.PI/2, -Math.PI/2 + Math.PI*2*frac); g.stroke();
+  g.globalAlpha = 1;
+  g.restore();
+}
+
 function drawSoldier(u, p, time){
   const me = u.team === 'me';
   const fac = FACTIONS[me ? state.me.faction : state.foe.faction];
@@ -1700,20 +1818,20 @@ function drawSoldier(u, p, time){
     g.strokeStyle = '#ffd76e'; g.lineWidth = 1.6;
     g.beginPath(); g.ellipse(x, y+1, 13*s, 5.8*s, 0, 0, Math.PI*2); g.stroke();
   }
-
-  // 장군 전용 홈/어웨이 4포즈 스프라이트
-  if (u.type === 'general'){
-    // 지휘 오라 범위 링 (반경 0.15 월드 좌표)
-    const ar = AURA_R * 2 * field.halfWBot * p.s;
+  // 「살수 대첩의 물결」 보호막 — 푸른 반투명 돔
+  if (u.shieldHp > 0 && u.shieldUntil > state.t){
     g.save();
-    g.globalAlpha = 0.30 + 0.12*Math.sin(time*2.2);
-    g.strokeStyle = me ? '#ffd76e' : '#ff9d80'; g.lineWidth = 1.6;
-    g.setLineDash([5, 4]); g.lineDashOffset = -time*14;
-    g.beginPath(); g.ellipse(x, y+1, ar, ar*0.55, 0, 0, Math.PI*2); g.stroke();
-    g.setLineDash([]); g.lineDashOffset = 0;
-    g.fillStyle = me ? 'rgba(255,214,110,.09)' : 'rgba(255,130,100,.09)';
-    g.fill();
+    g.globalAlpha = 0.4 + 0.18*Math.sin(time*6 + u.seed);
+    g.strokeStyle = '#bfeaff'; g.lineWidth = 1.8;
+    g.beginPath(); g.ellipse(x, y - 2*s, 10*s, 14*s, 0, Math.PI*1.02, Math.PI*1.98); g.stroke();
+    g.fillStyle = 'rgba(150,225,255,.10)';
+    g.beginPath(); g.ellipse(x, y - 2*s, 10*s, 14*s, 0, Math.PI*1.02, Math.PI*1.98); g.fill();
     g.restore();
+  }
+
+  // 장군 전용 — 세력별 고유 오라·쿨다운 아크 + 4포즈 스프라이트
+  if (u.type === 'general'){
+    drawGeneralAura(u, p, time, me, fac, s);
     const facKey = me ? state.me.faction : state.foe.faction;
     const sh = SPR.sheets['general_' + facKey + (me ? '_me' : '_foe')];
     if (sh && sh.ready){
@@ -2115,6 +2233,7 @@ function unitThink(u, dt){
   u.atkTimer = Math.max(0, u.atkTimer - dt);
   u.anim = Math.max(0, u.anim - dt);
   u.hitFlash = Math.max(0, u.hitFlash - dt);
+  if (u.shieldHp > 0 && u.shieldUntil <= state.t) u.shieldHp = 0;
   if (u.buffs.length) u.buffs = u.buffs.filter(b=> b.until > state.t);
 
   if (u.isRepairer){
@@ -2136,12 +2255,14 @@ function unitThink(u, dt){
     return;
   }
 
-  if (u.type === 'general' && state.t - (u.lastAutoSkill || -99) >= CFG.skillCd && !(u.disabledUntil > state.t)){
-    const foesNear = state.units.filter(o=> o.alive && o.team!==u.team && distXY(u.x,u.y,o.x,o.y) < 0.14);
-    const alliesNear = state.units.filter(o=> o.alive && o.team===u.team && o.type!=='villager' && distXY(u.x,u.y,o.x,o.y) < 0.14);
-    if (foesNear.length >= 2 || (alliesNear.length >= 3 && foesNear.length >= 1)){
-      u.lastAutoSkill = state.t;
-      triggerGeneralAutoSkill(u);
+  if (u.type === 'general' && u.skill){
+    const cd = u.skill.cd || CFG.skillCd;
+    if (state.t - (u.lastAutoSkill || -99) >= cd && !(u.disabledUntil > state.t)){
+      const foesNear = state.units.filter(o=> o.alive && o.team!==u.team && distXY(u.x,u.y,o.x,o.y) < 0.15);
+      const alliesNear = state.units.filter(o=> o.alive && o.team===u.team && o.type!=='villager' && distXY(u.x,u.y,o.x,o.y) < 0.15);
+      if (foesNear.length >= 2 || (alliesNear.length >= 2 && foesNear.length >= 1)){
+        triggerGeneralSkill(u);
+      }
     }
   }
 
@@ -2212,23 +2333,160 @@ function unitThink(u, dt){
   if (dest) moveToward(u, dest.x, dest.y, dt);
 }
 
-function triggerGeneralAutoSkill(gen){
+/* =========================================================
+   v2.4 장군 3종 고유 스킬
+   고구려 을지문덕 「살수 대첩의 물결」 / 백제 계백 「황산벌 결사대」 / 신라 김유신 「화랑의 빛」
+   ========================================================= */
+function generalSkillOf(gen){
+  if (gen.skill) return gen.skill;
+  const fac = FACTIONS[gen.team==='me' ? state.me.faction : state.foe.faction];
+  gen.skill = fac.skill;
+  return gen.skill;
+}
+function skillFx(e){ e.t = 0; state.effects.push(e); return e; }
+
+/* 발동 한 줄을 전투 기록에 강조 표시 (쿨타임이 길어 도배되지 않음) */
+function killogSkill(gen, sk, detail){
+  const body = document.getElementById('killogBody');
+  if (!body) return;
+  const mine = gen.team === 'me';
+  const fac = FACTIONS[mine ? state.me.faction : state.foe.faction];
+  const row = document.createElement('div');
+  row.className = 'kline skill ' + (mine ? 'ally' : 'enemy');
+  const tag = mine ? '<span class="tag m">아군</span>' : '<span class="tag f">적</span>';
+  row.innerHTML = tag + '<b>' + (sk.glyph || '★') + ' ' + sk.name + '</b><i>·</i>' +
+    (gen.name || fac.hero) + (detail ? '<small>' + detail + '</small>' : '');
+  body.appendChild(row);
+  while (body.children.length > KILLOG_MAX) body.removeChild(body.firstChild);
+}
+
+function triggerGeneralSkill(gen){
   const facKey = gen.team==='me' ? state.me.faction : state.foe.faction;
   const fac = FACTIONS[facKey];
-  state.effects.push({ type:'skillburst', x:gen.x, y:gen.y, t:0, life:0.85, color:fac.colors.light });
-  floater(gen.x, gen.y - 0.02, '★ ' + fac.skill.name + '!', '#ffd76e');
+  const sk = generalSkillOf(gen);
+  const mine = gen.team === 'me';
+  const dir = mine ? 1 : -1;            // 내 진영은 아래→위가 전방
+  gen.lastAutoSkill = state.t;
+  gen.skillCount = (gen.skillCount || 0) + 1;
+  gen.anim = 0.32;
   Sfx.skill();
-  for (const o of state.units){
-    if (!o.alive) continue;
-    if (o.team !== gen.team && distXY(o.x,o.y,gen.x,gen.y) < 0.11) hitEntity(o, 85, gen);
-    else if (o.team === gen.team && distXY(o.x,o.y,gen.x,gen.y) < 0.14) o.buffs.push({ until: state.t + 6, speed: 1.35, dmg: 1.25 });
+
+  // 공통 연출 — 발치 버스트 + 진영 링 + 머리 위 스킬명 플로팅
+  skillFx({ type:'skillburst', x:gen.x, y:gen.y, life:0.95, color:sk.ring || sk.color });
+  skillFx({ type:'ring', x:gen.x, y:gen.y, life:0.8, color:sk.color });
+  skillFx({ type:'skilltext', x:gen.x, y:gen.y, life:1.5, text:(sk.glyph || '★') + ' ' + sk.name + '!', color:sk.color, size:13, rise:26 });
+
+  let detail = '';
+
+  if (sk.kind === 'wave'){
+    /* ⚡ 을지문덕 — 살수 대첩의 물결: 전방 부채꼴 수문 파동 (범위 피해 + 둔화 + 아군 보호막) */
+    const R = sk.radius;
+    for (let i=0;i<3;i++) skillFx({ type:'wave', x:gen.x, y:gen.y, life:0.8 + i*0.12, color:sk.color, R });
+    skillFx({ type:'sector', x:gen.x, y:gen.y, life:0.75, color:sk.color, R, dir });
+    let hit = 0, slowed = 0, shielded = 0;
+    for (const o of state.units){
+      if (!o.alive || o.type === 'villager') continue;
+      const d = distXY(o.x, o.y, gen.x, gen.y);
+      const front = (o.y - gen.y) * dir;
+      if (o.team !== gen.team && d <= R && (front > -0.03 || d < R*0.55)){
+        hitEntity(o, sk.dmg, gen); hit++;
+        if (o.alive){
+          o.buffs.push({ until: state.t + sk.slow.dur, speed:sk.slow.spd, atkSpeed:sk.slow.atk, slow:true });
+          slowed++;
+        }
+        skillFx({ type:'splash', x:o.x, y:o.y, life:0.5, color:sk.color });
+      } else if (o.team === gen.team && d <= R*0.95){
+        const add = Math.round(o.maxHp * sk.ally.shield);
+        o.shieldHp = Math.min(o.maxHp * 0.6, (o.shieldHp || 0) + add);
+        o.shieldUntil = state.t + sk.ally.dur;
+        o.hp = Math.min(o.maxHp, o.hp + o.maxHp * sk.ally.heal);
+        o.buffs.push({ until: state.t + sk.ally.dur, speed:1.06 });
+        shielded++;
+        skillFx({ type:'shield', x:o.x, y:o.y, life:0.85, color:sk.ring || sk.color });
+      }
+    }
+    detail = `적 ${hit}기 타격·${slowed}기 둔화 · 아군 ${shielded}기 보호막`;
+
+  } else if (sk.kind === 'berserk'){
+    /* 🔥 계백 — 황산벌 결사대: 최근접 적에게 돌진 일격 + 분노 함성(아군 공속↑) */
+    let tgt = null, tdn = 1e9;
+    for (const o of state.units){
+      if (!o.alive || o.team === gen.team || o.type === 'villager') continue;
+      const d = distXY(o.x, o.y, gen.x, gen.y);
+      if (d < tdn && d < 0.26){ tdn = d; tgt = o; }
+    }
+    const ox = gen.x, oy = gen.y;
+    if (tgt && tdn > 1e-4){
+      const dx = tgt.x - gen.x, dy = tgt.y - gen.y;
+      const step = Math.min(sk.dash, tdn);
+      gen.x = clamp(gen.x + dx * step / tdn, 0.04, 0.96);
+      gen.y = clamp(gen.y + dy * step / tdn, 0.03, 0.97);
+      skillFx({ type:'dash', x0:ox, y0:oy, x1:gen.x, y1:gen.y, life:0.45, color:sk.color });
+    }
+    skillFx({ type:'arcs', x:gen.x, y:gen.y, life:0.55, color:sk.color, dir });
+    skillFx({ type:'flame', x:gen.x, y:gen.y, life:0.8, color:sk.color });
+    let hit = 0, hasted = 0;
+    for (const o of state.units){
+      if (!o.alive || o.type === 'villager') continue;
+      const d = distXY(o.x, o.y, gen.x, gen.y);
+      if (o.team !== gen.team && d <= sk.radius){
+        hitEntity(o, sk.dmg, gen); hit++;
+        skillFx({ type:'splash', x:o.x, y:o.y, life:0.45, color:'#ffb066' });
+      } else if (o.team === gen.team && d <= sk.radius * 1.5){
+        o.buffs.push({ until: state.t + sk.ally.dur, atkSpeed:sk.ally.atkSpeed, dmg:1.10 });
+        hasted++;
+        skillFx({ type:'spark', x:o.x, y:o.y, life:0.6, color:'#ffd08a' });
+      }
+    }
+    // 자기 자신은 분노 상태 — 5초간 공격력 2.2배·공속 증가
+    gen.buffs.push({ until: state.t + sk.rage.dur, dmg:sk.rage.dmg, atkSpeed:1.25, speed:1.15 });
+    detail = `돌진 참격 적 ${hit}기 · 아군 ${hasted}기 공격속도↑`;
+
+  } else if (sk.kind === 'bless'){
+    /* ✧ 김유신 — 화랑의 빛: 광역 회복·사기 진작 + 금빛 검기 */
+    skillFx({ type:'pillar', x:gen.x, y:gen.y, life:1.15, color:sk.color, h:96 });
+    skillFx({ type:'bless', x:gen.x, y:gen.y, life:1.05, color:sk.color, R:sk.radius });
+    let healed = 0, hit = 0;
+    for (const o of state.units){
+      if (!o.alive || o.type === 'villager') continue;
+      const d = distXY(o.x, o.y, gen.x, gen.y);
+      if (o.team !== gen.team || d > sk.radius) continue;
+      const add = Math.round(o.maxHp * sk.heal);
+      o.hp = Math.min(o.maxHp, o.hp + add);
+      o.buffs.push({ until: state.t + sk.morale.dur, dmg:sk.morale.dmg, speed:sk.morale.spd, atkSpeed:sk.morale.atkSpeed });
+      healed++;
+      skillFx({ type:'text', x:o.x, y:o.y, life:0.95, text:'+' + add, color:'#a8f0b0', size:9, lift:16, rise:13 });
+      skillFx({ type:'spark', x:o.x, y:o.y, life:0.7, color:sk.color });
+    }
+    const foes = state.units
+      .filter(o=> o.alive && o.team !== gen.team && o.type !== 'villager' && distXY(o.x,o.y,gen.x,gen.y) <= sk.sword.r)
+      .sort((a,b)=> distXY(a.x,a.y,gen.x,gen.y) - distXY(b.x,b.y,gen.x,gen.y))
+      .slice(0, sk.sword.count);
+    for (const o of foes){
+      skillFx({ type:'sword', x0:gen.x, y0:gen.y, x1:o.x, y1:o.y, life:0.5, color:sk.color });
+      hitEntity(o, sk.sword.dmg, gen); hit++;
+    }
+    detail = `아군 ${healed}기 회복·사기↑ · 금빛 검기 적 ${hit}기`;
   }
+
+  killogSkill(gen, sk, detail);
 }
 
 function performAttack(u, target){
-  u.atkTimer = u.atkInterval; u.anim = 0.25;
+  let atkIv = u.atkInterval;
   let dmg = u.dmg;
-  for (const b of u.buffs) if (b.until > state.t && b.dmg) dmg *= b.dmg;
+  for (const b of u.buffs){
+    if (b.until <= state.t) continue;
+    if (b.dmg) dmg *= b.dmg;
+    if (b.atkSpeed) atkIv /= b.atkSpeed;
+  }
+  // 계백 「황산벌 결사대」 패시브 — 잃은 체력만큼 공격력·공속 상승
+  if (u.type === 'general' && u.skill && u.skill.berserk){
+    const lost = 1 - Math.max(0, u.hp) / u.maxHp;
+    dmg *= 1 + lost * 0.9;
+    atkIv /= 1 + lost * 0.65;
+  }
+  u.atkTimer = atkIv; u.anim = 0.25;
   if (u.aura) dmg *= 1.20;                    // 장군 지휘 오라: 공격력 +20%
   if (u.siege > 1 && target.ent === 'building') dmg *= u.siege;
   if (u.chargeLeft > 0 && target.ent === 'unit'){ u.chargeLeft = 0; dmg *= 1.8; }
@@ -2315,6 +2573,16 @@ function hitEntity(ent, dmg, src){
     if (mul === 0) return;
     dmg *= mul;
   }
+  if (ent.ent === 'unit' && ent.shieldHp > 0 && ent.shieldUntil > state.t){
+    const absorb = Math.min(ent.shieldHp, dmg);
+    ent.shieldHp -= absorb; dmg -= absorb;
+    if (ent.shieldHp <= 0.5){
+      ent.shieldHp = 0;
+      state.effects.push({ type:'splash', x:ent.x, y:ent.y, t:0, life:0.35, color:'#bfeaff' });
+    }
+    ent.hitFlash = 0.1;
+    if (dmg <= 0.01) return;
+  }
   ent.hp -= dmg; ent.hitFlash = 0.14;
   if (ent.hp <= 0){
     ent.alive = false; ent.hp = 0;
@@ -2381,6 +2649,11 @@ function spawnUnit(team, type, x, y){
     pusher: !!src.pusher, pushable: !!src.pushable, chargeLeft: src.charge ? 1 : 0,
     alive:true, order:null, moving:false, buffs:[], hitFlash:0, anim:0, seed:Math.random()*9
   };
+  if (type === 'general'){
+    u.skill = fac.skill;
+    u.lastAutoSkill = -99;
+    u.shieldHp = 0; u.shieldUntil = 0; u.skillCount = 0;
+  }
   state.units.push(u);
   if (team==='me') state.stats.meSummon++;
   if (type === 'general') summonRally(u);
@@ -2701,10 +2974,112 @@ function render(time){
     g.beginPath(); g.ellipse(p.x, p.y, rr, rr*0.55, 0, 0, Math.PI*2); g.fill();
   }
   for (const e of state.effects){
-    const p = proj(e.x, e.y), k = e.t / e.life;
-    if (e.type === 'text'){
-      g.globalAlpha = 1 - k; g.fillStyle = e.color; g.font = '800 11px sans-serif'; g.textAlign = 'center';
-      g.fillText(e.text, p.x, p.y - 24 - k*18); g.globalAlpha = 1;
+    const p = proj(e.x, e.y), k = clamp(e.t / e.life, 0, 1), a = 1 - k;
+    if (e.type === 'text' || e.type === 'skilltext'){
+      const size = e.size || 11, lift = e.lift || 24, rise = e.rise || 18;
+      g.globalAlpha = e.type === 'skilltext' ? Math.min(1, a * 1.7) : a;
+      g.font = (e.weight || 800) + ' ' + size + 'px sans-serif'; g.textAlign = 'center';
+      if (e.type === 'skilltext'){ g.shadowColor = e.color; g.shadowBlur = 10; }
+      g.fillStyle = e.color;
+      g.fillText(e.text, p.x, p.y - lift - k*rise);
+      g.shadowBlur = 0; g.globalAlpha = 1;
+    } else if (e.type === 'wave'){
+      // 고구려 수문 파동 — 3중 확산 링
+      for (let i=0;i<3;i++){
+        const kk = clamp((e.t - i*0.09) / Math.max(0.2, e.life - i*0.09), 0, 1);
+        if (kk <= 0) continue;
+        const rr = (8 + kk * (e.R || 0.13) * 2 * field.halfWBot) * p.s;
+        g.globalAlpha = (1 - kk) * 0.8;
+        g.strokeStyle = e.color; g.lineWidth = 2.8 - i*0.5;
+        g.beginPath(); g.ellipse(p.x, p.y, rr, rr*0.55, 0, 0, Math.PI*2); g.stroke();
+        g.globalAlpha = (1 - kk) * 0.16; g.fillStyle = e.color;
+        g.beginPath(); g.ellipse(p.x, p.y, rr*0.96, rr*0.53, 0, 0, Math.PI*2); g.fill();
+      }
+      g.globalAlpha = 1;
+    } else if (e.type === 'sector'){
+      const rr = (e.R || 0.13) * 2 * field.halfWBot * p.s;
+      const a0 = e.dir > 0 ? Math.PI : 0;   // 내 진영은 위쪽이 적 방향
+      g.globalAlpha = a * 0.32; g.fillStyle = e.color;
+      g.beginPath(); g.moveTo(p.x, p.y);
+      g.ellipse(p.x, p.y, rr, rr*0.55, 0, a0, a0 + Math.PI);
+      g.closePath(); g.fill(); g.globalAlpha = 1;
+    } else if (e.type === 'dash'){
+      const p0 = proj(e.x0, e.y0);
+      g.globalAlpha = a * 0.92; g.lineCap = 'round';
+      const grd = g.createLinearGradient(p0.x, p0.y, p.x, p.y);
+      grd.addColorStop(0, 'rgba(255,140,60,0)'); grd.addColorStop(1, e.color);
+      g.strokeStyle = grd; g.lineWidth = 8 * p.s * (0.35 + a * 0.8);
+      g.beginPath(); g.moveTo(p0.x, p0.y); g.lineTo(p.x, p.y); g.stroke();
+      g.strokeStyle = 'rgba(255,236,205,.9)'; g.lineWidth = 2 * p.s;
+      g.beginPath(); g.moveTo(p0.x, p0.y); g.lineTo(p.x, p.y); g.stroke();
+      g.lineCap = 'butt'; g.globalAlpha = 1;
+    } else if (e.type === 'arcs'){
+      g.globalAlpha = a; g.lineCap = 'round';
+      for (let i=0;i<3;i++){
+        const rr = (12 + i*6 + 20*k) * p.s;
+        const aa = -Math.PI*0.9 + i*0.5 + k*0.9;
+        g.strokeStyle = i % 2 ? '#ffd7a8' : e.color;
+        g.lineWidth = Math.max(1, (3.6 - i*0.8) * p.s);
+        g.beginPath(); g.arc(p.x, p.y - 8*p.s, rr, aa, aa + 1.5); g.stroke();
+      }
+      g.lineCap = 'butt'; g.globalAlpha = 1;
+    } else if (e.type === 'flame'){
+      for (let i=0;i<7;i++){
+        const ph = clamp(k*1.3 - i*0.05, 0, 1);
+        if (ph >= 1) continue;
+        const ang = i*2.2, rr = (5 + 22*ph) * p.s;
+        g.globalAlpha = (1 - ph) * 0.85;
+        g.fillStyle = i % 2 ? '#ff8a3c' : '#ffd05a';
+        g.beginPath(); g.ellipse(p.x + Math.cos(ang)*rr, p.y - 8*p.s + Math.sin(ang)*rr*0.5, 2.4*p.s, 4.4*p.s*(1 - ph*0.5), 0, 0, Math.PI*2); g.fill();
+      }
+      g.globalAlpha = 1;
+    } else if (e.type === 'pillar'){
+      const hh = (e.h || 90) * p.s;
+      const grd = g.createLinearGradient(p.x, p.y, p.x, p.y - hh);
+      grd.addColorStop(0, 'rgba(255,215,110,.55)');
+      grd.addColorStop(1, 'rgba(255,240,190,0)');
+      g.globalAlpha = a; g.fillStyle = grd;
+      const wdt = (7 + 4*Math.sin(time*6)) * p.s;
+      g.fillRect(p.x - wdt, p.y - hh, wdt*2, hh);
+      g.strokeStyle = '#fff3c4'; g.lineWidth = 1.5; g.globalAlpha = a * 0.85;
+      g.beginPath(); g.moveTo(p.x, p.y); g.lineTo(p.x, p.y - hh); g.stroke();
+      g.globalAlpha = 1;
+    } else if (e.type === 'bless'){
+      const rr = (e.R || 0.2) * 2 * field.halfWBot * p.s;
+      const r2 = rr * (0.35 + 0.65*k);
+      g.globalAlpha = a * 0.85; g.strokeStyle = e.color; g.lineWidth = 2.6;
+      g.beginPath(); g.ellipse(p.x, p.y, r2, r2*0.55, 0, 0, Math.PI*2); g.stroke();
+      g.globalAlpha = a * 0.15; g.fillStyle = e.color;
+      g.beginPath(); g.ellipse(p.x, p.y, r2, r2*0.55, 0, 0, Math.PI*2); g.fill();
+      g.globalAlpha = 1;
+    } else if (e.type === 'spark'){
+      g.globalAlpha = a; g.fillStyle = e.color;
+      for (let i=0;i<4;i++){
+        const ang = i*1.7 + (e.x*97) % 3, rr = (4 + 11*k) * p.s;
+        g.beginPath(); g.arc(p.x + Math.cos(ang)*rr, p.y - 6*p.s + Math.sin(ang)*rr*0.55, 1.5*p.s, 0, Math.PI*2); g.fill();
+      }
+      g.globalAlpha = 1;
+    } else if (e.type === 'shield'){
+      g.globalAlpha = a * 0.8; g.strokeStyle = e.color; g.lineWidth = 1.9;
+      g.beginPath(); g.ellipse(p.x, p.y - 5*p.s, 9*p.s*(1 + 0.22*k), 12*p.s*(1 + 0.22*k), 0, Math.PI*1.03, Math.PI*1.97); g.stroke();
+      g.globalAlpha = 1;
+    } else if (e.type === 'sword'){
+      const q = proj(e.x1, e.y1);
+      const hx = p.x + (q.x - p.x) * Math.min(1, k*1.8);
+      const hy = p.y + (q.y - p.y) * Math.min(1, k*1.8);
+      g.globalAlpha = a; g.lineCap = 'round';
+      const grd = g.createLinearGradient(p.x, p.y, q.x, q.y);
+      grd.addColorStop(0, 'rgba(255,215,110,0)'); grd.addColorStop(1, '#fff3c4');
+      g.strokeStyle = grd; g.lineWidth = 3.2 * p.s;
+      g.beginPath(); g.moveTo(p.x, p.y - 8*p.s); g.lineTo(hx, hy - 8*p.s); g.stroke();
+      g.fillStyle = '#fff8dc';
+      g.beginPath(); g.arc(hx, hy - 8*p.s, 2.8*p.s, 0, Math.PI*2); g.fill();
+      g.lineCap = 'butt'; g.globalAlpha = 1;
+    } else if (e.type === 'splash'){
+      const rr = (5 + 15*k) * p.s;
+      g.globalAlpha = a * 0.9; g.strokeStyle = e.color; g.lineWidth = 1.9;
+      g.beginPath(); g.ellipse(p.x, p.y - 5*p.s, rr, rr*0.5, 0, 0, Math.PI*2); g.stroke();
+      g.globalAlpha = 1;
     } else {
       g.strokeStyle = e.color || '#ffd76e'; g.globalAlpha = 1 - k; g.lineWidth = 2;
       g.beginPath(); g.arc(p.x, p.y - 6, (8 + 26*k)*p.s, 0, Math.PI*2); g.stroke(); g.globalAlpha = 1;
@@ -2824,10 +3199,20 @@ function syncCards(){
     b.classList.toggle('active', !!(state.pending && state.pending.card === id));
   });
 
-  const alive = state.units.some(u=> u.alive && u.team==='me' && u.type==='general');
+  const myGen = state.units.find(u=> u.alive && u.team==='me' && u.type==='general');
+  const alive = !!myGen;
   const gBtn = document.getElementById('btnGen');
   gBtn.classList.toggle('on', alive);
-  document.getElementById('genState').textContent = alive ? '전투 중 (자동스킬)' : state.me.genCd>0 ? `부활 ${Math.ceil(state.me.genCd)}초` : '🌾4 소환';
+  const msk = FACTIONS[state.me.faction].skill;
+  if (alive){
+    const left = Math.max(0, (msk.cd || CFG.skillCd) - (state.t - (myGen.lastAutoSkill || -99)));
+    document.getElementById('genState').textContent = left > 0.4
+      ? `${msk.glyph} ${msk.short} ${Math.ceil(left)}초` : `${msk.glyph} ${msk.short} 준비`;
+  } else {
+    document.getElementById('genState').textContent = state.me.genCd > 0
+      ? `부활 ${Math.ceil(state.me.genCd)}초` : `${msk.glyph} ${msk.short} · 🌾4`;
+  }
+  gBtn.title = `${FACTIONS[state.me.faction].hero} — ${msk.name}: ${msk.line}`;
   document.getElementById('btnBuild').classList.toggle('off', towerCount('me')>=CFG.towerCap || state.me.food<CFG.towerCost);
 }
 
@@ -3012,6 +3397,7 @@ function buildLobby(){
         <b>${f.name}</b>
         <div class="hero">${f.hero} <em>${f.heroTitle}</em></div>
         <div class="perk">${f.perk}</div>
+        <div class="fskill"><b>${f.skill.glyph} ${f.skill.name}</b><span>${f.skill.line}</span></div>
       </div>
       <span class="fcheck">✓</span>
     </div>`;
@@ -3169,7 +3555,12 @@ window.tk = function(){
     foeWaveLane: state.foeWaveLane,
     meWarriors: wrt('me').map(u=> ({ x:+u.x.toFixed(3), y:+u.y.toFixed(3), lane:u.lane, hp:Math.round(u.hp), maxHp:u.maxHp, armor:u.armor })),
     foeWarriors: wrt('foe').length,
-    generals: alive.filter(u=> u.type==='general').map(g=> ({ team:g.team, x:+g.x.toFixed(3), y:+g.y.toFixed(3), speed:g.speed, hp:Math.round(g.hp) })),
+    generals: alive.filter(u=> u.type==='general').map(g=> ({ team:g.team, x:+g.x.toFixed(3), y:+g.y.toFixed(3), speed:g.speed, hp:Math.round(g.hp),
+      skill: g.skill && g.skill.name, kind: g.skill && g.skill.kind,
+      skillReadyIn: g.skill ? +Math.max(0, (g.skill.cd || CFG.skillCd) - (state.t - (g.lastAutoSkill || -99))).toFixed(1) : null,
+      casts: g.skillCount || 0, shield: Math.round(g.shieldHp || 0) })),
+    shieldAllies: alive.filter(u=> u.shieldHp > 0).length,
+    effects: state.effects.map(e=> e.type),
     auraBuffed: alive.filter(u=> u.aura).length,
     rallying: alive.filter(u=> u.rally).map(u=> ({ team:u.team, name:u.name, x:+u.x.toFixed(3), y:+u.y.toFixed(3) })),
     armyMe: alive.filter(u=> u.team==='me' && u.type!=='villager').length,
@@ -3179,7 +3570,16 @@ window.tk = function(){
   };
 };
 
-/* 검증·시연용 빨리감기 — window.tkJump(180)처럼 경과 시간을 앞으로 보낸다 */
+/* 검증·시연용: 장군 고유 스킬 강제 발동 — window.tkSkill('me') */
+window.tkSkill = function(team){
+  const t = team === 'foe' ? 'foe' : 'me';
+  const gen = state.units.find(u=> u.alive && u.team===t && u.type==='general');
+  if (!gen) return 'no general';
+  triggerGeneralSkill(gen);
+  return { skill: gen.skill.name, casts: gen.skillCount, effects: state.effects.length };
+};
+
+/* 검증·시연용: 빨리감기 — window.tkJump(180)처럼 경과 시간을 앞으로 보낸다 */
 window.tkJump = function(sec){
   if (state.phase !== 'playing') return 'not playing';
   state.timeLeft = Math.max(0.5, state.timeLeft - Math.max(0, sec));
