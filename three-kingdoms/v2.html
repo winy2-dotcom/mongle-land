@@ -2343,7 +2343,14 @@ function generalSkillOf(gen){
   gen.skill = fac.skill;
   return gen.skill;
 }
-function skillFx(e){ e.t = 0; state.effects.push(e); return e; }
+function skillFx(e){
+  e.t = 0;
+  // 좌표 누락 방어 — 렌더러가 proj(e.x, e.y)로 그리므로 항상 유한 좌표를 보장한다
+  if (!Number.isFinite(e.x)) e.x = Number.isFinite(e.x0) ? e.x0 : (Number.isFinite(e.x1) ? e.x1 : 0.5);
+  if (!Number.isFinite(e.y)) e.y = Number.isFinite(e.y0) ? e.y0 : (Number.isFinite(e.y1) ? e.y1 : 0.5);
+  state.effects.push(e);
+  return e;
+}
 
 /* 발동 한 줄을 전투 기록에 강조 표시 (쿨타임이 길어 도배되지 않음) */
 function killogSkill(gen, sk, detail){
