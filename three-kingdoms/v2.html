@@ -1376,8 +1376,11 @@ function spawnVillager(team){
 /* 3단계 곡물 전진 채취 — 자기 진영 Tier1 → Tier2 → 중앙 중립(Tier3) 순서만 허용 */
 function nearestNode(u, list){
   let best = null, bd = 1e9;
-  for (const x of list){
-    const d = distXY(u.x, u.y, x.x, x.y);
+  for (let i=0;i<list.length;i++){
+    const x = list[i];
+    /* 같은 단계에 밭이 둘이면 백성마다 조금씩 다른 밭을 골라 양쪽이 함께 줄어들게 한다 */
+    const jitter = ((u.seed * 3.7 + i * 0.61) % 1) * 0.05;
+    const d = distXY(u.x, u.y, x.x, x.y) + jitter;
     if (d < bd){ bd = d; best = x; }
   }
   return best;
