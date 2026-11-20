@@ -79,7 +79,8 @@
   /* ---------- 미니 전투 로그(킬로그) ---------- */
   .killog{position:absolute;left:6px;top:6px;z-index:4;width:min(53%,192px);border-radius:10px;
     background:rgba(6,12,18,.68);border:1px solid rgba(120,196,214,.20);backdrop-filter:blur(6px);
-    box-shadow:0 6px 18px rgba(0,0,0,.34);pointer-events:none;overflow:hidden}
+    box-shadow:0 6px 18px rgba(0,0,0,.34);pointer-events:none;overflow:hidden;transition:top .18s ease}
+  .killog.belowbar{top:46px}
   #app.menu .killog{display:none}
   .killog .kh{display:flex;align-items:center;justify-content:space-between;gap:4px;padding:2px 4px 2px 7px;
     background:rgba(12,22,30,.55);border-bottom:1px solid rgba(120,196,214,.13)}
@@ -1934,6 +1935,8 @@ function toast(msg){
 }
 function setPending(txt){
   const bar = document.getElementById('pendingBar');
+  const kl = document.getElementById('killog');
+  if (kl) kl.classList.toggle('belowbar', !!txt);
   if (!txt){ bar.classList.add('hidden'); return; }
   document.getElementById('pendingText').textContent = txt;
   bar.classList.remove('hidden');
