@@ -2597,7 +2597,6 @@ window.tk = function(){
   return {
     phase: state.phase,
     t: +state.t.toFixed(1),
-    timeLeft: +state.timeLeft.toFixed(1),
     elapsed: +(CFG.matchTime - state.timeLeft).toFixed(1),
     armorTier: state.armorTier,
     armorLabel: (ARMOR_TIERS[state.armorTier]||ARMOR_TIERS[0]).label,
@@ -2613,6 +2612,13 @@ window.tk = function(){
     totalUnits: alive.length,
     killog: [...document.querySelectorAll('#killogBody .kline')].map(n=> n.textContent)
   };
+};
+
+/* 검증·시연용 빨리감기 — window.tkJump(180)처럼 경과 시간을 앞으로 보낸다 */
+window.tkJump = function(sec){
+  if (state.phase !== 'playing') return 'not playing';
+  state.timeLeft = Math.max(0.5, state.timeLeft - Math.max(0, sec));
+  return { elapsed: +(CFG.matchTime - state.timeLeft).toFixed(1), tier: state.armorTier };
 };
 })();
 </script>
