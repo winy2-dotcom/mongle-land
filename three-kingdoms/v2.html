@@ -2421,7 +2421,7 @@ function triggerGeneralSkill(gen){
       const step = Math.min(sk.dash, tdn);
       gen.x = clamp(gen.x + dx * step / tdn, 0.04, 0.96);
       gen.y = clamp(gen.y + dy * step / tdn, 0.03, 0.97);
-      skillFx({ type:'dash', x0:ox, y0:oy, x1:gen.x, y1:gen.y, life:0.45, color:sk.color });
+      skillFx({ type:'dash', x:gen.x, y:gen.y, x0:ox, y0:oy, x1:gen.x, y1:gen.y, life:0.45, color:sk.color });
     }
     skillFx({ type:'arcs', x:gen.x, y:gen.y, life:0.55, color:sk.color, dir });
     skillFx({ type:'flame', x:gen.x, y:gen.y, life:0.8, color:sk.color });
