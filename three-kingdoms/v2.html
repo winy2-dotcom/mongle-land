@@ -2322,7 +2322,7 @@ cv.addEventListener('pointerdown', ev=>{
       if (!canPay(CFG.genCost)){ toast('식량 4개가 필요합니다'); return; }
       pay(CFG.genCost);
       spawnUnit('me', 'general', w.x, w.y);
-      toast(FACTIONS[state.me.faction].hero + ' 출진!');
+      toast('★ ' + FACTIONS[state.me.faction].hero + ' 출진 · 전군 결집!');
       state.pending = null; setPending(null); Sfx.deploy();
     } else if (state.pending.kind === 'build'){
       if (w.y < 0.06 || w.y > 0.44){ toast('내 진영에만 공격탑을 세울 수 있습니다'); return; }
