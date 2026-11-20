@@ -1080,8 +1080,25 @@ function drawBattlefield(time){
     g.fillStyle = grass; g.fillRect(0, 0, cvw, cvh);
   }
 
-  // 2) 원경 안개 · 색조 · 비네트
+  // 2) 색 보정(톤 다운) · 원경 안개 · 진영 색조
   const farY = p3.y, nearY = p0.y;
+  if (SPRITES_IMG.grass && SPRITES_IMG.grass.complete && SPRITES_IMG.grass.naturalWidth){
+    g.save();
+    g.globalCompositeOperation = 'multiply';
+    const grade = g.createLinearGradient(0, farY, 0, nearY);
+    grade.addColorStop(0, '#93a8ae');
+    grade.addColorStop(0.35, '#8ba084');
+    grade.addColorStop(0.75, '#87977a');
+    grade.addColorStop(1, '#7d8c70');
+    g.fillStyle = grade; g.fillRect(0, 0, cvw, cvh);
+    g.restore();
+    // 햇빛 웅덩이
+    const sun = g.createRadialGradient(field.cx - cvw * 0.12, farY + (nearY - farY) * 0.45, 10,
+                                       field.cx - cvw * 0.12, farY + (nearY - farY) * 0.45, (nearY - farY) * 0.55);
+    sun.addColorStop(0, 'rgba(255,244,206,.10)');
+    sun.addColorStop(1, 'rgba(255,244,206,0)');
+    g.fillStyle = sun; g.fillRect(0, 0, cvw, cvh);
+  }
   const fog = g.createLinearGradient(0, farY, 0, farY + (nearY - farY) * 0.34);
   fog.addColorStop(0, 'rgba(24,38,48,.52)');
   fog.addColorStop(0.55, 'rgba(24,38,48,.16)');
