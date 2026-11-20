@@ -1388,6 +1388,12 @@ function nearestNode(u, list){
 function grainTierLabel(tier){
   return tier >= 3 ? '중앙 중립지대' : tier === 2 ? '앞마당' : '본진';
 }
+/* 받침에 따라 '으로 / 로' */
+function roParticle(word){
+  const c = word.charCodeAt(word.length - 1);
+  if (c < 0xAC00 || c > 0xD7A3) return '으로';
+  return ((c - 0xAC00) % 28) ? '으로' : '로';
+}
 function announceGrainTier(team, tier){
   if (tier <= 1) return;
   const S = team === 'me' ? state.me : state.foe;
@@ -1395,7 +1401,7 @@ function announceGrainTier(team, tier){
   const from = grainTierLabel(tier - 1), to = grainTierLabel(tier);
   S.grainTier = tier;
   if (team === 'me'){
-    toast(`🌾 ${from} 곡물 고갈! 백성들이 ${to}으로 이동합니다`);
+    toast(`🌾 ${from} 곡물 고갈! 백성들이 ${to}${roParticle(to)} 이동합니다`);
     killogSys(`🌾 ${from} 곡물 고갈 — 백성 ${to} 이동`);
     Sfx.move();
   } else {
