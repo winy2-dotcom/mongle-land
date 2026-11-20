@@ -2009,7 +2009,7 @@ function update(dt){
     const T = ARMOR_TIERS[tierNow];
     const mins = Math.floor(T.at/60);
     toast(`전사 갑옷 강화! ${T.label} (체력 ×${T.hpMul.toFixed(2)} · 피해 감소 ${Math.round(T.armor*100)}%)`);
-    killogSys(`⏱ ${mins}분 — 양군 전사 ${T.label} 강화`);
+    killogSys(`⏱ ${mins}분 — 전사 갑옷 진화: ${T.label}`);
     Sfx.skill();
     updateArmorChip();
   }
