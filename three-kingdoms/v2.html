@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#0b0f14">
-<title>삼국 전략 v2.2 · 전사 웨이브</title>
+<title>삼국 전략 v2.3 · 단일 식량 · 웨이브</title>
 <style>
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{margin:0;height:100%;overflow:hidden;background:radial-gradient(circle at 50% 12%,#1a2230 0%,#0a0e13 55%,#05070a 100%);
@@ -205,21 +205,21 @@
   .resbar .ric{font-size:11px;line-height:1}
   .rbar{position:relative;flex:1;height:10px;border-radius:6px;background:#161a20;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
   #foodFill{position:absolute;left:0;top:0;bottom:0;width:50%;border-radius:6px;background:linear-gradient(90deg,#3f8f43,#7ec94a 60%,#d3e06a)}
-  #woodFill{position:absolute;left:0;top:0;bottom:0;width:40%;border-radius:6px;background:linear-gradient(90deg,#7e4f26,#bb8244 60%,#e2b073)}
   .rbar .ticks{position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 9.99%,rgba(0,0,0,.42) 9.99% 10.05%)}
   .resbar b{font-size:10px;font-weight:800;color:#dfe8f2;min-width:15px;text-align:right;font-variant-numeric:tabular-nums}
 
-  .vsliderRow{display:flex;align-items:center;gap:7px;margin-bottom:5px;padding:3px 7px;border-radius:10px;
-    background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.08)}
-  .vtag{font-size:10px;font-weight:800;white-space:nowrap}
-  .vtag.wood{color:#e2b073}
-  .vtag.food{color:#9fe06a}
-  .vsliderWrap{position:relative;flex:1;display:flex;align-items:center}
-  #villSlider{width:100%;-webkit-appearance:none;appearance:none;height:8px;border-radius:999px;outline:none;cursor:pointer;
-    background:linear-gradient(90deg,#bb8244 0%,#bb8244 40%,#7ec94a 40%,#7ec94a 100%)}
-  #villSlider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:20px;height:20px;border-radius:50%;
-    background:#f6ecd2;border:2.5px solid #2b2116;box-shadow:0 2px 6px rgba(0,0,0,.6);cursor:pointer}
-  .vdead{font-size:8.5px;color:#ff8a70;font-weight:700;white-space:nowrap}
+  #foodWrap{flex:1}
+  #foodWrap .rbar{height:12px}
+  #foodWrap .ric{font-size:13px}
+  .grainRow{display:flex;align-items:center;gap:6px;margin-bottom:5px;padding:3px 8px;border-radius:10px;
+    background:linear-gradient(90deg,rgba(120,180,70,.13),rgba(120,180,70,.03));border:1px solid rgba(150,210,110,.22)}
+  .grainRow .gi{font-size:11px;line-height:1}
+  .grainRow .gtxt{flex:1;font-size:10px;font-weight:800;color:#cfe6a8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .grainRow .gtier{font-size:8.5px;font-weight:800;color:#9fe06a;padding:1px 6px;border-radius:999px;
+    background:rgba(126,201,74,.16);border:1px solid rgba(150,220,110,.35);white-space:nowrap}
+  .grainRow.t2 .gtier{color:#ffe08a;background:rgba(230,190,90,.16);border-color:rgba(240,200,110,.42)}
+  .grainRow.t3 .gtier{color:#a5e6ff;background:rgba(120,200,235,.16);border-color:rgba(140,215,245,.45)}
+  .grainRow .vdead{font-size:8.5px;color:#ff8a70;font-weight:700;white-space:nowrap}
 
   .upg{display:flex;gap:5px;margin:0 0 5px}
   .genbtn{display:flex;align-items:center;gap:6px;padding:3px 8px 3px 4px;border-radius:11px;flex:0 0 auto;
@@ -290,7 +290,7 @@
       <div class="sideTxt">
         <b id="foeName">백제</b>
         <i id="foeHero">계백 · 결사대장</i>
-        <div class="foeRes"><span>🌾<b class="q">?</b> 🪵<b class="q">?</b></span><span id="foeVill">백성 10 · 🪵4 🌾6</span></div>
+        <div class="foeRes"><span>🌾<b class="q">?</b></span><span id="foeVill">백성 10명</span></div>
       </div>
     </div>
     <div class="clock">
@@ -325,7 +325,7 @@
       <button data-q="all">전체</button>
       <button data-q="gen">장수</button>
       <button data-q="arch">원거리</button>
-      <button id="btnBuild" class="build">공격탑<b>🪵4</b></button>
+      <button id="btnBuild" class="build">공격탑<b>🌾4</b></button>
       <span id="selCount">선택 0</span>
     </div>
 
@@ -343,19 +343,19 @@
     <div class="toast" id="toast"></div>
 
     <div class="forge hidden" id="forgePanel">
-      <div class="fh"><b>⚒ 대장간 — 🪵나무 전용 업그레이드</b><button id="forgeClose">닫기</button></div>
+      <div class="fh"><b>⚒ 대장간 — 🌾식량 업그레이드</b><button id="forgeClose">닫기</button></div>
       <div id="forgeRows"></div>
     </div>
 
     <div class="overlay" id="startScreen">
-      <div class="title">삼국 <span>전략</span> <small style="font-size:12px;color:#ffd76e;letter-spacing:0">v2.2 · 전사 웨이브</small></div>
-      <div class="sub">5초마다 전사 3기 자동 출격(좌·중·우 지정) · 3/6/9분 갑옷 진화 · 유닛 6장 + 고정 마법 2장</div>
+      <div class="title">삼국 <span>전략</span> <small style="font-size:12px;color:#ffd76e;letter-spacing:0">v2.3 · 단일 식량 · 웨이브</small></div>
+      <div class="sub">🌾식량 단일 자원 · 고정 마법 2장 · 5초마다 전사 3기 자동 출격 · 3/6/9분 갑옷 진화</div>
       <div class="factions" id="factionList"></div>
       <div class="deckPick">
         <div class="dpHead"><b>전투 덱 편성 <span id="deckCount">유닛 6/6 · 마법 2/2</span></b><button id="btnReco">추천 덱</button></div>
         <div class="dpSecLabel"><span>유닛 로테이션 덱 (6장 중 4장씩 순환)</span><span id="unitPickCnt">6/6</span></div>
         <div class="dpGrid" id="dpUnitGrid"></div>
-        <div class="dpSecLabel"><span>고정 전술 마법 (2장 · 상시 사용 가능 · 🪵나무)</span><span id="spellPickCnt">2/2</span></div>
+        <div class="dpSecLabel"><span>고정 전술 마법 (2장 · 상시 사용 가능 · 🌾식량)</span><span id="spellPickCnt">2/2</span></div>
         <div class="dpGrid" id="dpSpellGrid"></div>
       </div>
       <div class="diffRow" id="diffRow"><b>난이도</b>
@@ -373,15 +373,14 @@
     </div>
 
     <div class="overlay hidden" id="helpScreen">
-      <div class="title" style="font-size:19px">전술 가이드 (v2.2)</div>
+      <div class="title" style="font-size:19px">전술 가이드 (v2.3)</div>
       <div class="guide">
-        <b>1. 단일 자원 코스트 체계</b>모든 유닛과 업그레이드는 <span>🌾식량</span> 또는 <span>🪵나무</span> 중 딱 한 가지 자원만 소모합니다.<br>
-        • <span>🌾 식량:</span> 보병·기병·궁수·장수·성 수리사 등 병력 소환<br>
-        • <span>🪵 나무:</span> 전술 마법 2종(고정 슬롯)·공성병기·대장간·공격탑·★진화<br>
-        <b>2. 유닛 로테이션 + 고정 마법</b>유닛 6장은 4장씩 순환 등장하며, 마법 2장은 우측 고정 슬롯에서 쿨타임(12초)마다 언제든 쓸 수 있습니다.<br>
-        <b>3. 묵직한 전술 템포 & 기병 밀어주기</b>유닛 이동속도를 80%로 조정해 교전 호흡을 살렸습니다. 느린 <span>방패병(2인조)</span> 뒤에 <span>기병</span>을 붙이면 밀어주기 돌진이 발동합니다.
-        <b>4. 전사 자동 웨이브 & 갑옷 진화</b>이제 전사는 덱 카드가 아니고 양군 본성 앞에서 <span>5초마다 3기씩</span> 자동 출격합니다. 우상단 <span>전사 좌·중·우</span>로 내 전사의 다리를 정하고, 3·6·9분이 지나면 양군 전사가 경갑 → 중갑 → 정예 중무장으로 강화됩니다.
-        <b>5. 장군 지휘</b>장군은 느리게 걸으며 출진하면 주변 아군이 곁으로 결집합니다. 장군 반경 0.15 안의 아군은 <span>공격력 +20% · 받는 피해 -15%</span> 지휘 오라를 받습니다(발밑 금빛 링).
+        <b>1. 단일 자원 🌾식량</b>모든 유닛·전술 마법·공성병기·공격탑·대장간·★진화가 <span>🌾식량</span> 하나만 씁니다. 백성 10명이 곡물밭에서 식량을 캐 오고, 시간이 지나면 자동으로 조금씩 회복됩니다.<br>
+        <b>2. 3단계 곡물 전진 채취</b>백성은 <span>본진 곡물밭</span> → <span>앞마당 곡물밭</span> → <span>중앙 중립지대 섬</span> 순서로만 전진합니다. 앞 단계 밭이 모두 비면 다음 단계로 옮겨 가고, 중앙 섬 곡물은 <span>수확량 1.5배</span>입니다. 논이 줄어들면 다음 자리를 미리 확보하세요.<br>
+        <b>3. 유닛 로테이션 + 고정 마법</b>유닛 6장은 4장씩 순환 등장하며, 마법 2장은 우측 고정 슬롯에서 쿨타임(12초)마다 언제든 쓸 수 있습니다.<br>
+        <b>4. 묵직한 전술 템포 & 기병 밀어주기</b>유닛 이동속도를 80%로 조정해 교전 호흡을 살렸습니다. 느린 <span>방패병(2인조)</span> 뒤에 <span>기병</span>을 붙이면 밀어주기 돌진이 발동합니다.
+        <b>5. 전사 자동 웨이브 & 갑옷 진화</b>전사는 <span>5초마다 3기씩</span> 자동 출격하며, 한 팀당 필드에 <span>최대 21기</span>까지만 남습니다. 우상단 <span>전사 좌·중·우</span>로 내 전사의 다리를 정하고, 3·6·9분이 지나면 양군 전사가 경갑 → 중갑 → 정예 중무장으로 강화됩니다.
+        <b>6. 장군 지휘</b>장군은 느리게 걸으며 출진하면 주변 아군이 곁으로 결집합니다. 장군 반경 0.15 안의 아군은 <span>공격력 +20% · 받는 피해 -15%</span> 지휘 오라를 받습니다(발밑 금빛 링).
       </div>
       <button class="bigbtn" id="btnHelpClose">닫기</button>
     </div>
@@ -392,21 +391,14 @@
       <div class="resbar" id="foodWrap">
         <span class="ric">🌾</span>
         <div class="rbar"><div id="foodFill"></div><div class="ticks"></div></div>
-        <b id="foodNum">6</b>
-      </div>
-      <div class="resbar" id="woodWrap">
-        <span class="ric">🪵</span>
-        <div class="rbar"><div id="woodFill"></div><div class="ticks"></div></div>
-        <b id="woodNum">5</b>
+        <b id="foodNum">7</b>
       </div>
     </div>
 
-    <div class="vsliderRow">
-      <span class="vtag wood" id="lblWoodVill">🪵 4명</span>
-      <div class="vsliderWrap">
-        <input type="range" id="villSlider" min="0" max="10" value="6" aria-label="백성 농사 비율">
-      </div>
-      <span class="vtag food" id="lblFoodVill">🌾 6명</span>
+    <div class="grainRow" id="grainRow">
+      <span class="gi">🌾</span>
+      <span class="gtxt" id="grainStatus">백성 10명 · 본진 채취</span>
+      <span class="gtier" id="grainTier">1단계</span>
       <span class="vdead" id="lblDeadVill"></span>
     </div>
 
@@ -418,7 +410,7 @@
       <button class="upgbtn" id="btnUpg">
         <span class="ustars" id="upgStars">★☆☆</span>
         <span class="utxt"><b id="upgName">주력 병종</b><i id="upgDesc">별 진화</i></span>
-        <span class="ucost" id="upgCost">🪵4</span>
+        <span class="ucost" id="upgCost">🌾4</span>
       </button>
       <button class="forgebtn" id="btnForge"><span>⚒</span><b>대장간</b></button>
     </div>
@@ -507,8 +499,7 @@ const Sfx = {
 /* 설정 (v2.1: 단일 자원 코스트 + 전체 이속 80% 조정) */
 const CFG = {
   matchTime: 600,
-  foodStart: 6, foodMax: 12, foodRegen: 2.4,
-  woodStart: 5, woodMax: 12, woodRegen: 3.0,
+  foodStart: 7, foodMax: 15, foodRegen: 2.6,
 
   baseHp: 3800,
   castleHp: 1800,
@@ -517,7 +508,7 @@ const CFG = {
 
   towerDmg: 28, towerInterval: 0.95, towerRange: 0.175,
   castleDmg: 30, castleInterval: 0.85, castleRange: 0.170,
-  towerWood: 4, towerCap: 3,
+  towerCost: 4, towerCap: 3,
 
   genCost: { food: 4 },
   genRespawn: 12,
@@ -533,10 +524,11 @@ const CFG = {
   villSpeed: 0.038,
   villHp: 75,
   harvestTime: 2.6,
-  carry: { wood: 0.65, food: 0.65 },
-  nodeCharges: 260,
-  neutralCharges: 160,
-  neutralYield: 2,
+  carry: { food: 0.65 },
+  nodeCharges: 85,        /* Tier 1 본진 곡물밭 */
+  yardCharges: 130,       /* Tier 2 앞마당 곡물밭 */
+  neutralCharges: 220,    /* Tier 3 중앙 섬 곡물밭 */
+  neutralYield: 1.5,
   villFleeRange: 0.075,
   AGGRO_X: 0.65
 };
@@ -548,10 +540,11 @@ const BSTAT = {
   tower:  { hp: CFG.towerHp, rad: 0.026, label: '공격탑' }
 };
 
+/* tick: AI 소환 주기 배율(클수록 느림) / res: AI 식량 수급 배율 */
 const DIFF = {
-  easy: { label:'쉬움', tick:1.4, res:0.82 },
-  normal: { label:'보통', tick:1.0, res:1.0 },
-  hard: { label:'어려움', tick:0.8, res:1.18 }
+  easy: { label:'쉬움', tick:2.6, res:0.78 },
+  normal: { label:'보통', tick:2.0, res:0.92 },
+  hard: { label:'어려움', tick:1.4, res:1.12 }
 };
 const ENEMY_OF = { goguryeo:'baekje', baekje:'silla', silla:'goguryeo' };
 
@@ -562,6 +555,8 @@ const LANE_NAMES = ['좌', '중', '우'];
 /* 전사 자동 웨이브: 5초마다 3기 */
 const WAVE_INTERVAL = 5.0;
 const WAVE_SIZE = 3;
+/* 눈덩이 방지: 한 팀이 필드에 유지할 수 있는 자동 전사 상한 */
+const WAVE_CAP = 21;
 const WAVE_Y = { me: 0.11, foe: 0.89 };
 
 /* 10분 매치 기준 3/6/9분 경과별 전사 갑옷 티어 */
@@ -577,13 +572,21 @@ function armorTierIndex(elapsed){
   return idx;
 }
 
+/* 3단계 곡물 전진 채취 — 곡물밭만 존재한다 */
 const NODE_LAYOUT = [
-  { res:'wood', owner:'me', x:0.26, y:0.055 },
-  { res:'food', owner:'me', x:0.74, y:0.055 },
-  { res:'wood', owner:'foe', x:0.26, y:0.945 },
-  { res:'food', owner:'foe', x:0.74, y:0.945 },
-  { res:'wood', owner:null, x:0.32, y:0.500 },
-  { res:'food', owner:null, x:0.68, y:0.500 }
+  /* Tier 1 본진 후방 — 초반 1~2분에 고갈 */
+  { res:'food', owner:'me',  tier:1, x:0.26, y:0.055, charges:85 },
+  { res:'food', owner:'me',  tier:1, x:0.74, y:0.055, charges:85 },
+  { res:'food', owner:'foe', tier:1, x:0.26, y:0.945, charges:85 },
+  { res:'food', owner:'foe', tier:1, x:0.74, y:0.945, charges:85 },
+  /* Tier 2 좌우성·전초성 앞마당 */
+  { res:'food', owner:'me',  tier:2, x:0.24, y:0.250, charges:130 },
+  { res:'food', owner:'me',  tier:2, x:0.76, y:0.250, charges:130 },
+  { res:'food', owner:'foe', tier:2, x:0.24, y:0.750, charges:130 },
+  { res:'food', owner:'foe', tier:2, x:0.76, y:0.750, charges:130 },
+  /* Tier 3 중앙 중립지대 강 섬 — 수확 1.5배 */
+  { res:'food', owner:null,  tier:3, x:0.32, y:0.500, charges:220 },
+  { res:'food', owner:null,  tier:3, x:0.68, y:0.500, charges:220 }
 ];
 
 function feverMul(left){
@@ -656,23 +659,23 @@ const UNITS = {
   beastMaster:  { name:'금수수련가', kind:'unit', rarity:'legend', icon:'paw', role:'나라별 금수', cost:{food:7},
                   hp:290, dmg:28, atk:0.95, range:0.038, speed:0.070, aggro:0.12, rad:0.020, beast:1, look:'spear' },
 
-  // 🪵 나무 전용 유닛 (공성·공중기계)
-  kite:         { name:'연날리개', kind:'unit', rarity:'rare', icon:'kite', role:'공중 견제', cost:{wood:4},
+  // 공성·공중기계 (🌾식량)
+  kite:         { name:'연날리개', kind:'unit', rarity:'rare', icon:'kite', role:'공중 견제', cost:{food:4},
                   hp:80, dmg:14, atk:0.90, range:0.145, speed:0.066, aggro:0.15, rad:0.016, ranged:true, flying:true, look:'kite' },
-  oldSiege:     { name:'낡은공성병기', kind:'unit', rarity:'common', icon:'catapult', role:'성·탑 공성', cost:{wood:4},
+  oldSiege:     { name:'낡은공성병기', kind:'unit', rarity:'common', icon:'catapult', role:'성·탑 공성', cost:{food:4},
                   hp:180, dmg:38, atk:2.40, range:0.140, speed:0.024, aggro:0.14, rad:0.022, ranged:true, siege:2.6, splash:0.028, buildingOnly:true, look:'hwacha' },
-  cannon:       { name:'화포', kind:'unit', rarity:'rare', icon:'cannon', role:'원거리 포격', cost:{wood:6},
+  cannon:       { name:'화포', kind:'unit', rarity:'rare', icon:'cannon', role:'원거리 포격', cost:{food:6},
                   hp:220, dmg:50, atk:2.60, range:0.175, speed:0.022, aggro:0.15, rad:0.023, ranged:true, siege:2.5, splash:0.048, look:'hwacha' },
 
   // 전용 장군 (🌾식량 4)
   general:      { name:'장군', kind:'general', rarity:'legend', icon:'flag', role:'자동 스킬 영웅', cost:{food:4},
                   hp:760, dmg:42, atk:1.00, range:0.042, speed:0.028, aggro:0.12, rad:0.024, look:'gen' },
 
-  // 🪵 나무 전용 고정 마법
-  arrowRain:    { name:'화살지원', kind:'spell', rarity:'common', icon:'arrows', role:'범위 화살비', cost:{wood:3} },
-  rainRitual:   { name:'기우제', kind:'spell', rarity:'advanced', icon:'rain', role:'적 공격 봉쇄', cost:{wood:4} },
-  shamanWish:   { name:'무당의소원', kind:'spell', rarity:'rare', icon:'moon', role:'아군회복·장군부활', cost:{wood:5} },
-  shipBombard:  { name:'함선폭격', kind:'spell', rarity:'legend', icon:'ship', role:'대규모 함포', cost:{wood:6} }
+  // 고정 전술 마법 (🌾식량)
+  arrowRain:    { name:'화살지원', kind:'spell', rarity:'common', icon:'arrows', role:'범위 화살비', cost:{food:3} },
+  rainRitual:   { name:'기우제', kind:'spell', rarity:'advanced', icon:'rain', role:'적 공격 봉쇄', cost:{food:4} },
+  shamanWish:   { name:'무당의소원', kind:'spell', rarity:'rare', icon:'moon', role:'아군회복·장군부활', cost:{food:5} },
+  shipBombard:  { name:'함선폭격', kind:'spell', rarity:'legend', icon:'ship', role:'대규모 함포', cost:{food:6} }
 };
 
 const BEASTS = {
@@ -690,12 +693,12 @@ const FORGE = {
   ranged: { name:'활·화포 개량', icon:'🏹', desc:'원거리 공격력 +10%/단계' },
   armor:  { name:'갑옷 보강', icon:'🛡', desc:'전 병력 체력 +10%/단계' }
 };
-const FORGE_COST = [ { wood:3 }, { wood:5 }, { wood:7 } ];
+const FORGE_COST = [ { food:3 }, { food:5 }, { food:7 } ];
 
 const STAR_UP = {
-  goguryeo: { type:'cavalry', line:'개마무사', cost2:{wood:4}, cost3:{wood:7}, s2:'직선 관통 · 돌진 가속', s3:'중갑 · 넉백 밀치기' },
-  baekje:   { type:'archer',  line:'백제신궁', cost2:{wood:4}, cost3:{wood:7}, s2:'사거리↑ · 연사 강화', s3:'불화살 · 화상 도트' },
-  silla:    { type:'warrior', line:'화랑검객', cost2:{wood:4}, cost3:{wood:7}, s2:'발업 · 이속/공속↑', s3:'광역 검기 베기' }
+  goguryeo: { type:'cavalry', line:'개마무사', cost2:{food:4}, cost3:{food:7}, s2:'직선 관통 · 돌진 가속', s3:'중갑 · 넉백 밀치기' },
+  baekje:   { type:'archer',  line:'백제신궁', cost2:{food:4}, cost3:{food:7}, s2:'사거리↑ · 연사 강화', s3:'불화살 · 화상 도트' },
+  silla:    { type:'warrior', line:'화랑검객', cost2:{food:4}, cost3:{food:7}, s2:'발업 · 이속/공속↑', s3:'광역 검기 베기' }
 };
 
 function displayName(facKey, id){
@@ -711,15 +714,14 @@ function cardInfo(facKey, id){
 
 const state = {
   phase:'menu',
-  me:{ faction:'goguryeo', food:CFG.foodStart, wood:CFG.woodStart, star:1, genCd:0, up:{melee:0,ranged:0,armor:0}, villLost:0 },
-  foe:{ faction:'baekje', food:CFG.foodStart, wood:CFG.woodStart, star:1, genCd:0, up:{melee:0,ranged:0,armor:0}, villLost:0 },
+  me:{ faction:'goguryeo', food:CFG.foodStart, star:1, genCd:0, up:{melee:0,ranged:0,armor:0}, villLost:0, grainTier:1 },
+  foe:{ faction:'baekje', food:CFG.foodStart, star:1, genCd:0, up:{melee:0,ranged:0,armor:0}, villLost:0, grainTier:1 },
   pickUnits: FACTIONS.goguryeo.defaultUnits.slice(),
   pickSpells: FACTIONS.goguryeo.defaultSpells.slice(),
   hand: [],       // 유닛 4장
   drawPile: [],   // 유닛 2장 대기 (NEXT 포함)
   spellCds: {},   // 고정 마법 쿨타임 기록
   foeDeck: [],
-  woodRatio: 4,
   villRespawns: [],
   nodes:[], units:[], buildings:[], projectiles:[], effects:[], zones:[],
   selection:new Set(),
@@ -730,9 +732,10 @@ const state = {
   camY: 0.34,
   waveLane: 1, waveTimer: 0.8,
   foeWaveLane: 1, foeWaveTimer: 1.4,
-  armorTier: 0
+  armorTier: 0,
+  diff: 'normal'
 };
-const ai = { timer:3, ecoTimer:4 };
+const ai = { timer:3 };
 
 const stage = document.getElementById('stage');
 const cv = document.getElementById('cv');
@@ -1006,48 +1009,62 @@ function drawBuilding(b, time){
   }
 }
 
-/* 숲(나무 그루터기 반영) & 논밭(벼 이삭 반영) */
+/* 곡물밭 — 남은 수확량에 따라 논이 눈에 띄게 줄고, 고갈되면 빈 논바닥이 된다 */
 function drawNode(n, time){
   const p = proj(n.x, n.y);
   const s = p.s * 1.55;
-  const ratio = n.max ? n.left / n.max : 0;
-  if (n.res === 'food'){
-    g.save();
-    g.beginPath(); g.ellipse(p.x, p.y, 17*s, 7.6*s, 0, 0, Math.PI*2);
-    g.fillStyle = ratio > 0 ? '#3d5a2c' : '#4a3f2e'; g.fill();
-    g.strokeStyle = 'rgba(120,90,50,.85)'; g.lineWidth = 1.4*s; g.stroke();
-    g.clip();
-    const grown = Math.ceil(ratio * 6);
-    for (let r=0;r<4;r++){
-      const yy = p.y - 4.5*s + r*2.8*s;
-      for (let c=0;c<6;c++){
-        if ((r*6+c)%6 >= grown) continue;
-        const xx = p.x - 12*s + c*4.6*s + (r%2)*2*s;
+  const ratio = n.max ? clamp(n.left / n.max, 0, 1) : 0;
+  const shrink = 0.52 + 0.48 * Math.sqrt(ratio);
+  const rx = 17*s*shrink, ry = 7.6*s*shrink;
+
+  g.save();
+  g.beginPath(); g.ellipse(p.x, p.y, rx, ry, 0, 0, Math.PI*2);
+  g.fillStyle = ratio > 0.02 ? '#3d5a2c' : '#4a3f2e'; g.fill();
+  g.strokeStyle = 'rgba(120,90,50,.85)'; g.lineWidth = 1.4*s; g.stroke();
+  g.clip();
+
+  // 논두렁 물길
+  g.strokeStyle = ratio > 0.02 ? 'rgba(110,160,120,.32)' : 'rgba(120,95,60,.42)';
+  g.lineWidth = 0.8*s;
+  for (let r=1;r<4;r++){
+    const yy = p.y - ry*0.62 + r*(ry*0.42);
+    g.beginPath(); g.moveTo(p.x-rx*0.92, yy); g.lineTo(p.x+rx*0.92, yy); g.stroke();
+  }
+
+  if (ratio > 0.02){
+    const rows = 4, cols = 6, grown = Math.ceil(ratio * rows * cols);
+    for (let r=0;r<rows;r++){
+      const yy = p.y - 4.5*s*shrink + r*2.8*s*shrink;
+      for (let c=0;c<cols;c++){
+        if ((r*cols+c) >= grown) continue;
+        const xx = p.x - 12*s*shrink + c*4.6*s*shrink + (r%2)*2*s*shrink;
         const sway = Math.sin(time*2 + c + r)*0.6*s;
         g.strokeStyle = '#c9d86a'; g.lineWidth = 1.1*s;
         g.beginPath(); g.moveTo(xx, yy+1.4*s); g.lineTo(xx+sway, yy-3.2*s); g.stroke();
         g.fillStyle = '#e8d27a'; g.beginPath(); g.arc(xx+sway, yy-3.4*s, 0.9*s, 0, Math.PI*2); g.fill();
       }
     }
-    g.restore();
   } else {
-    const total = 5, alive = Math.ceil(ratio * total);
-    const spots = [[-9,-1],[8,-2],[0,3],[-3,-6],[10,4]];
-    for (let i=0;i<total;i++){
-      const [dx, dy] = spots[i];
-      const tx = p.x + dx*s, ty = p.y + dy*s;
-      if (i >= alive){ ellipse(g, tx, ty, 2.5*s, 1.2*s, '#5a4430'); continue; }
-      ellipse(g, tx, ty+1*s, 4.8*s, 2*s, 'rgba(0,0,0,.3)');
-      g.fillStyle = '#5b3e24'; g.fillRect(tx-1*s, ty-5*s, 2*s, 5*s);
-      g.fillStyle = '#1f4a2c'; g.beginPath(); g.moveTo(tx, ty-18*s); g.lineTo(tx+6*s, ty-5*s); g.lineTo(tx-6*s, ty-5*s); g.closePath(); g.fill();
-      g.fillStyle = '#2d6a3c'; g.beginPath(); g.moveTo(tx, ty-20*s); g.lineTo(tx+4.5*s, ty-10*s); g.lineTo(tx-4.5*s, ty-10*s); g.closePath(); g.fill();
+    // 빈 논 — 마른 흙과 그루터기만 남는다
+    g.strokeStyle = 'rgba(28,20,12,.5)'; g.lineWidth = 0.8*s;
+    for (let i=0;i<5;i++){
+      const xx = p.x - rx*0.6 + i*rx*0.3;
+      g.beginPath(); g.moveTo(xx, p.y - ry*0.6); g.lineTo(xx + 1.6*s, p.y + ry*0.6); g.stroke();
+    }
+    g.fillStyle = '#6b5a3e';
+    for (let i=0;i<4;i++){
+      const xx = p.x - 8*s*shrink + i*5*s*shrink, yy = p.y + (i%2 ? 1.5 : -1.5)*s*shrink;
+      g.beginPath(); g.ellipse(xx, yy, 1.4*s, 0.8*s, 0, 0, Math.PI*2); g.fill();
     }
   }
+  g.restore();
+
   g.strokeStyle = n.neutral ? 'rgba(255,215,120,.8)' : (n.owner==='me' ? 'rgba(90,230,200,.45)' : 'rgba(255,110,90,.45)');
-  g.lineWidth = 1.2; g.beginPath(); g.ellipse(p.x, p.y+1*s, 19*s, 8.5*s, 0, 0, Math.PI*2); g.stroke();
+  g.lineWidth = 1.2; g.beginPath(); g.ellipse(p.x, p.y+1*s, 19*s*shrink, 8.5*s*shrink, 0, 0, Math.PI*2); g.stroke();
   g.font = '700 ' + (8.5*Math.max(0.8,p.s)).toFixed(1) + 'px sans-serif'; g.textAlign = 'center';
   g.fillStyle = n.neutral ? '#ffe699' : '#dfe8f2';
-  g.fillText((n.neutral?'중립 ':'') + (n.res==='wood'?'🪵':'🌾') + ' ' + n.left, p.x, p.y + 13*s);
+  const tierTag = n.tier === 3 ? '섬 ' : (n.tier === 2 ? '앞마당 ' : '');
+  g.fillText((n.neutral?'중립 ':'') + tierTag + '🌾 ' + Math.max(0, Math.ceil(n.left)), p.x, p.y + 13*s);
 }
 
 /* 삿갓 쓰고 연장·짐 든 백성 렌더러 */
@@ -1081,18 +1098,12 @@ function drawVillager(u, time){
   g.strokeStyle = '#7a5a36'; g.lineWidth = 1.1*s;
   g.beginPath(); g.moveTo(0, 0); g.lineTo(0, -6*s); g.stroke();
   g.fillStyle = '#c9ced4';
-  if (u.job === 'wood') g.fillRect(-0.4*s, -6.6*s, 2.6*s, 2.2*s);
-  else { g.beginPath(); g.arc(1.6*s, -6*s, 2*s, Math.PI, Math.PI*1.9); g.stroke(); }
+  g.beginPath(); g.arc(1.6*s, -6*s, 2*s, Math.PI, Math.PI*1.9); g.stroke();
   g.restore();
 
-  // 짐 (통나무/볏단)
+  // 짐 (볏단)
   if (u.carrying > 0){
-    if (u.carryRes === 'wood'){
-      g.fillStyle = '#8a5a2e'; roundRect(g, x-5*s, yy-9*s, 4.6*s, 2.4*s, 1*s); g.fill();
-      g.fillStyle = '#b07a44'; roundRect(g, x-5.4*s, yy-11*s, 4.6*s, 2.2*s, 1*s); g.fill();
-    } else {
-      g.fillStyle = '#e3c76a'; g.beginPath(); g.ellipse(x-3.6*s, yy-9*s, 2.6*s, 3.2*s, -0.3, 0, Math.PI*2); g.fill();
-    }
+    g.fillStyle = '#e3c76a'; g.beginPath(); g.ellipse(x-3.6*s, yy-9*s, 2.6*s, 3.2*s, -0.3, 0, Math.PI*2); g.fill();
   }
   if (u.hp < u.maxHp) hpBar(g, x, yy - 17*s, 11*s, u.hp/u.maxHp, me ? '#57d6a8' : '#e05a4a', 2.2);
 }
@@ -1337,16 +1348,18 @@ function cycleUnitCard(usedIdx){
 }
 
 function setupNodes(){
-  state.nodes = NODE_LAYOUT.map((n,i)=> ({
-    id:'n'+i, ent:'node', res:n.res, owner:n.owner, x:n.x, y:n.y,
-    neutral:!n.owner, left: n.owner ? CFG.nodeCharges : CFG.neutralCharges,
-    max: n.owner ? CFG.nodeCharges : CFG.neutralCharges, rad:0.035
-  }));
+  state.nodes = NODE_LAYOUT.map((n,i)=> {
+    const cap = n.charges || (n.owner ? CFG.nodeCharges : CFG.neutralCharges);
+    return {
+      id:'n'+i, ent:'node', res:'food', owner:n.owner, tier:n.tier || 1, x:n.x, y:n.y,
+      neutral:!n.owner, left:cap, max:cap, rad: n.owner ? 0.035 : 0.032
+    };
+  });
 }
 function villagersOf(team){ return state.units.filter(u=> u.alive && u.team===team && u.type==='villager'); }
 function armyOf(team){ return state.units.filter(u=> u.alive && u.team===team && u.type!=='villager'); }
 
-function spawnVillager(team, job){
+function spawnVillager(team){
   const base = state.buildings.find(b=> b.alive && b.team===team && b.kind==='base');
   const bx = base ? base.x : 0.5, by = base ? base.y : (team==='me'?0.07:0.93);
   const u = {
@@ -1354,29 +1367,56 @@ function spawnVillager(team, job){
     x: clamp(bx + rand(-0.08,0.08), 0.06, 0.94), y: by + (team==='me'?0.04:-0.04),
     hp: CFG.villHp, maxHp: CFG.villHp, dmg:0, range:0, speed: CFG.villSpeed, rad:0.014,
     alive:true, moving:false, buffs:[], hitFlash:0, seed:Math.random()*9,
-    job: job || 'food', vstate:'toNode', nodeId:null, carrying:0, carryRes:null, harvestT:0
+    job:'food', vstate:'toNode', nodeId:null, carrying:0, carryRes:null, harvestT:0
   };
   state.units.push(u);
   return u;
 }
 
-function rebalanceVillagers(team, targetWoodCount){
-  const vs = villagersOf(team);
-  let curWood = vs.filter(v=> v.job==='wood').length;
-  while (curWood < targetWoodCount){
-    const cand = vs.filter(v=> v.job==='food').sort((a,b)=> a.carrying - b.carrying)[0];
-    if (!cand) break;
-    cand.job = 'wood'; cand.nodeId = null;
-    if (cand.carrying === 0) cand.vstate = 'toNode';
-    curWood++;
+/* 3단계 곡물 전진 채취 — 자기 진영 Tier1 → Tier2 → 중앙 중립(Tier3) 순서만 허용 */
+function nearestNode(u, list){
+  let best = null, bd = 1e9;
+  for (const x of list){
+    const d = distXY(u.x, u.y, x.x, x.y);
+    if (d < bd){ bd = d; best = x; }
   }
-  while (curWood > targetWoodCount){
-    const cand = vs.filter(v=> v.job==='wood').sort((a,b)=> a.carrying - b.carrying)[0];
-    if (!cand) break;
-    cand.job = 'food'; cand.nodeId = null;
-    if (cand.carrying === 0) cand.vstate = 'toNode';
-    curWood--;
+  return best;
+}
+function grainTierLabel(tier){
+  return tier >= 3 ? '중앙 중립지대' : tier === 2 ? '앞마당' : '본진';
+}
+function announceGrainTier(team, tier){
+  if (tier <= 1) return;
+  const S = team === 'me' ? state.me : state.foe;
+  if (S.grainTier >= tier) return;
+  const from = grainTierLabel(tier - 1), to = grainTierLabel(tier);
+  S.grainTier = tier;
+  if (team === 'me'){
+    toast(`🌾 ${from} 곡물 고갈! 백성들이 ${to}으로 이동합니다`);
+    killogSys(`🌾 ${from} 곡물 고갈 — 백성 ${to} 이동`);
+    Sfx.move();
+  } else {
+    killogSys(`🌾 적 ${from} 곡물 고갈 — 적 백성 ${to} 이동`);
   }
+}
+function pickGrainNode(u){
+  const own = state.nodes.filter(x=> !x.neutral && x.owner === u.team);
+  for (const t of [1, 2]){
+    const cands = own.filter(x=> x.tier === t && x.left > 0);
+    if (cands.length){ announceGrainTier(u.team, t); return nearestNode(u, cands); }
+  }
+  const neutral = state.nodes.filter(x=> x.neutral && x.left > 0);
+  if (neutral.length){ announceGrainTier(u.team, 3); return nearestNode(u, neutral); }
+  return null;
+}
+/* 중앙 섬(중립 곡물밭)은 가운데 다리로만 건너간다 */
+function villagerWaypoint(u, n){
+  if (!n.neutral) return { x:n.x, y:n.y };
+  const onMySide = u.team === 'me' ? u.y < 0.44 : u.y > 0.56;
+  if (!onMySide) return { x:n.x, y:n.y };
+  const bx = BRIDGE_X[1];
+  if (Math.abs(u.x - bx) > 0.030) return { x: bx, y: u.team === 'me' ? 0.405 : 0.595 };
+  return { x: bx, y: 0.500 };
 }
 
 function startMatch(facKey){
@@ -1386,8 +1426,9 @@ function startMatch(facKey){
   state.units = []; state.projectiles = []; state.effects = []; state.zones = [];
   state.selection.clear(); state.pending = null;
   state.timeLeft = CFG.matchTime;
-  state.me.food = CFG.foodStart; state.me.wood = CFG.woodStart;
-  state.foe.food = CFG.foodStart; state.foe.wood = CFG.woodStart;
+  state.me.food = CFG.foodStart;
+  state.foe.food = CFG.foodStart;
+  state.me.grainTier = 1; state.foe.grainTier = 1;
   state.me.genCd = 0; state.foe.genCd = 0;
   state.me.star = 1; state.foe.star = 1;
   state.me.up = {melee:0,ranged:0,armor:0}; state.foe.up = {melee:0,ranged:0,armor:0};
@@ -1407,9 +1448,8 @@ function startMatch(facKey){
   setupBuildings();
   setupNodes();
 
-  const wCnt = state.woodRatio;
-  for (let i=0;i<CFG.villTotal;i++) spawnVillager('me', i < wCnt ? 'wood' : 'food');
-  for (let i=0;i<CFG.villTotal;i++) spawnVillager('foe', i < 4 ? 'wood' : 'food');
+  for (let i=0;i<CFG.villTotal;i++) spawnVillager('me');
+  for (let i=0;i<CFG.villTotal;i++) spawnVillager('foe');
 
   updateLobbyAndHudUI();
   buildHandUI();
@@ -1445,9 +1485,8 @@ function villagerThink(u, dt){
     if (!base) return;
     if (distXY(u.x,u.y,base.x,base.y) - base.rad < 0.025){
       const side = u.team==='me' ? state.me : state.foe;
-      const max = u.carryRes==='wood' ? CFG.woodMax : CFG.foodMax;
-      side[u.carryRes] = Math.min(max, side[u.carryRes] + u.carrying);
-      if (u.team==='me') floater(u.x, u.y-0.01, '+' + u.carrying.toFixed(1) + (u.carryRes==='wood'?'🪵':'🌾'), u.carryRes==='wood'?'#e2b073':'#c9e88a');
+      side.food = Math.min(CFG.foodMax, side.food + u.carrying);
+      if (u.team==='me') floater(u.x, u.y-0.01, '+' + u.carrying.toFixed(1) + '🌾', '#c9e88a');
       u.carrying = 0; u.carryRes = null; u.vstate = 'toNode';
       return;
     }
@@ -1456,10 +1495,8 @@ function villagerThink(u, dt){
   }
 
   let n = u.nodeId ? state.nodes.find(x=> x.id===u.nodeId) : null;
-  if (!n || n.left <= 0 || n.res !== u.job){
-    const cands = state.nodes.filter(x=> x.res===u.job && x.left>0 && (!x.owner || x.owner===u.team));
-    cands.sort((a,b)=> distXY(u.x,u.y,a.x,a.y)*(a.neutral?0.85:1) - distXY(u.x,u.y,b.x,b.y)*(b.neutral?0.85:1));
-    n = cands[0] || null;
+  if (!n || n.left <= 0 || (!n.neutral && n.owner !== u.team)){
+    n = pickGrainNode(u);
     u.nodeId = n ? n.id : null;
   }
   if (!n){ u.moving = false; return; }
@@ -1471,8 +1508,8 @@ function villagerThink(u, dt){
       if (n.left <= 0){ u.vstate = 'toNode'; return; }
       n.left--;
       const facK = u.team==='me' ? state.me.faction : state.foe.faction;
-      u.carryRes = n.res;
-      u.carrying = CFG.carry[n.res] * (n.neutral ? CFG.neutralYield : 1) * feverMul() * (FACTIONS[facK].resMul || 1);
+      u.carryRes = 'food';
+      u.carrying = CFG.carry.food * (n.neutral ? CFG.neutralYield : 1) * feverMul() * (FACTIONS[facK].resMul || 1);
       u.vstate = 'toDrop';
     }
     return;
@@ -1482,7 +1519,8 @@ function villagerThink(u, dt){
     u.vstate = 'harvest'; u.harvestT = 0; u.moving = false; return;
   }
   const ox = Math.cos(u.seed*2.1)*0.025, oy = Math.sin(u.seed*1.7)*0.015;
-  moveToward(u, n.x + ox, n.y + oy, dt);
+  const wp = villagerWaypoint(u, n);
+  moveToward(u, wp.x + ox, wp.y + oy, dt);
 }
 
 function routeToward(u, gx, gy){
@@ -1885,13 +1923,19 @@ function summonRally(gen){
   }
 }
 
-/* 전사 자동 웨이브 — 지정 다리로 3기씩 출격 */
+/* 전사 자동 웨이브 — 지정 다리로 3기씩 출격 (팀당 필드 상한 WAVE_CAP) */
+function waveWarriors(team){
+  return state.units.filter(u=> u.alive && u.team===team && u.type==='warrior' && u.wave).length;
+}
 function spawnWave(team, laneIdx){
   const idx = (laneIdx === 0 || laneIdx === 1 || laneIdx === 2) ? laneIdx : 1;
+  const room = WAVE_CAP - waveWarriors(team);
+  if (room <= 0) return false;                 // 상한 도달 → 초과 웨이브는 건너뛴다
+  const count = Math.min(WAVE_SIZE, room);
   const lx = BRIDGE_X[idx];
   const y = team === 'me' ? WAVE_Y.me : WAVE_Y.foe;
-  for (let i=0;i<WAVE_SIZE;i++){
-    const ox = (i - (WAVE_SIZE-1)/2) * 0.030;
+  for (let i=0;i<count;i++){
+    const ox = (i - (count-1)/2) * 0.030;
     const u = spawnUnit(team, 'warrior', lx + ox, y);
     if (u){
       u.lane = idx;
@@ -1899,6 +1943,7 @@ function spawnWave(team, laneIdx){
     }
   }
   state.effects.push({ type:'ring', x:lx, y:y, t:0, life:0.4, color: team==='me' ? '#7ef2d6' : '#ff9070' });
+  return true;
 }
 
 /* 갑옷 티어 상승 — 살아있는 전사도 함께 강화 */
@@ -1956,11 +2001,6 @@ function castSpell(id, x, y, team){
 
 function aiThink(dt){
   const A = state.foe;
-  ai.ecoTimer -= dt;
-  if (ai.ecoTimer <= 0){
-    ai.ecoTimer = 6;
-    rebalanceVillagers('foe', A.wood < 4 ? 6 : 4);
-  }
   ai.timer -= dt;
   if (ai.timer > 0) return;
   ai.timer = rand(1.2, 1.9) * (DIFF[state.diff]||DIFF.normal).tick;
@@ -1969,11 +2009,10 @@ function aiThink(dt){
     A.food -= CFG.genCost.food;
     spawnUnit('foe', 'general', pick(BRIDGE_X), 0.86); return;
   }
-  const aff = state.foeDeck.filter(c=> A.food >= (c.cost.food||0) && A.wood >= (c.cost.wood||0));
+  const aff = state.foeDeck.filter(c=> A.food >= (c.cost.food||0));
   if (!aff.length) return;
   const card = pick(aff);
   A.food -= card.cost.food || 0;
-  A.wood -= card.cost.wood || 0;
   const bx = pick(BRIDGE_X);
   if (card.kind === 'spell') castSpell(card.id, bx, 0.45, 'foe');
   else summon('foe', card.id, bx + rand(-0.04,0.04), rand(0.80,0.88));
@@ -2016,9 +2055,9 @@ function update(dt){
 
   for (const team of ['me','foe']){
     const side = team==='me' ? state.me : state.foe;
-    const k = CFG.autoRegenScale * fm * (FACTIONS[side.faction].resMul || 1);
+    const D = DIFF[state.diff] || DIFF.normal;
+    const k = CFG.autoRegenScale * fm * (FACTIONS[side.faction].resMul || 1) * (team==='foe' ? D.res : 1);
     side.food = Math.min(CFG.foodMax, side.food + dt / CFG.foodRegen * k);
-    side.wood = Math.min(CFG.woodMax, side.wood + dt / CFG.woodRegen * k);
     if (side.genCd > 0) side.genCd = Math.max(0, side.genCd - dt);
   }
 
@@ -2026,9 +2065,7 @@ function update(dt){
     const r = state.villRespawns[i];
     if (state.t >= r.at){
       state.villRespawns.splice(i, 1);
-      const curWood = villagersOf(r.team).filter(v=> v.job==='wood').length;
-      const targetWood = r.team==='me' ? state.woodRatio : 4;
-      spawnVillager(r.team, curWood < targetWood ? 'wood' : 'food');
+      spawnVillager(r.team);
       if (r.team==='me') toast('백성 1명 자동 충원 완료!');
     }
   }
@@ -2181,9 +2218,9 @@ const ICONS = {
   ship:'<path d="M3 16h18l-3 5H6zM12 3v9"/>'
 };
 function svgIcon(name){ return `<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICONS[name]||ICONS.shield}</svg>`; }
-function costLabel(c){ return (c.food?'🌾'+c.food:'') + (c.wood?'🪵'+c.wood:'') || '무료'; }
-function canPay(c){ return state.me.food >= (c.food||0) && state.me.wood >= (c.wood||0); }
-function pay(c){ state.me.food -= (c.food||0); state.me.wood -= (c.wood||0); }
+function costLabel(c){ return (c && c.food) ? '🌾'+c.food : '무료'; }
+function canPay(c){ return state.me.food >= ((c && c.food) || 0); }
+function pay(c){ state.me.food -= ((c && c.food) || 0); }
 
 let toastT = null;
 function toast(msg){
@@ -2240,7 +2277,7 @@ function buildHandUI(){
       Sfx.init();
       const cd = Math.max(0, (state.spellCds[id] || 0) - state.t);
       if (cd > 0){ toast(`${c.name} 재사용 대기 ${Math.ceil(cd)}초`); return; }
-      if (!canPay(u.cost)){ toast('나무 자원이 부족합니다'); return; }
+      if (!canPay(u.cost)){ toast('🌾식량이 부족합니다'); return; }
       if (id === 'shamanWish'){
         pay(u.cost); state.spellCds[id] = state.t + CFG.spellCd;
         castSpell(id, 0.5, 0.1, 'me'); syncCards(); return;
@@ -2273,7 +2310,7 @@ function syncCards(){
   const gBtn = document.getElementById('btnGen');
   gBtn.classList.toggle('on', alive);
   document.getElementById('genState').textContent = alive ? '전투 중 (자동스킬)' : state.me.genCd>0 ? `부활 ${Math.ceil(state.me.genCd)}초` : '🌾4 소환';
-  document.getElementById('btnBuild').classList.toggle('off', towerCount('me')>=CFG.towerCap || state.me.wood<CFG.towerWood);
+  document.getElementById('btnBuild').classList.toggle('off', towerCount('me')>=CFG.towerCap || state.me.food<CFG.towerCost);
 }
 
 function syncUpg(){
@@ -2283,17 +2320,6 @@ function syncUpg(){
   document.getElementById('upgDesc').textContent = s>=3 ? su.s3 : (s===1 ? su.s2 : su.s3);
   document.getElementById('upgCost').textContent = s>=3 ? 'MAX' : costLabel(s===1?su.cost2:su.cost3);
 }
-
-const villSlider = document.getElementById('villSlider');
-villSlider.addEventListener('input', ()=>{
-  const foodCnt = parseInt(villSlider.value, 10), woodCnt = CFG.villTotal - foodCnt;
-  state.woodRatio = woodCnt;
-  document.getElementById('lblWoodVill').textContent = `🪵 ${woodCnt}명`;
-  document.getElementById('lblFoodVill').textContent = `🌾 ${foodCnt}명`;
-  const pct = (woodCnt / CFG.villTotal) * 100;
-  villSlider.style.background = `linear-gradient(90deg,#bb8244 0%,#bb8244 ${pct}%,#7ec94a ${pct}%,#7ec94a 100%)`;
-  if (state.phase === 'playing') rebalanceVillagers('me', woodCnt);
-});
 
 let dragScroll = null;
 cv.addEventListener('pointerdown', ev=>{
@@ -2326,8 +2352,8 @@ cv.addEventListener('pointerdown', ev=>{
       state.pending = null; setPending(null); Sfx.deploy();
     } else if (state.pending.kind === 'build'){
       if (w.y < 0.06 || w.y > 0.44){ toast('내 진영에만 공격탑을 세울 수 있습니다'); return; }
-      if (state.me.wood < CFG.towerWood){ toast('나무가 부족합니다'); return; }
-      state.me.wood -= CFG.towerWood;
+      if (state.me.food < CFG.towerCost){ toast('🌾식량이 부족합니다'); return; }
+      state.me.food -= CFG.towerCost;
       addBuilding('me', 'tower', w.x, w.y);
       toast('공격탑 건설 완료!');
       state.pending = null; setPending(null); Sfx.deploy();
@@ -2388,7 +2414,7 @@ document.getElementById('btnUpg').addEventListener('click', ()=>{
   const su = STAR_UP[state.me.faction];
   if (state.me.star >= 3) return;
   const cost = state.me.star === 1 ? su.cost2 : su.cost3;
-  if (!canPay(cost)){ toast('나무 자원이 부족합니다'); return; }
+  if (!canPay(cost)){ toast('🌾식량이 부족합니다'); return; }
   pay(cost); state.me.star++; syncUpg();
   toast(`${su.line} ★${state.me.star} 각성 완료!`); Sfx.skill();
 });
@@ -2396,9 +2422,9 @@ document.getElementById('btnUpg').addEventListener('click', ()=>{
 document.getElementById('btnBuild').addEventListener('click', ()=>{
   if (state.phase !== 'playing') return;
   if (towerCount('me') >= CFG.towerCap){ toast('공격탑 최대 3기 건설 완료'); return; }
-  if (state.me.wood < CFG.towerWood){ toast('나무 4개가 필요합니다'); return; }
+  if (state.me.food < CFG.towerCost){ toast(`🌾식량 ${CFG.towerCost}개가 필요합니다`); return; }
   state.pending = { kind:'build' };
-  setPending('공격탑 건설 — 내 진영 빈 땅을 탭 (🪵4)');
+  setPending(`공격탑 건설 — 내 진영 빈 땅을 탭 (🌾${CFG.towerCost})`);
 });
 
 document.getElementById('pendingCancel').addEventListener('click', ()=>{ state.pending = null; setPending(null); syncCards(); });
@@ -2533,14 +2559,21 @@ function updateHud(){
   if (fm > 1){ badge.querySelector('b').textContent = fm>=2?'×2.0':'×1.5'; }
 
   document.getElementById('foodFill').style.width = (state.me.food/CFG.foodMax*100).toFixed(1)+'%';
-  document.getElementById('woodFill').style.width = (state.me.wood/CFG.woodMax*100).toFixed(1)+'%';
   document.getElementById('foodNum').textContent = Math.floor(state.me.food);
-  document.getElementById('woodNum').textContent = Math.floor(state.me.wood);
 
   const deadCnt = state.villRespawns.filter(r=> r.team==='me').length;
   document.getElementById('lblDeadVill').textContent = deadCnt > 0 ? `(충원대기 ${deadCnt})` : '';
-  const fv = villagersOf('foe'), fw = fv.filter(v=> v.job==='wood').length;
-  document.getElementById('foeVill').textContent = `백성 ${fv.length} · 🪵${fw} 🌾${fv.length-fw}`;
+  const fv = villagersOf('foe');
+  document.getElementById('foeVill').textContent = `백성 ${fv.length}명`;
+
+  // 백성 채취 단계 표시 (본진 → 앞마당 → 중앙 중립지대)
+  const mv = villagersOf('me');
+  const gTier = state.me.grainTier || 1;
+  const gRow = document.getElementById('grainRow');
+  document.getElementById('grainStatus').textContent = `백성 ${mv.length}명 · ${grainTierLabel(gTier)} 채취` + (mv.length ? ' 중' : '');
+  document.getElementById('grainTier').textContent = gTier >= 3 ? '3단계 섬' : (gTier === 2 ? '2단계 앞마당' : '1단계 본진');
+  gRow.classList.toggle('t2', gTier === 2);
+  gRow.classList.toggle('t3', gTier >= 3);
   syncCards();
 }
 
@@ -2590,14 +2623,28 @@ buildLobby();
 layout();
 requestAnimationFrame(loop);
 
+/* 검증용: 콘솔 에러 수집 (window.tk().errors 로 확인) */
+window.__tkErrors = [];
+window.addEventListener('error', e=> window.__tkErrors.push(String((e && e.message) || e)));
+window.addEventListener('unhandledrejection', e=> window.__tkErrors.push('promise: ' + String(e && e.reason)));
+
 /* 검증용 읽기 전용 상태 요약 — 콘솔/개발자도구에서 window.tk() */
 window.tk = function(){
   const alive = state.units.filter(u=> u.alive);
   const wrt = t=> alive.filter(u=> u.type==='warrior' && u.team===t);
+  const tierOf = u=> { const n = u.nodeId ? state.nodes.find(x=> x.id===u.nodeId) : null; return n ? n.tier : null; };
   return {
     phase: state.phase,
     t: +state.t.toFixed(1),
     elapsed: +(CFG.matchTime - state.timeLeft).toFixed(1),
+    food: +state.me.food.toFixed(1),
+    foeFood: +state.foe.food.toFixed(1),
+    grainTier: state.me.grainTier,
+    foeGrainTier: state.foe.grainTier,
+    nodes: state.nodes.map(n=> ({ tier:n.tier, owner:n.owner, left:Math.ceil(n.left), x:n.x, y:n.y })),
+    villagerTiers: { me: villagersOf('me').map(tierOf), foe: villagersOf('foe').map(tierOf) },
+    waves: { me: alive.filter(u=> u.wave && u.team==='me').length, foe: alive.filter(u=> u.wave && u.team==='foe').length },
+    errors: (window.__tkErrors || []).slice(-5),
     armorTier: state.armorTier,
     armorLabel: (ARMOR_TIERS[state.armorTier]||ARMOR_TIERS[0]).label,
     waveLane: state.waveLane,
