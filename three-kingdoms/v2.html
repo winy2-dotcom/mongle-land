@@ -2589,6 +2589,31 @@ function loop(ts){
 buildLobby();
 layout();
 requestAnimationFrame(loop);
+
+/* 검증용 읽기 전용 상태 요약 — 콘솔/개발자도구에서 window.tk() */
+window.tk = function(){
+  const alive = state.units.filter(u=> u.alive);
+  const wrt = t=> alive.filter(u=> u.type==='warrior' && u.team===t);
+  return {
+    phase: state.phase,
+    t: +state.t.toFixed(1),
+    timeLeft: +state.timeLeft.toFixed(1),
+    elapsed: +(CFG.matchTime - state.timeLeft).toFixed(1),
+    armorTier: state.armorTier,
+    armorLabel: (ARMOR_TIERS[state.armorTier]||ARMOR_TIERS[0]).label,
+    waveLane: state.waveLane,
+    foeWaveLane: state.foeWaveLane,
+    meWarriors: wrt('me').map(u=> ({ x:+u.x.toFixed(3), y:+u.y.toFixed(3), lane:u.lane, hp:Math.round(u.hp), maxHp:u.maxHp, armor:u.armor })),
+    foeWarriors: wrt('foe').length,
+    generals: alive.filter(u=> u.type==='general').map(g=> ({ team:g.team, x:+g.x.toFixed(3), y:+g.y.toFixed(3), speed:g.speed, hp:Math.round(g.hp) })),
+    auraBuffed: alive.filter(u=> u.aura).length,
+    rallying: alive.filter(u=> u.rally).map(u=> ({ team:u.team, name:u.name, x:+u.x.toFixed(3), y:+u.y.toFixed(3) })),
+    armyMe: alive.filter(u=> u.team==='me' && u.type!=='villager').length,
+    armyFoe: alive.filter(u=> u.team==='foe' && u.type!=='villager').length,
+    totalUnits: alive.length,
+    killog: [...document.querySelectorAll('#killogBody .kline')].map(n=> n.textContent)
+  };
+};
 })();
 </script>
 </body>
