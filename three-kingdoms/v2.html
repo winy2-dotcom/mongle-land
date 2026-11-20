@@ -77,8 +77,8 @@
   .fever b{font-size:12.5px;color:#ffd76e}
 
   /* ---------- 미니 전투 로그(킬로그) ---------- */
-  .killog{position:absolute;left:6px;top:6px;z-index:4;width:min(47%,172px);border-radius:10px;
-    background:rgba(6,12,18,.62);border:1px solid rgba(120,196,214,.20);backdrop-filter:blur(6px);
+  .killog{position:absolute;left:6px;top:6px;z-index:4;width:min(53%,192px);border-radius:10px;
+    background:rgba(6,12,18,.68);border:1px solid rgba(120,196,214,.20);backdrop-filter:blur(6px);
     box-shadow:0 6px 18px rgba(0,0,0,.34);pointer-events:none;overflow:hidden}
   #app.menu .killog{display:none}
   .killog .kh{display:flex;align-items:center;justify-content:space-between;gap:4px;padding:2px 4px 2px 7px;
@@ -89,8 +89,9 @@
   .killog .kh button{pointer-events:auto;width:15px;height:15px;border-radius:5px;padding:0;cursor:pointer;
     border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:#cfe0e8;
     font-size:9px;font-weight:800;line-height:1;display:flex;align-items:center;justify-content:center}
-  .killog .kbody{padding:4px 6px;display:flex;flex-direction:column;justify-content:flex-end;gap:2px;
-    max-height:92px;overflow:hidden}
+  .killog .kbody{padding:4px 6px 5px;display:flex;flex-direction:column;justify-content:flex-end;gap:2px;
+    max-height:120px;overflow:hidden;
+    -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 16px);mask-image:linear-gradient(180deg,transparent 0,#000 16px)}
   .killog.collapsed .kbody{display:none}
   .killog.collapsed .kh{border-bottom:none}
   .kline{font-size:9px;line-height:1.32;letter-spacing:-.01em;color:#b9c8d4;word-break:keep-all;animation:klIn .2s ease-out}
@@ -103,8 +104,8 @@
     padding:0 2px;margin-right:2px;vertical-align:1px}
   .kline .tag.m{background:rgba(40,196,166,.26);color:#8af2d8}
   .kline .tag.f{background:rgba(208,80,58,.26);color:#ffa48d}
-  .kline.big{font-size:9.5px;font-weight:700;padding-left:4px;border-left:2px solid currentColor;
-    background:linear-gradient(90deg,rgba(255,255,255,.06),transparent)}
+  .kline.big{font-size:9.5px;font-weight:700;box-shadow:inset 2px 0 0 currentColor;
+    background:linear-gradient(90deg,rgba(255,255,255,.07),transparent)}
   .kline.big.ally{text-shadow:0 0 8px rgba(80,240,190,.35)}
   .kline.big.enemy{text-shadow:0 0 8px rgba(255,110,70,.30)}
   .kline.minor{opacity:.6}
