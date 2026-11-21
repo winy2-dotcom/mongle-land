@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#0b0f14">
-<title>삼국 전략 v2.5 · 전장 흐름 · 승패 연출</title>
+<title>삼국 전략 v2.6 · 방어진 · 타격감</title>
 <style>
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{margin:0;height:100%;overflow:hidden;background:radial-gradient(circle at 50% 12%,#1a2230 0%,#0a0e13 55%,#05070a 100%);
@@ -349,6 +349,13 @@
   .cardArt{flex:none;width:25px;height:19px;background-position:left center;background-size:400% 100%;background-repeat:no-repeat;filter:drop-shadow(0 1px 2px #000a)}
   .dp .cardArt{width:21px;height:15px}.nextBox .cardArt{width:19px;height:14px}
   button:focus-visible{outline:2px solid #ffe09c;outline-offset:-2px}
+
+  /* ---------- v2.6 방어진(공격탑) · 타격감 ---------- */
+  .quick button.build i{font-style:normal;font-size:8.5px;font-weight:800;color:#ffe0a0;opacity:.9;margin-left:3px;letter-spacing:.02em}
+  .quick button.build.on{border-color:#ffd479;background:linear-gradient(180deg,#5d4318,#2a2213);color:#fff4d2;
+    box-shadow:0 0 12px rgba(255,203,96,.42),inset 0 1px rgba(255,236,190,.35)}
+  .quick button.build.on b{color:#fff0b8}
+  .quick button.build.on i{color:#fff4d2;opacity:1}
 </style>
 </head>
 <body>
@@ -395,7 +402,7 @@
       <button data-q="all">전체</button>
       <button data-q="gen">장수</button>
       <button data-q="arch">원거리</button>
-      <button id="btnBuild" class="build">공격탑<b>🌾4</b></button>
+      <button id="btnBuild" class="build">공격탑<b>🌾4</b><i id="towerCount">0/3</i></button>
       <span id="selCount">선택 0</span>
     </div>
 
@@ -418,7 +425,7 @@
     </div>
 
     <div class="overlay" id="startScreen">
-      <div class="title">삼국 <span>전략</span> <small style="font-size:12px;color:#ffd76e;letter-spacing:0">v2.5 · 전장 흐름 · 승패 연출</small></div>
+      <div class="title">삼국 <span>전략</span> <small style="font-size:12px;color:#ffd76e;letter-spacing:0">v2.6 · 방어진 · 타격감</small></div>
       <div class="sub">🌾식량 단일 자원 · 고정 마법 2장 · 5초마다 전사 3기 자동 출격 · 장군 3종 필살기</div>
       <div class="factions" id="factionList"></div>
       <div class="deckPick">
@@ -445,7 +452,7 @@
     </div>
 
     <div class="overlay hidden" id="helpScreen">
-      <div class="title" style="font-size:19px">전술 가이드 (v2.5)</div>
+      <div class="title" style="font-size:19px">전술 가이드 (v2.6)</div>
       <div class="guide">
         <b>1. 단일 자원 🌾식량</b>모든 유닛·전술 마법·공성병기·공격탑·대장간·★진화가 <span>🌾식량</span> 하나만 씁니다. 백성 10명이 곡물밭에서 식량을 캐 오고, 시간이 지나면 자동으로 조금씩 회복됩니다.<br>
         <b>2. 3단계 곡물 전진 채취</b>백성은 <span>본진 곡물밭</span> → <span>앞마당 곡물밭</span> → <span>중앙 중립지대 섬</span> 순서로만 전진합니다. 앞 단계 밭이 모두 비면 다음 단계로 옮겨 가고, 중앙 섬 곡물은 <span>수확량 1.5배</span>입니다. 논이 줄어들면 다음 자리를 미리 확보하세요.<br>
@@ -458,6 +465,7 @@
         <span>🔥 계백 「황산벌 결사대」</span> — 체력이 줄수록 강해지는 결사 패시브. 적에게 돌진해 참격을 날리고 주변 아군의 공격속도를 끌어올립니다.<br>
         <span>✧ 김유신 「화랑의 빛」</span> — 넓은 범위 아군을 회복시키고 사기를 진작하며, 적에게 금빛 검기를 날립니다.
         <b>8. 전장 흐름 (v2.5)</b>상단 시계 아래 배지가 <span>초반 · 탐색전 → 중반 · 경갑 진화 → 후반 · 중갑 격돌 → 결전 · 정예 총력전</span>으로 바뀝니다. 3·6·9분 갑옷 진화와 같은 순간에 금빛으로 점등되고, 시계 아래 얇은 막대가 현재 단계의 진행도를 보여줍니다.<br>
+        <b>9. 방어진(공격탑) 3단계 (v2.6)</b>좌측 <span>공격탑</span> 버튼을 누르면 내 진영의 <span>빈 방어진 슬롯</span>이 청록 점선 링으로, 아군 공격탑은 금빛 링과 <span>▲강화</span> 배지로 표시됩니다. 슬롯을 탭해 <span>🌾4</span>로 목책 방어진을 세우고, 세운 탑을 다시 탭하면 <span>🌾3 → 🌾5</span>로 강화됩니다. 1단계 목책(사거리 0.175) → 2단계 석축(0.205 · 연사↑) → 3단계 화포(0.235 · 포탄 폭발)로 <span>2·3열 앞마당 곡물 지대</span>를 지킵니다. 탑을 한 번 탭하면 사거리와 단계 정보가 보입니다.<br>
       </div>
       <button class="bigbtn" id="btnHelpClose">닫기</button>
     </div>
@@ -569,6 +577,9 @@ const Sfx = {
     const g = this.ctx.createGain(); g.gain.value = vol;
     src.connect(f); f.connect(g); g.connect(this.master); src.start(t0);
   },
+  cannon(){ this.noise(.34,.16,150); this.tone(78,.32,'sine',.15,40); },
+  buildTower(){ this.tone(196,.14,'square',.10,262); this.noise(.18,.07,820); },
+  upgrade(){ [523,659,784].forEach((f,i)=> setTimeout(()=>this.tone(f,.16,'triangle',.10), i*70)); },
   select(){ this.tone(770,.07,'triangle',.15); },
   move(){ this.tone(520,.07,'sine',.11,700); },
   deploy(){ this.tone(175,.16,'sawtooth',.13,110); this.noise(.12,.08,700); },
@@ -624,6 +635,36 @@ const BSTAT = {
   fort:   { hp: CFG.fortHp, rad: 0.036, label: '전초성' },
   tower:  { hp: CFG.towerHp, rad: 0.026, label: '공격탑' }
 };
+
+/* v2.6 방어진(공격탑) 3단계 — Lv1 수치는 v2.5 CFG와 완전히 동일(기존 밸런스 유지) */
+const TOWER_LV = [
+  { lv:1, name:'목책 방어진', hp:CFG.towerHp, dmg:CFG.towerDmg, interval:CFG.towerInterval, range:CFG.towerRange,
+    cost:CFG.towerCost, upCost:3, shot:'arrow', splash:0, lift:30, arc:0.014 },
+  { lv:2, name:'석축 방어진', hp:820, dmg:44, interval:0.80, range:0.205,
+    cost:CFG.towerCost, upCost:5, shot:'bolt', splash:0, lift:32, arc:0.016 },
+  { lv:3, name:'화포 방어진', hp:1180, dmg:70, interval:0.62, range:0.235,
+    cost:CFG.towerCost, upCost:0, shot:'shell', splash:0.028, lift:26, arc:0.05 }
+];
+/* 방어진 슬롯 — 2열 앞마당 곡물지대(y≈0.26)와 3열 강 건너 진입로(y≈0.41)를 지킨다(적 진영은 y를 뒤집어 사용) */
+const DEF_SLOTS = [
+  { x:0.10, y:0.285, tag:'좌 성문 앞' },
+  { x:0.36, y:0.255, tag:'2열 곡물(좌)' },
+  { x:0.64, y:0.255, tag:'2열 곡물(우)' },
+  { x:0.90, y:0.285, tag:'우 성문 앞' },
+  { x:0.32, y:0.415, tag:'3열 진입로(좌)' },
+  { x:0.68, y:0.415, tag:'3열 진입로(우)' }
+];
+function slotsFor(team){
+  return DEF_SLOTS.map((s,i)=> ({ idx:i, x:s.x, y: team==='foe' ? 1 - s.y : s.y, tag:s.tag }));
+}
+function nearestDefSlot(team, x, y, maxD){
+  let best = -1, bd = maxD === undefined ? 0.05 : maxD;
+  for (const s of slotsFor(team)){
+    const d = distXY(x, y, s.x, s.y);
+    if (d <= bd){ bd = d; best = s.idx; }
+  }
+  return best;
+}
 
 /* tick: AI 소환 주기 배율(클수록 느림) / res: AI 식량 수급 배율 / army: AI가 유지하는 자동 웨이브 외 병력 상한 */
 const DIFF = {
@@ -853,6 +894,8 @@ const state = {
   waveLane: 1, waveTimer: 0.8,
   foeWaveLane: 1, foeWaveTimer: 1.4,
   armorTier: 0,
+  selTower: null,     // 선택한 아군 공격탑 id (사거리·단계 표시)
+  shake: 0,           // 화면 미세 흔들림(px) — 2px 상한
   diff: 'normal'
 };
 const ai = { timer:3 };
@@ -1397,6 +1440,48 @@ function drawRuin(r, time){
   g.restore();
 }
 
+/* v2.6 공격탑 단계 표현 — 단계별 석축 받침 + 노시위/포구 반짝임 + 발사 섬광 */
+function drawTowerLevelFx(b, p, gy, w, h, s, time, me){
+  const lv = b.lv || 1;
+  const ready = clamp(1 - b.atkTimer / Math.max(0.01, b.interval), 0, 1);
+  g.save();
+  // 1) 2단계부터 석축 받침
+  if (lv >= 2){
+    g.strokeStyle = lv >= 3 ? 'rgba(255,210,140,.55)' : 'rgba(210,218,226,.45)';
+    g.lineWidth = 1.3 * s;
+    g.beginPath(); g.ellipse(p.x, gy - h * 0.015, w * 0.52, w * 0.17, 0, 0, Math.PI * 2); g.stroke();
+    for (let i = 0; i < 7; i++){
+      const a = (i / 7) * Math.PI * 2 + 0.3;
+      const bx = p.x + Math.cos(a) * w * 0.47, by = gy - h * 0.015 + Math.sin(a) * w * 0.155;
+      g.fillStyle = i % 2 ? 'rgba(126,130,124,.85)' : 'rgba(96,100,96,.85)';
+      g.fillRect(bx - 2.2 * s, by - 1.8 * s, 4.4 * s, 3.2 * s);
+    }
+  }
+  // 2) 포구(3단계) / 노시위(1~2단계) 반짝임 — 발사 직전 가장 밝다
+  const mx = p.x + (lv >= 3 ? 0 : w * 0.08), my = gy - h * (lv >= 3 ? 0.66 : 0.70);
+  const glow = b.muzzle > 0 ? 1 : 0.22 + 0.55 * ready;
+  if (lv >= 3){
+    g.strokeStyle = '#241f1b'; g.lineWidth = 3.4 * s; g.lineCap = 'round';
+    g.beginPath(); g.moveTo(p.x - 1.2 * s, gy - h * 0.46); g.lineTo(p.x + 1.4 * s, my - 2 * s); g.stroke();
+    g.strokeStyle = '#6d6459'; g.lineWidth = 1.4 * s;
+    g.beginPath(); g.moveTo(p.x - 1.2 * s, gy - h * 0.46); g.lineTo(p.x + 1.4 * s, my - 2 * s); g.stroke();
+    g.lineCap = 'butt';
+  }
+  const rr = (lv >= 3 ? 2.6 + (b.muzzle > 0 ? 5.5 : 2.8 * glow) : 1.8 + 2.4 * glow) * s;
+  const gr = g.createRadialGradient(mx, my, 0, mx, my, rr);
+  gr.addColorStop(0, 'rgba(255,244,208,' + (0.4 + 0.55 * glow).toFixed(3) + ')');
+  gr.addColorStop(0.5, lv >= 3 ? 'rgba(255,158,72,' + (0.3 + 0.4 * glow).toFixed(3) + ')' : 'rgba(255,214,120,.22)');
+  gr.addColorStop(1, 'rgba(255,140,50,0)');
+  g.fillStyle = gr; g.beginPath(); g.arc(mx, my, rr, 0, Math.PI * 2); g.fill();
+  if (b.muzzle > 0){
+    g.globalAlpha = Math.min(1, b.muzzle * 4) * 0.5;
+    g.fillStyle = 'rgba(226,220,204,.75)';
+    g.beginPath(); g.ellipse(mx + 2 * s, my - 3 * s, 3.4 * s, 2.2 * s, 0, 0, Math.PI * 2); g.fill();
+    g.globalAlpha = 1;
+  }
+  g.restore();
+}
+
 function drawBuilding(b, time){
   const key = SPR_KEY[b.kind];
   if (!key || !sprOK(key)){ drawBuildingVec(b, time); return; }
@@ -1405,7 +1490,8 @@ function drawBuilding(b, time){
   const s = p.s * 1.28;
   const img = SPRITES_IMG[key];
   const spr = tintedSprite(key, b.team) || img;
-  const w = SPR_W[b.kind] * s;
+  const lvScale = b.kind === 'tower' ? (1 + ((b.lv || 1) - 1) * 0.08) : 1;
+  const w = SPR_W[b.kind] * s * lvScale;
   const h = w * (img.naturalHeight / img.naturalWidth);
   const gy = p.y + 2.5 * s;
   const me = b.team === 'me';
@@ -1465,6 +1551,9 @@ function drawBuilding(b, time){
   g.lineWidth = 0.7;
   g.beginPath(); g.moveTo(fx, fTop); g.lineTo(fx, fTop + fh); g.stroke();
 
+  // 4-b) v2.6 공격탑 단계 — 석축 받침 · 노시위/포구 반짝임 · 발사 섬광
+  if (b.kind === 'tower') drawTowerLevelFx(b, p, gy, w, h, s, time, me);
+
   // 5) 피격 플래시
   if (flash){
     const fl = tintedSprite(key, 'flash');
@@ -1498,7 +1587,16 @@ function drawBuilding(b, time){
   g.font = '700 ' + (8.5 * Math.max(0.78, s * 0.82)).toFixed(1) + 'px sans-serif';
   g.textAlign = 'center';
   g.fillStyle = 'rgba(238,246,255,.86)';
-  g.fillText(b.label, p.x, barY - 3.5);
+  g.fillText(b.kind === 'tower' ? (b.label + ' Lv' + (b.lv || 1)) : b.label, p.x, barY - 3.5);
+  if (b.kind === 'tower'){
+    const lvl = b.lv || 1, sc = Math.max(0.8, s * 0.82);
+    for (let i=0;i<3;i++){
+      const px = p.x + barW * 0.5 + (5 + i * 5.6) * sc, r = 2.2 * sc;
+      g.beginPath(); g.moveTo(px, barY - r); g.lineTo(px + r, barY); g.lineTo(px, barY + r); g.lineTo(px - r, barY); g.closePath();
+      if (i < lvl){ g.fillStyle = lvl >= 3 ? '#ff9a4a' : '#ffd76e'; g.fill(); }
+      else { g.strokeStyle = 'rgba(255,225,170,.40)'; g.lineWidth = 1; g.stroke(); }
+    }
+  }
 }
 
 function drawBuildingVec(b, time){
@@ -2005,22 +2103,102 @@ function drawSoldier(u, p, time){
 function addBuilding(team, kind, x, y, opts){
   const st = BSTAT[kind];
   const fac = FACTIONS[team==='me' ? state.me.faction : state.foe.faction];
-  const hp = Math.round(st.hp * (fac.buildingHpMul || 1));
   const isCastle = kind === 'castle' || kind === 'fort';
+  const lv = kind === 'tower' ? clamp((opts && opts.lv) || 1, 1, TOWER_LV.length) : 1;
+  const T = kind === 'tower' ? TOWER_LV[lv-1] : null;
+  const baseHp = T ? T.hp : st.hp;
+  const hp = Math.round(baseHp * (fac.buildingHpMul || 1));
   const b = {
     id: state.nextId++, ent:'building', team, kind, x, y, hp, maxHp:hp, rad:st.rad, alive:true, atkTimer: rand(0,0.4),
-    range: isCastle ? CFG.castleRange : CFG.towerRange, dmg: isCastle ? CFG.castleDmg : CFG.towerDmg,
-    interval: (isCastle ? CFG.castleInterval : CFG.towerInterval) / (fac.atkSpeedMul||1),
-    hitFlash:0, label: kind === 'fort' ? ((opts && opts.side)==='L'?'좌 전초성':'우 전초성') : isCastle ? ((opts && opts.side)==='L'?'좌성':'우성') : st.label,
-    side:(opts && opts.side) || null, lv:1
+    range: isCastle ? CFG.castleRange : (T ? T.range : CFG.towerRange),
+    dmg: isCastle ? CFG.castleDmg : (T ? T.dmg : CFG.towerDmg),
+    interval: (isCastle ? CFG.castleInterval : (T ? T.interval : CFG.towerInterval)) / (fac.atkSpeedMul||1),
+    hitFlash:0, label: kind === 'fort' ? ((opts && opts.side)==='L'?'좌 전초성':'우 전초성') : isCastle ? ((opts && opts.side)==='L'?'좌성':'우성') : (T ? T.name : st.label),
+    side:(opts && opts.side) || null, lv,
+    slot:(opts && opts.slot != null) ? opts.slot : null,
+    shot: T ? T.shot : null, splash: T ? T.splash : 0, lift: T ? T.lift : 20, arc: T ? T.arc : 0.012,
+    muzzle:0
   };
   state.buildings.push(b);
+  return b;
+}
+/* 공격탑 단계 전환 — 최대 체력 증가분만큼 현재 체력도 함께 올려 "강화" 손맛을 준다 */
+function applyTowerLevel(b, lv){
+  if (!b || b.kind !== 'tower') return b;
+  const T = TOWER_LV[clamp(lv, 1, TOWER_LV.length) - 1];
+  const fac = FACTIONS[b.team==='me' ? state.me.faction : state.foe.faction];
+  const oldMax = b.maxHp || 1;
+  b.lv = T.lv;
+  b.maxHp = Math.round(T.hp * (fac.buildingHpMul || 1));
+  b.hp = Math.min(b.maxHp, Math.max(1, b.hp) + Math.max(0, b.maxHp - oldMax));
+  b.dmg = T.dmg; b.range = T.range; b.interval = T.interval / (fac.atkSpeedMul||1);
+  b.label = T.name; b.shot = T.shot; b.splash = T.splash; b.lift = T.lift; b.arc = T.arc;
   return b;
 }
 function castlesOf(team){ return state.buildings.filter(b=> b.team===team && b.kind==='castle'); }
 function baseProtected(team){ const cs = castlesOf(team); return cs.length>=2 && cs.every(c=> c.alive); }
 function baseDmgMul(team){ const alive = castlesOf(team).filter(c=> c.alive).length; return alive>=2 ? 0 : alive===1 ? 0.5 : 1; }
 function towerCount(team){ return state.buildings.filter(b=> b.team===team && b.kind==='tower' && b.alive).length; }
+function towerOfSlot(team, slotIdx){ return state.buildings.find(b=> b.alive && b.team===team && b.kind==='tower' && b.slot===slotIdx) || null; }
+function towerUpCost(b){ return (!b || b.lv >= TOWER_LV.length) ? 0 : TOWER_LV[b.lv].upCost; }
+function towerLabelOf(b){ return (b.lv >= TOWER_LV.length ? '★' : '▲') + (TOWER_LV[b.lv] ? TOWER_LV[b.lv].name : b.label); }
+
+/* 건설/강화 이펙트 — 먼지 기둥 + 금빛 섬광 (Canvas 2D만 사용) */
+function towerBuildFx(x, y, lv){
+  state.effects.push({ type:'dust', x, y, t:0, life:0.62 });
+  state.effects.push({ type:'goldFlash', x, y, t:0, life:0.5, R:0.05 + lv*0.006 });
+  state.effects.push({ type:'ring', x, y, t:0, life:0.5, R:0.055 + lv*0.008, color:'#ffe1a2' });
+  for (let i=0;i<3;i++) state.effects.push({ type:'spark', x:x + rand(-0.012,0.012), y:y + rand(-0.008,0.008), t:-i*0.05, life:0.34, color:'#ffe9b0' });
+}
+/* 슬롯 건설 / 기존 탑 강화 — 클릭과 QA 훅이 함께 쓰는 단일 경로 */
+function tryTowerSlot(slotIdx, team){
+  const T = team === 'foe' ? 'foe' : 'me';
+  const S = T === 'me' ? state.me : state.foe;
+  const at = slotsFor(T).find(s=> s.idx === slotIdx);
+  if (!at) return { ok:false, why:'no-slot' };
+  const exist = towerOfSlot(T, slotIdx);
+  if (exist){
+    const cost = towerUpCost(exist);
+    if (!cost) return { ok:false, why:'max', tower:exist };
+    if (S.food < cost){
+      if (T==='me') toast(`🌾식량 ${cost}개가 필요합니다 (강화)`);
+      return { ok:false, why:'food', tower:exist };
+    }
+    S.food -= cost;
+    applyTowerLevel(exist, exist.lv + 1);
+    exist.hitFlash = 0.2; exist.muzzle = 0.26;
+    towerBuildFx(exist.x, exist.y, exist.lv);
+    addShake(1.1);
+    Sfx.upgrade(); Sfx.buildTower();
+    if (T === 'me'){
+      toast(`▲ ${exist.label} Lv${exist.lv} 강화! 사거리 ${exist.range.toFixed(3)} · ${Math.round(exist.dmg)}피해/${exist.interval.toFixed(2)}초`);
+      killogSys(`▲ 아군 ${exist.label} Lv${exist.lv} 강화 — ${at.tag} 방어진 (🌾${cost})`);
+    } else {
+      killogSys(`▲ 적 ${exist.label} Lv${exist.lv} 강화 — ${at.tag}`);
+    }
+    return { ok:true, action:'upgrade', tower:exist, cost };
+  }
+  if (towerCount(T) >= CFG.towerCap){
+    if (T === 'me') toast(`공격탑은 최대 ${CFG.towerCap}기까지 세울 수 있습니다`);
+    return { ok:false, why:'cap' };
+  }
+  if (S.food < CFG.towerCost){
+    if (T === 'me') toast(`🌾식량이 부족합니다 (방어진 🌾${CFG.towerCost})`);
+    return { ok:false, why:'food' };
+  }
+  S.food -= CFG.towerCost;
+  const b = addBuilding(T, 'tower', at.x, at.y, { slot:slotIdx });
+  towerBuildFx(b.x, b.y, 1);
+  addShake(0.9);
+  Sfx.buildTower(); Sfx.deploy();
+  if (T === 'me'){
+    toast(`▲ ${b.label} 건설 완료 — ${at.tag} 방어진!`);
+    killogSys(`▲ 아군 ${b.label} 건설 — ${at.tag} · 사거리 ${b.range.toFixed(3)} (🌾${CFG.towerCost})`);
+  } else {
+    killogSys(`▲ 적 ${b.label} 건설 — ${at.tag}`);
+  }
+  return { ok:true, action:'build', tower:b, cost:CFG.towerCost };
+}
 
 function setupBuildings(){
   state.buildings = [];
@@ -2151,6 +2329,7 @@ function startMatch(facKey){
   state.ruins = [];
   state.stats = { meDown:0, foeDown:0, meSummon:0, meKills:0, foeKills:0, meSkills:0, foeSkills:0, meCastles:0, foeCastles:0 };
   state.fever = 1; state.camY = 0.34;
+  state.selTower = null; state.shake = 0;
   state.waveLane = 1; state.waveTimer = 0.8;
   state.foeWaveLane = Math.floor(Math.random()*3); state.foeWaveTimer = 1.4;
   state.armorTier = 0;
@@ -2585,12 +2764,17 @@ function performAttack(u, target){
   if (u.chargeLeft > 0 && target.ent === 'unit'){ u.chargeLeft = 0; dmg *= 1.8; }
 
   if (u.ranged){
+    const shell = u.siege > 1;
+    const kind = shell ? 'shell' : (u.ice ? 'frost' : 'arrow');
+    const dd = distXY(u.x,u.y,target.x,target.y);
     state.projectiles.push({
       x0:u.x, y0:u.y-0.01, x:u.x, y:u.y-0.01, tx:target.x, ty:target.y,
-      t:0, dur: Math.max(0.16, distXY(u.x,u.y,target.x,target.y)*1.1 + 0.1),
-      dmg, team:u.team, targetId:target.id, splash:u.splash, atk: atkDesc(u)
+      t:0, dur: Math.max(shell ? 0.30 : 0.16, dd * (shell ? 1.35 : 1.1) + (shell ? 0.16 : 0.1)),
+      dmg, team:u.team, targetId:target.id, splash:u.splash, atk: atkDesc(u),
+      kind, arc: shell ? 0.052 : (u.ice ? 0.028 : 0.014), lift: shell ? 8 : 7, trail:[]
     });
-    Sfx.bow();
+    state.effects.push({ type:'muzzle', x:u.x, y:u.y-0.01, t:0, life:0.15, color: shell ? '#ffb066' : '#ffe6a0', s: shell ? 1.25 : 0.8 });
+    if (shell) Sfx.cannon(); else Sfx.bow();
   } else {
     hitEntity(target, dmg, u);
     if (u.splash){
@@ -2677,6 +2861,7 @@ function hitEntity(ent, dmg, src){
     if (dmg <= 0.01) return;
   }
   ent.hp -= dmg; ent.hitFlash = 0.14;
+  hitSpark(ent, dmg);
   if (ent.hp <= 0){
     ent.alive = false; ent.hp = 0;
     killogPush(ent, src);
@@ -2892,6 +3077,12 @@ function aiThink(dt){
   /* 눈덩이 방지: 자동 웨이브를 뺀 소환 병력이 상한을 넘으면 더 부르지 않는다 */
   if (armyOf('foe').filter(u=> !u.wave).length >= (D.army || 10)) return;
 
+  /* v2.6 방어진 — 적도 식량이 넉넉하면 앞마당에 공격탑을 세운다(최대 2기) */
+  if (towerCount('foe') < 2 && A.food >= CFG.towerCost + 3 && Math.random() < 0.4){
+    const empty = slotsFor('foe').filter(s=> !towerOfSlot('foe', s.idx));
+    if (empty.length){ tryTowerSlot(pick(empty).idx, 'foe'); return; }
+  }
+
   if (A.genCd <= 0 && !armyOf('foe').some(u=> u.type==='general') && A.food >= CFG.genCost.food && Math.random() < 0.45){
     A.food -= CFG.genCost.food;
     spawnUnit('foe', 'general', pick(BRIDGE_X), 0.86); return;
@@ -2960,13 +3151,25 @@ function update(dt){
   for (const b of state.buildings){
     if (!b.alive) continue;
     b.hitFlash = Math.max(0, b.hitFlash - dt);
+    if (b.muzzle) b.muzzle = Math.max(0, b.muzzle - dt);
+    if (b.lvFx) b.lvFx = Math.max(0, b.lvFx - dt);
     if (b.kind==='tower' || b.kind==='castle' || b.kind==='fort'){
       b.atkTimer -= dt;
       if (b.atkTimer <= 0){
         const target = state.units.find(u=> u.alive && u.team!==b.team && distXY(b.x,b.y,u.x,u.y) <= b.range);
         if (target){
           b.atkTimer = b.interval;
-          state.projectiles.push({ x0:b.x, y0:b.y-0.02, x:b.x, y:b.y-0.02, tx:target.x, ty:target.y, t:0, dur:0.25, dmg:b.dmg, team:b.team, targetId:target.id, atk: atkDesc(b) });
+          const kind = b.kind === 'tower' ? (b.shot || 'arrow') : 'arrow';
+          b.muzzle = 0.2;
+          state.projectiles.push({
+            x0:b.x, y0:b.y-0.02, x:b.x, y:b.y-0.02, tx:target.x, ty:target.y, t:0,
+            dur: kind==='shell' ? 0.38 : (kind==='bolt' ? 0.30 : 0.25),
+            dmg:b.dmg, team:b.team, targetId:target.id, atk: atkDesc(b),
+            kind, arc: b.arc || 0.012, lift: b.lift || 20, splash: b.splash || 0, trail:[]
+          });
+          state.effects.push({ type:'muzzle', x:b.x, y:b.y-0.02, t:0, life:0.16,
+            color: kind==='shell' ? '#ffb066' : '#ffe6a0', s: b.kind==='tower' ? 1.25 : 0.9 });
+          if (kind==='shell') Sfx.cannon();
         } else b.atkTimer = 0.15;
       }
     }
@@ -2984,12 +3187,16 @@ function update(dt){
     p.t += dt / p.dur;
     p.x = lerp(p.x0, p.tx, Math.min(1, p.t));
     p.y = lerp(p.y0, p.ty, Math.min(1, p.t));
+    if (!p.trail) p.trail = [];
+    p.trail.push({ x:p.x, y:p.y });
+    if (p.trail.length > 9) p.trail.shift();
     if (p.t >= 1){
       const tgt = byId(p.targetId);
       if (tgt && tgt.alive) hitEntity(tgt, p.dmg, p.atk);
       if (p.splash){
         for (const o of state.units) if (o.alive && o.team!==p.team && distXY(o.x,o.y,p.tx,p.ty)<p.splash) hitEntity(o, p.dmg*0.5, p.atk);
       }
+      impactFx(p);
       p.done = true;
     }
   }
@@ -3008,6 +3215,8 @@ function update(dt){
   state.zones = state.zones.filter(z=> state.t <= z.until);
   for (const e of state.effects) e.t += dt;
   state.effects = state.effects.filter(e=> e.t < e.life);
+  if (state.effects.length > 320) state.effects.splice(0, state.effects.length - 320);
+  if (state.shake > 0) state.shake = Math.max(0, state.shake - dt * 26);
   state.units = state.units.filter(u=> u.alive);
 
   aiThink(dt);
@@ -3060,10 +3269,266 @@ function endMatch(reason, loser){
   if (result==='win') Sfx.win(); else Sfx.lose();
 }
 
+/* =========================================================
+   v2.6 타격감 — 화면 미세 흔들림 · 착탄 폭발/충격파 · 피격 스파크
+   ========================================================= */
+function addShake(px){ state.shake = Math.min(2, Math.max(state.shake, px || 0)); }
+
+let lastSparkFx = 0;
+function hitSpark(ent, dmg){
+  const now = performance.now();
+  if (now - lastSparkFx < 42) return;
+  lastSparkFx = now;
+  if (state.effects.length > 300) return;
+  const stone = ent.ent === 'building';
+  state.effects.push({
+    type:'sparkHit', x:ent.x, y:ent.y, t:0, life: stone ? 0.26 : 0.18,
+    color: stone ? '#d8cdb2' : (ent.armor ? '#ffe9b0' : '#ffd9a8'),
+    big: stone ? 1 : 0, seed: Math.random() * 9
+  });
+  if (stone) state.effects.push({ type:'chip', x:ent.x, y:ent.y, t:0, life:0.34, color:'#c3b696' });
+}
+function impactFx(p){
+  const shell = p.kind === 'shell';
+  if (shell){
+    state.effects.push({ type:'blast', x:p.tx, y:p.ty, t:0, life:0.46, R:(p.splash || 0.038) });
+    state.effects.push({ type:'ring', x:p.tx, y:p.ty, t:0, life:0.52, R:(p.splash || 0.04) * 1.9, color:'#ffcf8a' });
+    state.effects.push({ type:'smoke', x:p.tx, y:p.ty, t:0, life:0.8 });
+    for (let i=0;i<4;i++) state.effects.push({ type:'chip', x:p.tx + rand(-0.012,0.012), y:p.ty + rand(-0.006,0.006), t:-i*0.03, life:0.5, color:'#b8a582' });
+    addShake(1.6);
+  } else {
+    state.effects.push({ type:'sparkHit', x:p.tx, y:p.ty, t:0, life:0.22,
+      color: p.team === 'me' ? '#ffe9b0' : '#ffb49a', big:0, seed: Math.random() * 9 });
+    if (p.kind === 'bolt'){
+      state.effects.push({ type:'ring', x:p.tx, y:p.ty, t:0, life:0.3, R:0.024, color:'#ffe1a2' });
+      addShake(0.55);
+    }
+  }
+}
+
+/* 투사체 화면 좌표 — 지면 위치 + 포물선 높이 + 발사 높이 */
+function projScreen(px, py, arc, lift, t){
+  const q = proj(px, py);
+  const tt = clamp(t, 0, 1);
+  const arcH = (arc || 0) * field.worldH * 0.92 * Math.sin(Math.PI * tt);
+  const liftH = (lift || 0) * q.s * Math.pow(1 - tt, 1.7);
+  return { x: q.x, y: q.y - arcH - liftH, s: q.s };
+}
+function drawProjectiles(){
+  for (const p of state.projectiles){
+    const t = clamp(p.t, 0, 1);
+    const kind = p.kind || 'arrow';
+    const mine = p.team === 'me';
+    const head = projScreen(p.x, p.y, p.arc, p.lift, t);
+    const ground = proj(p.x, p.y);
+    // 지면 그림자 — 높이감
+    g.globalAlpha = 0.22; g.fillStyle = '#000';
+    g.beginPath(); g.ellipse(ground.x, ground.y, 3.2 * ground.s, 1.4 * ground.s, 0, 0, Math.PI * 2); g.fill();
+    g.globalAlpha = 1;
+    // 잔상 꼬리
+    const tr = p.trail || [];
+    if (tr.length > 1){
+      const n = tr.length;
+      const fade = p.t >= 0.9 ? Math.max(0, (1 - p.t) / 0.1) : 1;
+      for (let i = 1; i < n; i++){
+        const q1 = projScreen(tr[i-1].x, tr[i-1].y, p.arc, p.lift, t * (i-1) / (n-1));
+        const q2 = projScreen(tr[i].x, tr[i].y, p.arc, p.lift, t * i / (n-1));
+        const f = i / n;
+        g.globalAlpha = (0.05 + 0.55 * f) * fade;
+        if (kind === 'shell'){ g.strokeStyle = 'rgba(255,170,96,.95)'; g.lineWidth = (1.4 + 2.2 * f) * q2.s; }
+        else if (kind === 'frost'){ g.strokeStyle = 'rgba(160,232,255,.95)'; g.lineWidth = (0.8 + 1.6 * f) * q2.s; }
+        else { g.strokeStyle = mine ? 'rgba(255,233,176,.95)' : 'rgba(255,180,154,.95)'; g.lineWidth = (0.7 + 1.2 * f) * q2.s; }
+        g.lineCap = 'round';
+        g.beginPath(); g.moveTo(q1.x, q1.y); g.lineTo(q2.x, q2.y); g.stroke();
+      }
+      g.lineCap = 'butt'; g.globalAlpha = 1;
+    }
+    if (kind === 'shell'){
+      const rr = 3.6 * head.s;
+      g.globalAlpha = 0.85; g.fillStyle = 'rgba(255,150,70,.55)';
+      g.beginPath(); g.arc(head.x, head.y, rr * 1.75, 0, Math.PI * 2); g.fill();
+      g.globalAlpha = 1;
+      g.fillStyle = '#241f1b'; g.beginPath(); g.arc(head.x, head.y, rr, 0, Math.PI * 2); g.fill();
+      g.strokeStyle = 'rgba(255,214,150,.9)'; g.lineWidth = 1; g.stroke();
+      g.fillStyle = 'rgba(255,196,120,.85)';
+      g.beginPath(); g.arc(head.x - rr * 0.34, head.y - rr * 0.36, rr * 0.42, 0, Math.PI * 2); g.fill();
+    } else if (kind === 'frost'){
+      const rr = 3.0 * head.s;
+      const gr = g.createRadialGradient(head.x, head.y, 0, head.x, head.y, rr * 2.4);
+      gr.addColorStop(0, 'rgba(226,250,255,.95)'); gr.addColorStop(0.45, 'rgba(120,206,255,.7)'); gr.addColorStop(1, 'rgba(80,160,255,0)');
+      g.fillStyle = gr; g.beginPath(); g.arc(head.x, head.y, rr * 2.4, 0, Math.PI * 2); g.fill();
+      g.fillStyle = '#f0fbff'; g.beginPath(); g.arc(head.x, head.y, rr * 0.7, 0, Math.PI * 2); g.fill();
+    } else {
+      const prev = tr.length > 1
+        ? projScreen(tr[tr.length-2].x, tr[tr.length-2].y, p.arc, p.lift, Math.max(0, t - 0.035))
+        : { x: head.x, y: head.y - 8 };
+      let ang = Math.atan2(head.y - prev.y, head.x - prev.x);
+      if (!Number.isFinite(ang) || (Math.abs(head.y - prev.y) < 0.01 && Math.abs(head.x - prev.x) < 0.01)) ang = -Math.PI / 2;
+      const col = mine ? '#ffe9b0' : '#ffb49a';
+      g.save(); g.translate(head.x, head.y); g.rotate(ang);
+      if (kind === 'bolt'){
+        g.globalAlpha = 0.45; g.strokeStyle = '#fff3c4'; g.lineWidth = 4.2 * head.s;
+        g.beginPath(); g.moveTo(-11 * head.s, 0); g.lineTo(4 * head.s, 0); g.stroke();
+        g.globalAlpha = 1;
+      }
+      g.strokeStyle = col; g.lineWidth = (kind === 'bolt' ? 1.9 : 1.35) * head.s;
+      g.beginPath(); g.moveTo(-9 * head.s, 0); g.lineTo(3 * head.s, 0); g.stroke();
+      g.fillStyle = '#fff8e2';
+      g.beginPath(); g.moveTo(9.5 * head.s, 0); g.lineTo(2 * head.s, -2.5 * head.s); g.lineTo(2 * head.s, 2.5 * head.s); g.closePath(); g.fill();
+      g.strokeStyle = 'rgba(255,255,255,.55)'; g.lineWidth = 1 * head.s;
+      g.beginPath(); g.moveTo(-8 * head.s, 0); g.lineTo(-11.5 * head.s, -2 * head.s);
+      g.moveTo(-8 * head.s, 0); g.lineTo(-11.5 * head.s, 2 * head.s); g.stroke();
+      g.restore();
+    }
+  }
+}
+
+/* =========================================================
+   v2.6 방어진 오버레이 — 사거리 링 · 건설/강화 배지 · 곡물 방어 표시
+   ========================================================= */
+function rangeEllipse(x, y, range, color, dash, alpha, lw){
+  const p = proj(x, y), rr = Math.max(8, range * 2 * field.halfWBot * p.s);
+  g.save();
+  g.globalAlpha = alpha; g.strokeStyle = color; g.lineWidth = lw || 1.4;
+  if (dash) g.setLineDash(dash);
+  g.beginPath(); g.ellipse(p.x, p.y, rr, rr * 0.55, 0, 0, Math.PI * 2); g.stroke();
+  g.restore();
+  return { p, rr };
+}
+function cvBadge(x, y, text, fill, ink, scale){
+  const sc = scale || 1;
+  g.save();
+  g.font = '800 ' + (9.4 * sc).toFixed(1) + 'px sans-serif';
+  g.textAlign = 'center'; g.textBaseline = 'middle';
+  const w = Math.max(30 * sc, g.measureText(text).width + 13 * sc), h = 15 * sc;
+  roundRect(g, x - w / 2, y - h / 2, w, h, 7.5 * sc);
+  g.fillStyle = fill; g.fill();
+  g.strokeStyle = 'rgba(10,16,20,.62)'; g.lineWidth = 1; g.stroke();
+  g.fillStyle = ink; g.fillText(text, x, y + 0.4);
+  g.restore();
+  return h;
+}
+function drawDefenseOverlay(time){
+  if (state.phase !== 'playing') return;
+  const buildMode = !!(state.pending && state.pending.kind === 'build');
+  const myTowers = state.buildings.filter(b=> b.alive && b.team === 'me' && b.kind === 'tower');
+  const selB = state.selTower ? state.buildings.find(b=> b.id === state.selTower && b.alive) : null;
+
+  // 1) 아군 공격탑 사거리 — 건설 모드·선택 시 진한 금빛, 평소엔 은은한 청록
+  for (const t of myTowers){
+    const strong = buildMode || (selB && selB.id === t.id);
+    rangeEllipse(t.x, t.y, t.range, strong ? '#ffe1a2' : '#9fe8d6', strong ? [7,4] : [3,7], strong ? 0.9 : 0.22, strong ? 1.8 : 1);
+  }
+
+  // 2) 2·3열 곡물 지대를 지키는 방어진 — 사거리 안 곡물밭에 방패 표시
+  for (const n of state.nodes){
+    if (n.owner !== 'me' || n.tier < 2 || n.left <= 0) continue;
+    let guarded = myTowers.some(t=> distXY(t.x, t.y, n.x, n.y) <= t.range);
+    if (!guarded && buildMode){
+      guarded = slotsFor('me').some(s=>{
+        const tw = towerOfSlot('me', s.idx);
+        return distXY(s.x, s.y, n.x, n.y) <= (tw ? tw.range : TOWER_LV[0].range);
+      });
+    }
+    if (!guarded) continue;
+    const p = proj(n.x, n.y);
+    g.save();
+    g.globalAlpha = buildMode ? 0.85 : 0.45;
+    g.strokeStyle = '#ffd76e'; g.lineWidth = 1.2; g.setLineDash([3,3]);
+    g.beginPath(); g.ellipse(p.x, p.y, 20 * p.s, 10 * p.s, 0, 0, Math.PI * 2); g.stroke();
+    g.setLineDash([]);
+    g.font = '700 ' + (9 * p.s).toFixed(1) + 'px sans-serif'; g.textAlign = 'center';
+    g.fillStyle = '#ffe9b0';
+    g.fillText('🛡', p.x, p.y - 15 * p.s);
+    g.restore();
+  }
+
+  // 3) 건설 모드 — 빈 슬롯 / 아군 탑 강화 배지
+  if (buildMode){
+    const food = state.me.food;
+    for (const s of slotsFor('me')){
+      const p = proj(s.x, s.y);
+      const t = towerOfSlot('me', s.idx);
+      const sc = Math.max(0.78, p.s * 0.96);
+      if (!t){
+        const can = food >= CFG.towerCost && towerCount('me') < CFG.towerCap;
+        rangeEllipse(s.x, s.y, TOWER_LV[0].range, can ? '#7fe6d2' : '#93a4ad', [4,5], can ? 0.5 : 0.26, 1.3);
+        g.save();
+        g.globalAlpha = can ? 0.95 : 0.45;
+        g.strokeStyle = can ? '#8ff0dd' : '#93a4ad'; g.lineWidth = 1.6; g.setLineDash([4,3]);
+        g.beginPath(); g.ellipse(p.x, p.y, 17 * p.s + 3, (17 * p.s + 3) * 0.55, 0, 0, Math.PI * 2); g.stroke();
+        g.setLineDash([]);
+        g.fillStyle = can ? 'rgba(60,225,200,.15)' : 'rgba(150,170,180,.10)';
+        g.beginPath(); g.ellipse(p.x, p.y, 17 * p.s + 3, (17 * p.s + 3) * 0.55, 0, 0, Math.PI * 2); g.fill();
+        g.fillStyle = can ? '#d8fff6' : '#c2ccd2';
+        g.font = '800 ' + (16 * p.s).toFixed(1) + 'px sans-serif'; g.textAlign = 'center';
+        g.fillText('+', p.x, p.y + 5 * p.s);
+        g.restore();
+        cvBadge(p.x, p.y - 27 * p.s, '건설 🌾' + CFG.towerCost, can ? 'rgba(14,52,46,.94)' : 'rgba(28,32,36,.82)', can ? '#8ff0dd' : '#9fb0b8', sc);
+        g.save();
+        g.font = '700 ' + (8.4 * p.s).toFixed(1) + 'px sans-serif'; g.textAlign = 'center';
+        g.fillStyle = 'rgba(210,236,232,.8)';
+        g.fillText(s.tag, p.x, p.y + 15 * p.s);
+        g.restore();
+      } else {
+        const cost = towerUpCost(t);
+        const can = cost && food >= cost;
+        cvBadge(p.x, p.y - 31 * p.s, cost ? ('▲강화 🌾' + cost) : '★ 최대 단계',
+          cost ? (can ? 'rgba(62,44,14,.95)' : 'rgba(42,36,26,.88)') : 'rgba(52,44,20,.92)',
+          cost ? (can ? '#ffe9b0' : '#c9b997') : '#ffe9b0', sc);
+        cvBadge(p.x - 27 * p.s, p.y - 17 * p.s, 'Lv' + t.lv, 'rgba(12,26,30,.93)', t.lv >= 3 ? '#ffbe7a' : '#9fe8d6', sc * 0.9);
+        g.save();
+        g.font = '700 ' + (8.4 * p.s).toFixed(1) + 'px sans-serif'; g.textAlign = 'center';
+        g.fillStyle = 'rgba(255,233,176,.8)';
+        g.fillText(s.tag, p.x, p.y + 15 * p.s);
+        g.restore();
+      }
+    }
+    // 방어진 모드 안내 — 화면 하단
+    g.save();
+    g.font = '800 10px sans-serif'; g.textAlign = 'center';
+    g.fillStyle = 'rgba(255,233,176,.92)';
+    g.fillText('방어진 ' + towerCount('me') + '/' + CFG.towerCap + ' · 빈 슬롯 건설 / 금빛 탑 강화', cvw / 2, cvh - 8);
+    g.restore();
+  }
+
+  // 4) 선택한 공격탑 정보 카드
+  if (selB){
+    const p = proj(selB.x, selB.y);
+    const up = towerUpCost(selB);
+    const lines = [
+      'Lv' + selB.lv + ' ' + selB.label,
+      '사거리 ' + selB.range.toFixed(3) + ' · ' + Math.round(selB.dmg) + '피해/' + selB.interval.toFixed(2) + '초',
+      up ? ('공격탑 버튼 → ▲강화 🌾' + up) : '★ 최대 단계'
+    ];
+    const sc = Math.max(0.85, p.s);
+    g.save();
+    g.font = '800 ' + (9.6 * sc).toFixed(1) + 'px sans-serif';
+    let wmax = 0;
+    for (const l of lines) wmax = Math.max(wmax, g.measureText(l).width);
+    const bw = wmax + 18 * sc, bh = 42 * sc;
+    const bx = clamp(p.x - bw / 2, 6, cvw - bw - 6), by = Math.max(6, p.y - 66 * sc - bh);
+    roundRect(g, bx, by, bw, bh, 8 * sc);
+    g.fillStyle = 'rgba(8,18,22,.92)'; g.fill();
+    g.strokeStyle = 'rgba(255,214,120,.55)'; g.lineWidth = 1; g.stroke();
+    g.textAlign = 'left'; g.textBaseline = 'alphabetic';
+    g.fillStyle = '#ffe9b0'; g.fillText(lines[0], bx + 9 * sc, by + 14 * sc);
+    g.fillStyle = '#cfe4e0'; g.font = '600 ' + (9 * sc).toFixed(1) + 'px sans-serif';
+    g.fillText(lines[1], bx + 9 * sc, by + 27 * sc);
+    g.fillStyle = up ? '#9fe8d6' : '#ffd76e'; g.font = '800 ' + (9 * sc).toFixed(1) + 'px sans-serif';
+    g.fillText(lines[2], bx + 9 * sc, by + 39 * sc);
+    g.restore();
+  }
+}
+
 function render(time){
   g.setTransform(dpr, 0, 0, dpr, 0, 0);
   g.clearRect(0, 0, cvw, cvh);
+  const shk = state.shake;
+  const shaking = shk > 0.12;
+  if (shaking){ g.save(); g.translate(rand(-shk, shk), rand(-shk, shk)); }
   drawBattlefield(time);
+  drawDefenseOverlay(time);
 
   if (state.pending && state.pending.kind === 'deploy' && UNITS[state.pending.card].kind !== 'spell'){
     boardPath(g, 0.04, 0.08, 0.96, 0.45);
@@ -3081,17 +3546,14 @@ function render(time){
     else drawSoldier(e, proj(e.x, e.y), time);
   }
 
-  for (const p of state.projectiles){
-    const q = proj(p.x, p.y);
-    g.strokeStyle = p.team==='me' ? '#ffe699' : '#ff9a80'; g.lineWidth = 1.8*q.s;
-    g.beginPath(); g.moveTo(q.x, q.y - 6*q.s); g.lineTo(q.x, q.y - 12*q.s); g.stroke();
-  }
+  drawProjectiles();
   for (const z of state.zones){
     const p = proj(z.x, z.y), rr = z.r * 2 * field.halfWBot * p.s;
     g.fillStyle = z.type==='rain' ? 'rgba(90,170,255,.22)' : 'rgba(255,110,60,.24)';
     g.beginPath(); g.ellipse(p.x, p.y, rr, rr*0.55, 0, 0, Math.PI*2); g.fill();
   }
   for (const e of state.effects){
+    if (e.t < 0) continue;
     const p = proj(e.x, e.y), k = clamp(e.t / e.life, 0, 1), a = 1 - k;
     if (e.type === 'text' || e.type === 'skilltext'){
       const size = e.size || 11, lift = e.lift || 24, rise = e.rise || 18;
@@ -3198,11 +3660,94 @@ function render(time){
       g.globalAlpha = a * 0.9; g.strokeStyle = e.color; g.lineWidth = 1.9;
       g.beginPath(); g.ellipse(p.x, p.y - 5*p.s, rr, rr*0.5, 0, 0, Math.PI*2); g.stroke();
       g.globalAlpha = 1;
+    } else if (e.type === 'muzzle'){
+      const rr = (2 + 6*k) * p.s * (e.s || 1);
+      g.globalAlpha = a * 0.9;
+      const gr = g.createRadialGradient(p.x, p.y - 8*p.s, 0, p.x, p.y - 8*p.s, Math.max(1, rr));
+      gr.addColorStop(0, '#fff8dc'); gr.addColorStop(0.4, e.color); gr.addColorStop(1, 'rgba(255,160,60,0)');
+      g.fillStyle = gr; g.beginPath(); g.arc(p.x, p.y - 8*p.s, rr, 0, Math.PI*2); g.fill();
+      g.globalAlpha = 1;
+    } else if (e.type === 'sparkHit'){
+      const sd = e.seed || 1.7, big = e.big ? 1.7 : 1;
+      g.globalAlpha = a; g.lineCap = 'round';
+      for (let i=0;i<6;i++){
+        const ang = i*1.05 + sd, r0 = (2 + 5*k*big)*p.s, r1 = r0 + (4 + 9*(1-k))*p.s*big;
+        g.strokeStyle = i%2 ? e.color : '#fff6dd'; g.lineWidth = (1 + 1.6*(1-k))*p.s;
+        g.beginPath();
+        g.moveTo(p.x + Math.cos(ang)*r0, p.y - 7*p.s + Math.sin(ang)*r0*0.7);
+        g.lineTo(p.x + Math.cos(ang)*r1, p.y - 7*p.s + Math.sin(ang)*r1*0.7);
+        g.stroke();
+      }
+      g.lineCap = 'butt'; g.globalAlpha = 1;
+    } else if (e.type === 'chip'){
+      g.globalAlpha = a;
+      const sd = ((e.x*137 + e.y*71) % 6 + 6) % 6 * 0.12;
+      for (let i=0;i<3;i++){
+        const ang = -Math.PI*0.5 + (i-1)*0.6 + sd;
+        const rr = (3 + 14*k) * p.s;
+        const cxp = p.x + Math.cos(ang)*rr, cyp = p.y - 5*p.s + Math.sin(ang)*rr + 9*k*k*p.s;
+        g.fillStyle = i%2 ? e.color : 'rgba(120,110,92,.9)';
+        g.fillRect(cxp - 1.2*p.s, cyp - 1.2*p.s, 2.4*p.s, 2.4*p.s);
+      }
+      g.globalAlpha = 1;
+    } else if (e.type === 'blast'){
+      const rr = Math.max(1, (4 + (e.R || 0.04) * 2 * field.halfWBot * k * 2.2) * p.s);
+      const gr = g.createRadialGradient(p.x, p.y - 6*p.s, 0, p.x, p.y - 6*p.s, rr);
+      gr.addColorStop(0, 'rgba(255,246,206,' + (0.85*a).toFixed(3) + ')');
+      gr.addColorStop(0.35, 'rgba(255,168,72,' + (0.8*a).toFixed(3) + ')');
+      gr.addColorStop(0.75, 'rgba(214,74,32,' + (0.45*a).toFixed(3) + ')');
+      gr.addColorStop(1, 'rgba(90,40,20,0)');
+      g.fillStyle = gr;
+      g.beginPath(); g.ellipse(p.x, p.y - 6*p.s, rr, rr*0.72, 0, 0, Math.PI*2); g.fill();
+    } else if (e.type === 'ring'){
+      const rr = (6 + (e.R || 0.04) * 2 * field.halfWBot * (0.35 + 0.9*k)) * p.s;
+      g.globalAlpha = a * 0.9; g.strokeStyle = e.color || '#ffe1a2'; g.lineWidth = 2.4*(1-k)+0.6;
+      g.beginPath(); g.ellipse(p.x, p.y, rr, rr*0.55, 0, 0, Math.PI*2); g.stroke();
+      g.globalAlpha = 1;
+    } else if (e.type === 'smoke'){
+      for (let i=0;i<5;i++){
+        const ph = clamp(k*1.15 - i*0.08, 0, 1);
+        if (ph <= 0 || ph >= 1) continue;
+        const ang = i*1.9, rr = (4 + 20*ph) * p.s;
+        g.globalAlpha = (1 - ph) * 0.34;
+        g.fillStyle = i%2 ? 'rgba(86,80,72,1)' : 'rgba(132,124,110,1)';
+        g.beginPath();
+        g.ellipse(p.x + Math.cos(ang)*rr, p.y - 8*p.s - ph*16*p.s + Math.sin(ang)*rr*0.4,
+                  (3.4 + 4*ph)*p.s, (3 + 3.4*ph)*p.s, 0, 0, Math.PI*2);
+        g.fill();
+      }
+      g.globalAlpha = 1;
+    } else if (e.type === 'dust'){
+      for (let i=0;i<7;i++){
+        const ph = clamp(k*1.2 - i*0.06, 0, 1);
+        if (ph <= 0 || ph >= 1) continue;
+        const ang = i*0.9, rr = (3 + 26*ph) * p.s;
+        g.globalAlpha = (1 - ph) * 0.5;
+        g.fillStyle = i%2 ? 'rgba(150,138,116,1)' : 'rgba(196,182,152,1)';
+        g.beginPath();
+        g.ellipse(p.x + Math.cos(ang)*rr, p.y - 2*p.s + Math.sin(ang)*rr*0.35 - ph*5*p.s,
+                  (4 + 7*ph)*p.s, (2.6 + 4*ph)*p.s, 0, 0, Math.PI*2);
+        g.fill();
+      }
+      g.globalAlpha = 1;
+    } else if (e.type === 'goldFlash'){
+      const hh = (26 + 40*k) * p.s;
+      const gr = g.createLinearGradient(p.x, p.y, p.x, p.y - hh);
+      gr.addColorStop(0, 'rgba(255,230,160,' + (0.55*a).toFixed(3) + ')');
+      gr.addColorStop(1, 'rgba(255,246,214,0)');
+      g.fillStyle = gr;
+      const wd = (5 + 6*(1-k)) * p.s;
+      g.fillRect(p.x - wd, p.y - hh, wd*2, hh);
+      g.globalAlpha = a * 0.9;
+      g.strokeStyle = '#fff3c4'; g.lineWidth = 1.6*p.s;
+      g.beginPath(); g.moveTo(p.x, p.y); g.lineTo(p.x, p.y - hh); g.stroke();
+      g.globalAlpha = 1;
     } else {
       g.strokeStyle = e.color || '#ffd76e'; g.globalAlpha = 1 - k; g.lineWidth = 2;
       g.beginPath(); g.arc(p.x, p.y - 6, (8 + 26*k)*p.s, 0, Math.PI*2); g.stroke(); g.globalAlpha = 1;
     }
   }
+  if (shaking) g.restore();
 }
 function floater(x, y, text, color){ state.effects.push({ type:'text', x, y, t:0, life:1.1, text, color }); }
 
@@ -3336,7 +3881,13 @@ function syncCards(){
       ? `부활 ${Math.ceil(state.me.genCd)}초` : `${msk.glyph} ${msk.short} · 🌾4`;
   }
   gBtn.title = `${FACTIONS[state.me.faction].hero} — ${msk.name}: ${msk.line}`;
-  document.getElementById('btnBuild').classList.toggle('off', towerCount('me')>=CFG.towerCap || state.me.food<CFG.towerCost);
+  const bc = document.getElementById('btnBuild');
+  const nT = towerCount('me');
+  const buildMode = !!(state.pending && state.pending.kind === 'build');
+  bc.classList.toggle('on', buildMode);
+  bc.classList.toggle('off', !buildMode && (nT >= CFG.towerCap || state.me.food < CFG.towerCost));
+  const tc = document.getElementById('towerCount');
+  if (tc) tc.textContent = nT + '/' + CFG.towerCap;
 }
 
 function syncUpg(){
@@ -3377,12 +3928,17 @@ cv.addEventListener('pointerdown', ev=>{
       toast('★ ' + FACTIONS[state.me.faction].hero + ' 출진 · 전군 결집!');
       state.pending = null; setPending(null); Sfx.deploy();
     } else if (state.pending.kind === 'build'){
-      if (w.y < 0.06 || w.y > 0.44){ toast('내 진영에만 공격탑을 세울 수 있습니다'); return; }
-      if (state.me.food < CFG.towerCost){ toast('🌾식량이 부족합니다'); return; }
-      state.me.food -= CFG.towerCost;
-      addBuilding('me', 'tower', w.x, w.y);
-      toast('공격탑 건설 완료!');
-      state.pending = null; setPending(null); Sfx.deploy();
+      const slotIdx = nearestDefSlot('me', w.x, w.y, 0.055);
+      if (slotIdx < 0){
+        toast('청록 방어진 슬롯(또는 아군 공격탑)을 탭하세요');
+        Sfx.tick(); return;
+      }
+      const r = tryTowerSlot(slotIdx, 'me');
+      if (r.ok){
+        // 건설/강화 후에도 모드를 유지해 연속 건설·강화가 가능하다
+        setPending(buildPendingText());
+        syncCards();
+      }
     }
     return;
   }
@@ -3393,6 +3949,18 @@ cv.addEventListener('pointerdown', ev=>{
     document.getElementById('selCount').textContent = '선택 1';
     Sfx.select(); return;
   }
+
+  const myTower = state.buildings.find(b=> b.alive && b.team==='me' && b.kind==='tower' && distXY(b.x, b.y, w.x, w.y) < b.rad + 0.028);
+  if (myTower){
+    state.selTower = myTower.id;
+    const nm = myTower.label;
+    const nx = towerUpCost(myTower);
+    toast(nx ? `▲ ${nm} Lv${myTower.lv} · 사거리 ${myTower.range.toFixed(3)} — 공격탑 버튼으로 강화 (🌾${nx})`
+             : `★ ${nm} Lv${myTower.lv} 최대 단계 · 사거리 ${myTower.range.toFixed(3)}`);
+    Sfx.select();
+    return;
+  }
+  if (state.selTower && !state.pending) state.selTower = null;
 
   if (state.selection.size > 0){
     const foeU = state.units.find(u=> u.alive && u.team==='foe' && distXY(u.x,u.y,w.x,w.y) < 0.035);
@@ -3445,15 +4013,23 @@ document.getElementById('btnUpg').addEventListener('click', ()=>{
   toast(`${su.line} ★${state.me.star} 각성 완료!`); Sfx.skill();
 });
 
+function buildPendingText(){
+  const n = towerCount('me');
+  return `방어진 ${n}/${CFG.towerCap} · 🌾${Math.floor(state.me.food)} — 빈 슬롯 건설 / 탑 강화`;
+}
 document.getElementById('btnBuild').addEventListener('click', ()=>{
   if (state.phase !== 'playing') return;
-  if (towerCount('me') >= CFG.towerCap){ toast('공격탑 최대 3기 건설 완료'); return; }
-  if (state.me.food < CFG.towerCost){ toast(`🌾식량 ${CFG.towerCost}개가 필요합니다`); return; }
+  if (state.pending && state.pending.kind === 'build'){
+    state.pending = null; setPending(null); syncCards(); return;
+  }
   state.pending = { kind:'build' };
-  setPending(`공격탑 건설 — 내 진영 빈 땅을 탭 (🌾${CFG.towerCost})`);
+  setPending(buildPendingText());
+  Sfx.select();
+  toast('방어진 건설 모드 — 청록 슬롯에 건설, 금빛 탑을 탭하면 강화');
+  syncCards();
 });
 
-document.getElementById('pendingCancel').addEventListener('click', ()=>{ state.pending = null; setPending(null); syncCards(); });
+document.getElementById('pendingCancel').addEventListener('click', ()=>{ state.pending = null; state.selTower = null; setPending(null); syncCards(); });
 
 const forgePanel = document.getElementById('forgePanel');
 document.getElementById('btnForge').addEventListener('click', ()=>{ forgePanel.classList.toggle('hidden'); renderForge(); });
@@ -3730,6 +4306,15 @@ window.tk = function(){
     phaseLabel: (document.getElementById('phaseLabel') || {}).textContent || null,
     phaseIndex: phaseIndexAt(CFG.matchTime - state.timeLeft),
     phaseName: PHASE_STEPS[phaseIndexAt(CFG.matchTime - state.timeLeft)].label,
+    towers: state.buildings.filter(b=> b.alive && b.kind==='tower').map(b=> ({ team:b.team, lv:b.lv, slot:b.slot,
+      x:+b.x.toFixed(3), y:+b.y.toFixed(3), hp:Math.round(b.hp), maxHp:b.maxHp, range:b.range,
+      dmg:Math.round(b.dmg), interval:+b.interval.toFixed(2), shot:b.shot })),
+    towerSlots: { me: slotsFor('me').map(s=> ({ idx:s.idx, tag:s.tag, built: !!towerOfSlot('me', s.idx) })),
+                  foe: slotsFor('foe').map(s=> ({ idx:s.idx, built: !!towerOfSlot('foe', s.idx) })) },
+    buildMode: !!(state.pending && state.pending.kind === 'build'),
+    selectedTower: state.selTower,
+    shake: +state.shake.toFixed(2),
+    projectiles: state.projectiles.map(p=> ({ kind:p.kind, team:p.team, t:+p.t.toFixed(2), trail:(p.trail||[]).length })),
     stats: Object.assign({}, state.stats)
   };
 };
@@ -3750,6 +4335,40 @@ window.tkJump = function(sec){
   return { elapsed: +(CFG.matchTime - state.timeLeft).toFixed(1), tier: state.armorTier };
 };
 
+/* 검증·시연용: 방어진 슬롯 건설/강화 — window.tkBuild(1) · window.tkUpgrade(1) */
+window.tkBuild = function(slotIdx){
+  if (state.phase !== 'playing') return 'not playing';
+  state.me.food = Math.max(state.me.food, CFG.towerCost);
+  const r = tryTowerSlot(slotIdx === undefined ? 1 : slotIdx, 'me');
+  syncCards();
+  return { ok:r.ok, why:r.why || null, action:r.action || null, lv:r.tower ? r.tower.lv : null,
+           range:r.tower ? r.tower.range : null, food:+state.me.food.toFixed(1) };
+};
+window.tkUpgrade = function(slotIdx){
+  if (state.phase !== 'playing') return 'not playing';
+  const box = slotsFor('me').find(x=> x.idx === (slotIdx === undefined ? 1 : slotIdx));
+  const t = box ? towerOfSlot('me', box.idx) : null;
+  if (!t) return 'no tower';
+  const cost = towerUpCost(t);
+  if (!cost) return 'max';
+  state.me.food = Math.max(state.me.food, cost);
+  const r = tryTowerSlot(box.idx, 'me');
+  syncCards();
+  return { ok:r.ok, lv:r.tower ? r.tower.lv : null, range:r.tower ? r.tower.range : null,
+           dmg:r.tower ? Math.round(r.tower.dmg) : null, food:+state.me.food.toFixed(1) };
+};
+/* 검증·시연용: 화살·포탄 궤적/착탄 확인용 소규모 교전 — window.tkRanged() */
+window.tkRanged = function(){
+  if (state.phase !== 'playing') return 'not playing';
+  spawnUnit('me', 'archer', 0.44, 0.285);
+  spawnUnit('me', 'archer', 0.49, 0.295);
+  spawnUnit('me', 'cannon', 0.40, 0.305);
+  spawnUnit('me', 'oldSiege', 0.55, 0.300);
+  spawnUnit('foe', 'shieldman', 0.47, 0.420);
+  spawnUnit('foe', 'warrior', 0.52, 0.410);
+  spawnUnit('foe', 'warrior', 0.44, 0.440);
+  return { units: state.units.filter(u=> u.alive).length, projectiles: state.projectiles.length };
+};
 /* 검증·시연용: 결과 화면 강제 표시 — window.tkEnd('win'|'lose'|'time') */
 window.tkEnd = function(mode){
   if (state.phase !== 'playing') return 'not playing';
