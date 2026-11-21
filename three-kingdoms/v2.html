@@ -356,6 +356,7 @@
     box-shadow:0 0 12px rgba(255,203,96,.42),inset 0 1px rgba(255,236,190,.35)}
   .quick button.build.on b{color:#fff0b8}
   .quick button.build.on i{color:#fff4d2;opacity:1}
+  #app.pending .lanePick{opacity:0;pointer-events:none;transition:opacity .15s}
 </style>
 </head>
 <body>
@@ -1457,6 +1458,22 @@ function drawTowerLevelFx(b, p, gy, w, h, s, time, me){
       g.fillRect(bx - 2.2 * s, by - 1.8 * s, 4.4 * s, 3.2 * s);
     }
   }
+  // 1-b) 3단계 금빛 기 — 단계가 한눈에 보이도록
+  if (lv >= 3){
+    const px2 = p.x - w * 0.42, pTop = gy - h * 0.78;
+    g.strokeStyle = 'rgba(52,40,28,.95)'; g.lineWidth = Math.max(1, 1.1 * s);
+    g.beginPath(); g.moveTo(px2, gy - h * 0.04); g.lineTo(px2, pTop); g.stroke();
+    const wv = Math.sin(time * 3.4 + b.id) * 1.6 * s;
+    g.beginPath();
+    g.moveTo(px2, pTop);
+    g.lineTo(px2 + w * 0.22, pTop + 3 * s + wv * 0.3);
+    g.lineTo(px2 + w * 0.12, pTop + 7 * s);
+    g.lineTo(px2 + w * 0.22, pTop + 11 * s + wv * 0.4);
+    g.lineTo(px2, pTop + 13 * s);
+    g.closePath();
+    g.fillStyle = '#ffd76e'; g.fill();
+    g.strokeStyle = 'rgba(120,80,20,.5)'; g.lineWidth = 0.7; g.stroke();
+  }
   // 2) 포구(3단계) / 노시위(1~2단계) 반짝임 — 발사 직전 가장 밝다
   const mx = p.x + (lv >= 3 ? 0 : w * 0.08), my = gy - h * (lv >= 3 ? 0.66 : 0.70);
   const glow = b.muzzle > 0 ? 1 : 0.22 + 0.55 * ready;
@@ -1490,7 +1507,7 @@ function drawBuilding(b, time){
   const s = p.s * 1.28;
   const img = SPRITES_IMG[key];
   const spr = tintedSprite(key, b.team) || img;
-  const lvScale = b.kind === 'tower' ? (1 + ((b.lv || 1) - 1) * 0.08) : 1;
+  const lvScale = b.kind === 'tower' ? (1 + ((b.lv || 1) - 1) * 0.13) : 1;
   const w = SPR_W[b.kind] * s * lvScale;
   const h = w * (img.naturalHeight / img.naturalWidth);
   const gy = p.y + 2.5 * s;
@@ -3498,11 +3515,17 @@ function drawDefenseBadges(time){
         g.restore();
       }
     }
-    // 방어진 모드 안내 — 화면 하단
+    // 방어진 모드 안내 — 화면 하단 (가독성용 패널)
     g.save();
-    g.font = '800 10px sans-serif'; g.textAlign = 'center';
-    g.fillStyle = 'rgba(255,233,176,.92)';
-    g.fillText('방어진 ' + towerCount('me') + '/' + CFG.towerCap + ' · 빈 슬롯 건설 / 금빛 탑 강화', cvw / 2, cvh - 8);
+    g.font = '800 10px sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
+    const legend = '방어진 ' + towerCount('me') + '/' + CFG.towerCap + ' · 빈 슬롯 건설 / 금빛 탑 강화';
+    const lw2 = g.measureText(legend).width + 20, lh2 = 18;
+    const lx = cvw / 2 - lw2 / 2, ly = cvh - 34;
+    roundRect(g, lx, ly, lw2, lh2, 9);
+    g.fillStyle = 'rgba(8,16,22,.72)'; g.fill();
+    g.strokeStyle = 'rgba(255,205,110,.35)'; g.lineWidth = 1; g.stroke();
+    g.fillStyle = 'rgba(255,233,176,.95)';
+    g.fillText(legend, cvw / 2, ly + lh2 / 2 + 0.5);
     g.restore();
   }
 
@@ -3806,6 +3829,8 @@ function toast(msg){
 }
 function setPending(txt){
   const bar = document.getElementById('pendingBar');
+  const app = document.getElementById('app');
+  if (app) app.classList.toggle('pending', !!txt);
   const kl = document.getElementById('killog');
   if (kl) kl.classList.toggle('belowbar', !!txt);
   if (!txt){ bar.classList.add('hidden'); return; }
@@ -3903,6 +3928,11 @@ function syncCards(){
   bc.classList.toggle('off', !buildMode && (nT >= CFG.towerCap || state.me.food < CFG.towerCost));
   const tc = document.getElementById('towerCount');
   if (tc) tc.textContent = nT + '/' + CFG.towerCap;
+  if (buildMode){
+    const pt = document.getElementById('pendingText');
+    const txt = buildPendingText();
+    if (pt && pt.textContent !== txt) pt.textContent = txt;
+  }
 }
 
 function syncUpg(){
