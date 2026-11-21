@@ -2308,6 +2308,9 @@ function uTorso(x, yy, s, pal, o){
   const tw = 3.0 * s * (o.wide || 1);
   const topY = yy - 9.3 * s;
   const style = o.style || 'cloth';
+  // 실루엣 테두리 — 작은 크기에서도 몸통이 또렷하게 도드라진다
+  roundRect(g, x - tw - 0.45 * s, topY - 0.45 * s, tw * 2 + 0.9 * s, 7.3 * s + 0.9 * s, 1.8 * s);
+  g.fillStyle = 'rgba(8,12,16,.62)'; g.fill();
   roundRect(g, x - tw, topY, tw * 2, 7.3 * s, 1.5 * s);
   if (style === 'cloth'){
     g.fillStyle = o.clothCol || pal.cloth; g.fill();
@@ -2346,6 +2349,9 @@ function uHead(x, yy, s, pal, o){
   const hy = yy - 12.1 * s;
   const r = 2.45 * s;
   g.fillStyle = pal.skin; g.fillRect(x - 0.95 * s, hy + 1.6 * s, 1.9 * s, 1.8 * s);
+  // 투구 실루엣 테두리
+  g.beginPath(); g.ellipse(x, hy, r + 0.45 * s, r * 0.98 + 0.45 * s, 0, 0, Math.PI * 2);
+  g.fillStyle = 'rgba(8,12,16,.6)'; g.fill();
   g.beginPath(); g.ellipse(x, hy, r, r * 0.98, 0, 0, Math.PI * 2);
   if (o.helm === 'cap'){
     g.fillStyle = pal.leather; g.fill();
