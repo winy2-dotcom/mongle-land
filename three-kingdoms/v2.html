@@ -356,7 +356,7 @@
     box-shadow:0 0 12px rgba(255,203,96,.42),inset 0 1px rgba(255,236,190,.35)}
   .quick button.build.on b{color:#fff0b8}
   .quick button.build.on i{color:#fff4d2;opacity:1}
-  #app.pending .lanePick{opacity:0;pointer-events:none;transition:opacity .15s}
+  #app.buildPending .lanePick{opacity:0;pointer-events:none;transition:opacity .15s}
 </style>
 </head>
 <body>
@@ -3830,7 +3830,7 @@ function toast(msg){
 function setPending(txt){
   const bar = document.getElementById('pendingBar');
   const app = document.getElementById('app');
-  if (app) app.classList.toggle('pending', !!txt);
+  if (app) app.classList.toggle('buildPending', !!txt && !!(state.pending && state.pending.kind === 'build'));
   const kl = document.getElementById('killog');
   if (kl) kl.classList.toggle('belowbar', !!txt);
   if (!txt){ bar.classList.add('hidden'); return; }
