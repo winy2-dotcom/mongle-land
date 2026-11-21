@@ -778,9 +778,7 @@ const Sfx = {
   /* ── QA 훅 — 모든 효과음을 안전하게 한 번씩 호출 ── */
   testAll(){
     const self = this, results = [];
-    const wasMuted = this.muted;
     this.init();
-    this.muted = false;
     const cases = [
       ['battleStart', ()=> self.battleStart()],
       ['phaseChange-2', ()=> self.phaseChange(1)],
@@ -814,7 +812,6 @@ const Sfx = {
       try{ c[1](); results.push(c[0] + ':ok'); }
       catch(e){ results.push(c[0] + ':ERR ' + ((e && e.message) || e)); (window.__tkErrors || []).push('sfx:' + c[0] + ' ' + e); }
     }
-    this.muted = wasMuted;
     const failed = results.filter(r=> r.indexOf(':ERR') >= 0);
     return { ok: failed.length === 0, calls: results.length, failed: failed, muted: this.muted,
              ctx: this.ctx ? this.ctx.state : null, compressor: !!this.comp,
