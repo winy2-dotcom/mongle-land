@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#0b0f14">
-<title>삼국 전략 v2.6 · 방어진 · 타격감</title>
+<title>삼국 전략 v2.7 · 사운드 확장</title>
 <style>
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{margin:0;height:100%;overflow:hidden;background:radial-gradient(circle at 50% 12%,#1a2230 0%,#0a0e13 55%,#05070a 100%);
@@ -426,7 +426,7 @@
     </div>
 
     <div class="overlay" id="startScreen">
-      <div class="title">삼국 <span>전략</span> <small style="font-size:12px;color:#ffd76e;letter-spacing:0">v2.6 · 방어진 · 타격감</small></div>
+      <div class="title">삼국 <span>전략</span> <small style="font-size:12px;color:#ffd76e;letter-spacing:0">v2.7 · 사운드 확장</small></div>
       <div class="sub">🌾식량 단일 자원 · 고정 마법 2장 · 5초마다 전사 3기 자동 출격 · 장군 3종 필살기</div>
       <div class="factions" id="factionList"></div>
       <div class="deckPick">
@@ -453,7 +453,7 @@
     </div>
 
     <div class="overlay hidden" id="helpScreen">
-      <div class="title" style="font-size:19px">전술 가이드 (v2.6)</div>
+      <div class="title" style="font-size:19px">전술 가이드 (v2.7)</div>
       <div class="guide">
         <b>1. 단일 자원 🌾식량</b>모든 유닛·전술 마법·공성병기·공격탑·대장간·★진화가 <span>🌾식량</span> 하나만 씁니다. 백성 10명이 곡물밭에서 식량을 캐 오고, 시간이 지나면 자동으로 조금씩 회복됩니다.<br>
         <b>2. 3단계 곡물 전진 채취</b>백성은 <span>본진 곡물밭</span> → <span>앞마당 곡물밭</span> → <span>중앙 중립지대 섬</span> 순서로만 전진합니다. 앞 단계 밭이 모두 비면 다음 단계로 옮겨 가고, 중앙 섬 곡물은 <span>수확량 1.5배</span>입니다. 논이 줄어들면 다음 자리를 미리 확보하세요.<br>
@@ -467,6 +467,7 @@
         <span>✧ 김유신 「화랑의 빛」</span> — 넓은 범위 아군을 회복시키고 사기를 진작하며, 적에게 금빛 검기를 날립니다.
         <b>8. 전장 흐름 (v2.5)</b>상단 시계 아래 배지가 <span>초반 · 탐색전 → 중반 · 경갑 진화 → 후반 · 중갑 격돌 → 결전 · 정예 총력전</span>으로 바뀝니다. 3·6·9분 갑옷 진화와 같은 순간에 금빛으로 점등되고, 시계 아래 얇은 막대가 현재 단계의 진행도를 보여줍니다.<br>
         <b>9. 방어진(공격탑) 3단계 (v2.6)</b>좌측 <span>공격탑</span> 버튼을 누르면 내 진영의 <span>빈 방어진 슬롯</span>이 청록 점선 링으로, 아군 공격탑은 금빛 링과 <span>▲강화</span> 배지로 표시됩니다. 슬롯을 탭해 <span>🌾4</span>로 목책 방어진을 세우고, 세운 탑을 다시 탭하면 <span>🌾3 → 🌾5</span>로 강화됩니다. 1단계 목책(사거리 0.175) → 2단계 석축(0.205 · 연사↑) → 3단계 화포(0.235 · 포탄 폭발)로 <span>2·3열 앞마당 곡물 지대</span>를 지킵니다. 탑을 한 번 탭하면 사거리와 단계 정보가 보입니다.<br>
+        <b>10. 사운드 확장 (v2.7)</b>전투 시작 <span>진군 북·나팔</span>, 3·6·9분 단계 전환 <span>북 2연타+상승음</span>, 장군 출진 <span>북·징</span>, 세 장군의 고유 스킬(물결·참격·종소리)이 각각 다른 소리로 울립니다. 방어진 건설은 <span>망치 2타</span>, 강화는 2단계 <span>석축</span>·3단계 <span>화약 점화·쇠울림</span>으로 구분되고, 승리는 개선 나팔, 패배는 낮게 가라앉는 여운입니다. 우상단 <span>♪</span> 버튼으로 언제든 끌 수 있고, 동시에 많은 소리가 겹쳐도 마스터 컴프레서가 찢어짐을 막습니다.<br>
       </div>
       <button class="bigbtn" id="btnHelpClose">닫기</button>
     </div>
@@ -543,54 +544,286 @@ const byId = id=>{
   return null;
 };
 
-/* 사운드 */
+/* 사운드 (v2.7 · 사운드 확장)
+   신호 흐름: 개별 효과음 → DynamicsCompressorNode → 마스터 GainNode → 출력
+   동시 다발 재생(연사·다중 타격·스킬)에서 찢어짐/클리핑을 막고, 종류별 최소 재생 간격으로 소리 뭉침을 방지한다. */
 const Sfx = {
-  ctx:null, master:null, muted:false, lastHit:0,
+  ctx:null, master:null, comp:null, muted:false, lastHit:0, gateAt:{}, plays:0,
   init(){
-    if (this.ctx){ if (this.ctx.state==='suspended') this.ctx.resume(); return; }
+    if (this.ctx){
+      if (this.ctx.state === 'suspended'){ try{ this.ctx.resume(); }catch(e){} }
+      return;
+    }
     try{
       const AC = window.AudioContext || window.webkitAudioContext;
       if (!AC) return;
-      this.ctx = new AC();
-      this.master = this.ctx.createGain();
-      this.master.gain.value = 0.18;
-      this.master.connect(this.ctx.destination);
-    }catch(e){ this.ctx = null; }
+      const ctx = new AC();
+      const comp = ctx.createDynamicsCompressor();
+      comp.threshold.value = -18; comp.knee.value = 24; comp.ratio.value = 6;
+      comp.attack.value = 0.003; comp.release.value = 0.22;
+      const master = ctx.createGain();
+      master.gain.value = 0.22;
+      comp.connect(master); master.connect(ctx.destination);
+      this.ctx = ctx; this.comp = comp; this.master = master;
+    }catch(e){ this.ctx = null; this.comp = null; this.master = null; }
   },
-  tone(freq, dur, type, vol, slide){
-    if (!this.ctx || this.muted) return;
-    const t0 = this.ctx.currentTime;
-    const o = this.ctx.createOscillator(), g = this.ctx.createGain();
-    o.type = type || 'sine'; o.frequency.setValueAtTime(freq, t0);
-    if (slide) o.frequency.exponentialRampToValueAtTime(Math.max(30, slide), t0+dur);
+  /* AudioContext가 없거나(suspended 포함) 음소거면 소리만 건너뛰고 예외는 내지 않는다 */
+  ready(){ return !!(this.ctx && this.master && !this.muted); },
+  out(){ return this.comp || this.master; },
+  /* 같은 종류의 소리가 짧은 간격으로 겹치면 찢어지므로 최소 재생 간격을 둔다 */
+  gate(key, ms){
+    const t = (typeof performance !== 'undefined' ? performance.now() : Date.now());
+    if (t - (this.gateAt[key] || -1e9) < ms) return false;
+    this.gateAt[key] = t;
+    return true;
+  },
+  tone(freq, dur, type, vol, slide, delay){
+    if (!this.ready()) return;
+    const c = this.ctx, t0 = Math.max(c.currentTime, c.currentTime + (delay || 0));
+    const o = c.createOscillator(), g = c.createGain();
+    o.type = type || 'sine';
+    o.frequency.setValueAtTime(freq, t0);
+    if (slide) o.frequency.exponentialRampToValueAtTime(Math.max(24, slide), t0 + dur);
     g.gain.setValueAtTime(0.0001, t0);
-    g.gain.exponentialRampToValueAtTime(Math.max(0.0002, vol), t0+0.012);
-    g.gain.exponentialRampToValueAtTime(0.0001, t0+dur);
-    o.connect(g); g.connect(this.master); o.start(t0); o.stop(t0+dur+0.03);
+    g.gain.exponentialRampToValueAtTime(Math.max(0.0002, vol), t0 + Math.min(0.02, dur * 0.3));
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    o.connect(g); g.connect(this.out());
+    o.start(t0); o.stop(t0 + dur + 0.04);
+    this.plays++;
   },
-  noise(dur, vol, freq){
-    if (!this.ctx || this.muted) return;
-    const t0 = this.ctx.currentTime, n = Math.max(1, Math.floor(this.ctx.sampleRate * dur));
-    const buf = this.ctx.createBuffer(1, n, this.ctx.sampleRate), d = buf.getChannelData(0);
-    for (let i=0;i<n;i++) d[i] = (Math.random()*2-1)*(1-i/n);
-    const src = this.ctx.createBufferSource(); src.buffer = buf;
-    const f = this.ctx.createBiquadFilter(); f.type='bandpass'; f.frequency.value = freq||1200;
-    const g = this.ctx.createGain(); g.gain.value = vol;
-    src.connect(f); f.connect(g); g.connect(this.master); src.start(t0);
+  /* opts: { delay, sweep, q, type, decay, attack } — sweep은 필터 주파수 이동(수압·파도·검기) */
+  noise(dur, vol, freq, opts){
+    if (!this.ready()) return;
+    const c = this.ctx, o = opts || {};
+    const t0 = Math.max(c.currentTime, c.currentTime + (o.delay || 0));
+    const n = Math.max(1, Math.floor(c.sampleRate * dur));
+    const buf = c.createBuffer(1, n, c.sampleRate), d = buf.getChannelData(0);
+    const decay = o.decay === undefined ? 1 : o.decay, atk = Math.min(0.9, o.attack || 0);
+    for (let i=0;i<n;i++){
+      const k = i / n;
+      const env = (atk > 0 ? Math.min(1, k / atk) : 1) * Math.pow(1 - k, decay);
+      d[i] = (Math.random()*2-1) * env;
+    }
+    const src = c.createBufferSource(); src.buffer = buf;
+    const f = c.createBiquadFilter();
+    f.type = o.type || 'bandpass';
+    f.frequency.setValueAtTime(freq || 1200, t0);
+    if (o.sweep) f.frequency.exponentialRampToValueAtTime(Math.max(60, o.sweep), t0 + dur);
+    f.Q.value = o.q === undefined ? 1 : o.q;
+    const g = c.createGain(); g.gain.value = vol;
+    src.connect(f); f.connect(g); g.connect(this.out());
+    src.start(t0); src.stop(t0 + dur + 0.02);
+    this.plays++;
   },
-  cannon(){ this.noise(.34,.16,150); this.tone(78,.32,'sine',.15,40); },
-  buildTower(){ this.tone(196,.14,'square',.10,262); this.noise(.18,.07,820); },
-  upgrade(){ [523,659,784].forEach((f,i)=> setTimeout(()=>this.tone(f,.16,'triangle',.10), i*70)); },
-  select(){ this.tone(770,.07,'triangle',.15); },
-  move(){ this.tone(520,.07,'sine',.11,700); },
-  deploy(){ this.tone(175,.16,'sawtooth',.13,110); this.noise(.12,.08,700); },
-  hit(){ const t=performance.now(); if (t-this.lastHit<60) return; this.lastHit=t; this.noise(.06,.05,1650); },
-  bow(){ const t=performance.now(); if (t-this.lastHit<45) return; this.noise(.05,.04,2600); },
-  skill(){ this.tone(300,.45,'sine',.16,880); },
-  boom(){ this.noise(.5,.24,230); this.tone(96,.45,'sine',.2,42); },
+
+  /* ── 기본 소리 재료 ─────────────────────────── */
+  /* 저음 북 — 펀치 + 여운 */
+  drum(vol, delay, pitch){
+    const v = vol || 0.16, f = pitch || 92, d = delay || 0;
+    this.tone(f, 0.30, 'sine', v, f*0.42, d);
+    this.tone(f*2.1, 0.16, 'sine', v*0.42, f*1.1, d);
+    this.noise(0.09, v*0.5, 420, { delay:d, q:0.8, decay:1.6 });
+  },
+  /* 징 — 긴 여운의 금속 울림 */
+  gong(vol, delay){
+    const v = vol || 0.10, d = delay || 0;
+    [1, 2.02, 2.98, 4.11].forEach((k,i)=> this.tone(164*k, 1.5 - i*0.22, 'sine', v/(1+i*0.9), 160*k, d));
+    this.noise(0.5, v*0.3, 2600, { delay:d, q:1.4, decay:2.2 });
+  },
+  /* 나팔 화음 — 금관 느낌의 계단 진행 */
+  brass(freqs, dur, vol, delay, step){
+    const d0 = delay || 0, st = step === undefined ? 0.13 : step, v = vol || 0.07;
+    (freqs || []).forEach((f,i)=> this.tone(f, dur || 0.24, 'sawtooth', v, null, d0 + i*st));
+  },
+
+  /* ── 1. 전투 시작 / 단계 전환 ───────────────── */
+  /* 진군 북 + 짧은 나팔 화음 */
+  battleStart(){
+    this.drum(0.18, 0, 86); this.drum(0.16, 0.20, 82); this.drum(0.14, 0.40, 78);
+    this.brass([392, 523, 659], 0.26, 0.062, 0.10, 0.12);
+    this.noise(0.30, 0.05, 900, { sweep:300, q:0.7, decay:1.4, delay:0.10 });
+  },
+  /* 단계 전환(3·6·9분) — 묵직한 북 2연타 + 상승 톤 */
+  phaseChange(tier){
+    const k = Math.min(3, Math.max(1, tier || 1));
+    const v = 0.14 + k*0.018;
+    this.drum(v, 0, 78); this.drum(v*0.92, 0.24, 74);
+    this.tone(300 + k*40, 0.5, 'triangle', 0.075 + k*0.012, 900 + k*90, 0.05);
+    this.noise(0.34, 0.055, 1400, { sweep:4200, q:0.9, decay:1.2, delay:0.05 });
+    if (k >= 3) this.gong(0.06, 0.32);
+  },
+
+  /* ── 2. 장군 출진 & 고유 스킬 ───────────────── */
+  /* 장군 소환 — 북 + 징 (일반 유닛과 확연히 구분) */
+  general(){
+    this.drum(0.20, 0, 68); this.drum(0.16, 0.16, 62);
+    this.gong(0.11, 0.10);
+    this.brass([294, 392], 0.30, 0.05, 0.06, 0.14);
+  },
+  /* 을지문덕 「살수 대첩의 물결」 — 수압·파도 노이즈 스윕 + 맑은 수면 파동음 */
+  heroWave(){
+    this.noise(0.85, 0.13, 380, { type:'lowpass', sweep:2600, q:0.7, decay:0.7, attack:0.18 });
+    this.noise(0.55, 0.07, 2400, { sweep:500, q:1.1, decay:1.4, delay:0.10 });
+    this.tone(300, 0.60, 'sine', 0.06, 150, 0.02);
+    [1046, 1318, 1568].forEach((f,i)=> this.tone(f, 0.45, 'sine', 0.045, f*0.98, 0.26 + i*0.09));
+  },
+  /* 계백 「황산벌 결사대」 — 날카로운 돌진 참격 + 저음 타격 */
+  heroBerserk(){
+    this.noise(0.16, 0.11, 5200, { sweep:900, q:1.6, decay:1.8 });
+    this.noise(0.12, 0.08, 3800, { sweep:700, q:1.6, decay:1.8, delay:0.09 });
+    this.tone(760, 0.18, 'sawtooth', 0.06, 180, 0.02);
+    this.drum(0.17, 0.11, 72);
+    this.tone(118, 0.28, 'square', 0.05, 60, 0.12);
+  },
+  /* 김유신 「화랑의 빛」 — 맑은 화음/종소리 + 세 갈래 검기 */
+  heroBless(){
+    [784, 988, 1175, 1568].forEach((f,i)=> this.tone(f, 1.0 - i*0.12, 'sine', 0.055/(1+i*0.5), null, i*0.05));
+    [0.18, 0.26, 0.34].forEach((d,i)=> this.noise(0.13, 0.055, 4200 - i*500, { sweep:1200, q:1.5, decay:1.9, delay:d }));
+  },
+  heroSkill(kind){
+    if (kind === 'wave') return this.heroWave();
+    if (kind === 'berserk') return this.heroBerserk();
+    if (kind === 'bless') return this.heroBless();
+    return this.skill();
+  },
+
+  /* ── 3. 방어진 건설·강화 / 전술 마법 / 성 피격 ── */
+  /* 목재 말뚝·망치 2타 */
+  buildTower(){
+    if (!this.gate('build', 120)) return;
+    this.tone(180, 0.09, 'square', 0.07, 120);
+    this.noise(0.10, 0.055, 820, { q:0.9, decay:1.5 });
+    this.tone(150, 0.10, 'triangle', 0.06, 100, 0.09);
+    this.noise(0.09, 0.05, 700, { q:0.9, decay:1.5, delay:0.09 });
+  },
+  /* 강화 — Lv2 석축(돌 부딪힘) / Lv3 화포(화약 점화 + 묵직한 쇠울림) */
+  upgrade(lv){
+    const L = lv || 2;
+    this.tone(523, 0.10, 'triangle', 0.05, 659);
+    if (L >= 3){
+      this.noise(0.28, 0.10, 1400, { sweep:3600, q:0.8, decay:1.1 });
+      this.tone(96, 0.34, 'sine', 0.15, 48, 0.16);
+      [213, 317, 428].forEach((f,i)=> this.tone(f, 0.75 - i*0.12, 'triangle', 0.055/(1+i*0.6), f*0.97, 0.17));
+      this.noise(0.35, 0.07, 2600, { q:1.6, decay:2.0, delay:0.16 });
+    } else {
+      [0, 0.11].forEach((d,i)=>{
+        this.noise(0.11, 0.085, 620 + i*60, { q:1.3, decay:1.4, delay:d });
+        this.tone(140 - i*8, 0.13, 'sine', 0.09, 90, d);
+        this.tone(1150 - i*120, 0.10, 'triangle', 0.028, 900, d);
+      });
+    }
+  },
+  /* 전술 마법 — 번개(화살비)/서리(기우제)/치유(무당)/화약(함포) 질감 차별화 */
+  spellSfx(id){
+    if (id === 'shipBombard'){
+      this.tone(1200, 0.35, 'sine', 0.05, 320, 0.02);
+      this.noise(0.50, 0.12, 900, { sweep:260, q:0.8, decay:1.1, delay:0.18 });
+      this.drum(0.14, 0.22, 64); return;
+    }
+    if (id === 'rainRitual'){
+      this.noise(0.70, 0.09, 1600, { type:'lowpass', sweep:600, q:0.6, decay:0.8 });
+      [880, 1175].forEach((f,i)=> this.tone(f, 0.50, 'sine', 0.04, f*0.99, i*0.12)); return;
+    }
+    if (id === 'shamanWish'){
+      [659, 880, 1046, 1318].forEach((f,i)=> this.tone(f, 0.70, 'sine', 0.055/(1+i*0.4), null, i*0.08));
+      this.noise(0.50, 0.04, 3200, { q:1.2, decay:2.0, delay:0.10 }); return;
+    }
+    if (id === 'arrowRain'){
+      for (let i=0;i<4;i++) this.noise(0.10, 0.05, 3000 + i*260, { sweep:1800, q:1.4, decay:1.8, delay:i*0.06 });
+      this.tone(660, 0.30, 'sine', 0.05, 990); return;
+    }
+    this.skill();
+  },
+  /* 성·방어진 피격 — 낮은 볼륨의 묵직한 타격(연속 피격은 스로틀) */
+  stone(){
+    if (!this.gate('stone', 150)) return;
+    this.tone(126, 0.10, 'triangle', 0.05, 86);
+    this.noise(0.09, 0.045, 520, { q:1.1, decay:1.6 });
+  },
+
+  /* ── 기존 단발 효과음 ───────────────────────── */
+  cannon(){ if (!this.gate('cannon', 55)) return; this.noise(.34,.16,150); this.tone(78,.32,'sine',.15,40); },
+  bow(){ if (!this.gate('bow', 45)) return; this.noise(.05,.04,2600); },
+  hit(){ if (!this.gate('hit', 60)) return; this.noise(.06,.05,1650); },
+  select(){ this.tone(770,.07,'triangle',.12); },
+  /* UI 클릭 — 부담스럽지 않은 낮은 볼륨 */
+  click(){ if (!this.gate('click', 58)) return; this.tone(660,.035,'triangle',.045); this.noise(.03,.018,2400,{ q:1.2, decay:2.0 }); },
+  move(){ this.tone(520,.07,'sine',.10,700); },
+  deploy(){ this.tone(175,.16,'sawtooth',.12,110); this.noise(.12,.07,700); },
+  skill(){ this.tone(300,.45,'sine',.14,880); },
+  boom(){ if (!this.gate('boom', 70)) return; this.noise(.5,.20,230); this.tone(96,.45,'sine',.18,42); },
   tick(){ this.tone(1200,.05,'square',.05); },
-  win(){ [523,659,784,1046].forEach((f,i)=> setTimeout(()=>this.tone(f,.35,'triangle',.14), i*130)); },
-  lose(){ [415,370,311,262].forEach((f,i)=> setTimeout(()=>this.tone(f,.4,'sine',.14), i*160)); }
+
+  /* ── 4. 승리 / 패배 팡파르 ──────────────────── */
+  /* 개선 나팔 4음 화음 + 북 */
+  win(){
+    [523, 659, 784, 1046].forEach((f,i)=>{
+      const d = i*0.16, last = i === 3;
+      this.tone(f, last ? 0.90 : 0.32, 'sawtooth', 0.055, null, d);
+      this.tone(f*1.5, last ? 0.90 : 0.28, 'triangle', 0.038, null, d);
+      if (i === 0 || i === 2 || i === 3) this.drum(0.11, d, 84 + i*4);
+    });
+    this.gong(0.07, 0.50);
+  },
+  /* 낮고 묵직한 하강 여운 */
+  lose(){
+    [392, 330, 262, 196].forEach((f,i)=>{
+      const d = i*0.18, last = i === 3;
+      this.tone(f, last ? 1.30 : 0.42, 'triangle', 0.09, last ? 130 : f*0.96, d);
+      this.tone(f/2, last ? 1.30 : 0.42, 'sine', 0.07, null, d);
+    });
+    this.drum(0.12, 0, 66);
+  },
+
+  /* ── QA 훅 — 모든 효과음을 안전하게 한 번씩 호출 ── */
+  testAll(){
+    const self = this, results = [];
+    const wasMuted = this.muted;
+    this.init();
+    this.muted = false;
+    const cases = [
+      ['battleStart', ()=> self.battleStart()],
+      ['phaseChange-2', ()=> self.phaseChange(1)],
+      ['phaseChange-3', ()=> self.phaseChange(3)],
+      ['general', ()=> self.general()],
+      ['heroWave', ()=> self.heroWave()],
+      ['heroBerserk', ()=> self.heroBerserk()],
+      ['heroBless', ()=> self.heroBless()],
+      ['buildTower', ()=> { self.gateAt = {}; self.buildTower(); }],
+      ['upgrade-Lv2', ()=> self.upgrade(2)],
+      ['upgrade-Lv3', ()=> self.upgrade(3)],
+      ['spell-arrowRain', ()=> self.spellSfx('arrowRain')],
+      ['spell-rainRitual', ()=> self.spellSfx('rainRitual')],
+      ['spell-shamanWish', ()=> self.spellSfx('shamanWish')],
+      ['spell-shipBombard', ()=> self.spellSfx('shipBombard')],
+      ['click', ()=> { self.gateAt = {}; self.click(); }],
+      ['select', ()=> self.select()],
+      ['move', ()=> self.move()],
+      ['deploy', ()=> self.deploy()],
+      ['hit', ()=> { self.gateAt = {}; self.hit(); }],
+      ['bow', ()=> { self.gateAt = {}; self.bow(); }],
+      ['cannon', ()=> { self.gateAt = {}; self.cannon(); }],
+      ['boom', ()=> { self.gateAt = {}; self.boom(); }],
+      ['stone', ()=> { self.gateAt = {}; self.stone(); }],
+      ['skill', ()=> self.skill()],
+      ['tick', ()=> self.tick()],
+      ['win', ()=> self.win()],
+      ['lose', ()=> self.lose()]
+    ];
+    for (const c of cases){
+      try{ c[1](); results.push(c[0] + ':ok'); }
+      catch(e){ results.push(c[0] + ':ERR ' + ((e && e.message) || e)); (window.__tkErrors || []).push('sfx:' + c[0] + ' ' + e); }
+    }
+    this.muted = wasMuted;
+    const failed = results.filter(r=> r.indexOf(':ERR') >= 0);
+    return { ok: failed.length === 0, calls: results.length, failed: failed, muted: this.muted,
+             ctx: this.ctx ? this.ctx.state : null, compressor: !!this.comp,
+             masterGain: this.master ? +this.master.gain.value.toFixed(2) : null, plays: this.plays, log: results };
+  },
+  info(){
+    return { muted: this.muted, ctx: this.ctx ? this.ctx.state : null, compressor: !!this.comp,
+             masterGain: this.master ? +this.master.gain.value.toFixed(2) : null, plays: this.plays };
+  }
 };
 
 /* 설정 (v2.1: 단일 자원 코스트 + 전체 이속 80% 조정) */
@@ -2186,7 +2419,7 @@ function tryTowerSlot(slotIdx, team){
     exist.hitFlash = 0.2; exist.muzzle = 0.26;
     towerBuildFx(exist.x, exist.y, exist.lv);
     addShake(1.1);
-    Sfx.upgrade(); Sfx.buildTower();
+    Sfx.upgrade(exist.lv);
     if (T === 'me'){
       toast(`▲ ${exist.label} Lv${exist.lv} 강화! 사거리 ${exist.range.toFixed(3)} · ${Math.round(exist.dmg)}피해/${exist.interval.toFixed(2)}초`);
       killogSys(`▲ 아군 ${exist.label} Lv${exist.lv} 강화 — ${at.tag} 방어진 (🌾${cost})`);
@@ -2207,7 +2440,7 @@ function tryTowerSlot(slotIdx, team){
   const b = addBuilding(T, 'tower', at.x, at.y, { slot:slotIdx });
   towerBuildFx(b.x, b.y, 1);
   addShake(0.9);
-  Sfx.buildTower(); Sfx.deploy();
+  Sfx.buildTower(); Sfx.deploy(); Sfx.click();
   if (T === 'me'){
     toast(`▲ ${b.label} 건설 완료 — ${at.tag} 방어진!`);
     killogSys(`▲ 아군 ${b.label} 건설 — ${at.tag} · 사거리 ${b.range.toFixed(3)} (🌾${CFG.towerCost})`);
@@ -2373,7 +2606,7 @@ function startMatch(facKey){
   layout();
   setPending(null);
   toast(FACTIONS[facKey].name + '군 출진! 단일 자원 코스트로 직관적인 전략을 펼쳐보세요');
-  Sfx.init(); Sfx.deploy();
+  Sfx.init(); Sfx.battleStart();
 }
 
 function villagerThink(u, dt){
@@ -2658,7 +2891,7 @@ function triggerGeneralSkill(gen){
   gen.skillCount = (gen.skillCount || 0) + 1;
   if (mine) state.stats.meSkills++; else state.stats.foeSkills++;
   gen.anim = 0.32;
-  Sfx.skill();
+  Sfx.heroSkill(sk.kind);
 
   // 공통 연출 — 발치 버스트 + 진영 링 + 머리 위 스킬명 플로팅
   skillFx({ type:'skillburst', x:gen.x, y:gen.y, life:0.95, color:sk.ring || sk.color });
@@ -2878,6 +3111,7 @@ function hitEntity(ent, dmg, src){
     if (dmg <= 0.01) return;
   }
   ent.hp -= dmg; ent.hitFlash = 0.14;
+  if (ent.ent === 'building' && ent.hp > 0) Sfx.stone();
   hitSpark(ent, dmg);
   if (ent.hp <= 0){
     ent.alive = false; ent.hp = 0;
@@ -2955,7 +3189,7 @@ function spawnUnit(team, type, x, y){
   }
   state.units.push(u);
   if (team==='me') state.stats.meSummon++;
-  if (type === 'general') summonRally(u);
+  if (type === 'general'){ summonRally(u); Sfx.general(); }
   return u;
 }
 
@@ -3081,7 +3315,7 @@ function castSpell(id, x, y, team){
     if (mine) state.me.genCd = 0; else state.foe.genCd = 0;
     if (mine) toast('무당의 소원 — 아군 회복 및 장군 즉시 부활!');
   }
-  Sfx.skill();
+  Sfx.spellSfx(id);
 }
 
 function aiThink(dt){
@@ -3144,7 +3378,7 @@ function update(dt){
     const mins = Math.floor(T.at/60);
     toast(`전사 갑옷 강화! ${T.label} (체력 ×${T.hpMul.toFixed(2)} · 피해 감소 ${Math.round(T.armor*100)}%)`);
     killogSys(`⏱ ${mins}분 — ${PHASE_STEPS[tierNow].label} · 전사 갑옷 진화: ${T.label}`);
-    Sfx.skill();
+    Sfx.phaseChange(tierNow);
     updateArmorChip();
   }
 
@@ -3964,14 +4198,14 @@ cv.addEventListener('pointerdown', ev=>{
         summon('me', cId, w.x, w.y);
         cycleUnitCard(state.pending.handIdx);
       }
-      state.pending = null; setPending(null); buildHandUI(); Sfx.deploy();
+      state.pending = null; setPending(null); buildHandUI(); Sfx.deploy(); Sfx.click();
     } else if (state.pending.kind === 'gen'){
       if (w.y < 0.06 || w.y > 0.45){ toast('내 진영에 장군을 소환하세요'); return; }
       if (!canPay(CFG.genCost)){ toast('식량 4개가 필요합니다'); return; }
       pay(CFG.genCost);
       spawnUnit('me', 'general', w.x, w.y);
       toast('★ ' + FACTIONS[state.me.faction].hero + ' 출진 · 전군 결집!');
-      state.pending = null; setPending(null); Sfx.deploy();
+      state.pending = null; setPending(null); Sfx.click();
     } else if (state.pending.kind === 'build'){
       const slotIdx = nearestDefSlot('me', w.x, w.y, 0.055);
       if (slotIdx < 0){
@@ -4065,11 +4299,11 @@ function buildPendingText(){
 document.getElementById('btnBuild').addEventListener('click', ()=>{
   if (state.phase !== 'playing') return;
   if (state.pending && state.pending.kind === 'build'){
-    state.pending = null; setPending(null); syncCards(); return;
+    state.pending = null; setPending(null); syncCards(); Sfx.click(); return;
   }
   state.pending = { kind:'build' };
   setPending(buildPendingText());
-  Sfx.select();
+  Sfx.init(); Sfx.click();
   toast('방어진 건설 모드 — 청록 슬롯에 건설, 금빛 탑을 탭하면 강화');
   syncCards();
 });
@@ -4118,7 +4352,7 @@ document.getElementById('lanePick').addEventListener('click', e=>{
   if (!(lane >= 0 && lane <= 2)) return;
   state.waveLane = lane;
   syncLaneButtons();
-  Sfx.init(); Sfx.select();
+  Sfx.init(); Sfx.click();
   toast(`전사 출격 경로 · ${LANE_NAMES[lane]}길 — 5초마다 3기씩 자동 출격`);
 });
 
@@ -4284,6 +4518,8 @@ document.getElementById('btnHelp').addEventListener('click', ()=> document.getEl
 document.getElementById('btnHelpClose').addEventListener('click', ()=> document.getElementById('helpScreen').classList.add('hidden'));
 document.getElementById('btnMute').addEventListener('click', e=>{
   Sfx.muted = !Sfx.muted; e.currentTarget.textContent = Sfx.muted ? '✕' : '♪';
+  if (!Sfx.muted){ Sfx.init(); Sfx.click(); }
+  toast(Sfx.muted ? '🔇 소리 끔' : '🔊 소리 켬');
 });
 /* 전투 기록 접기/펼치기 */
 document.getElementById('killogToggle').addEventListener('click', e=>{
@@ -4292,6 +4528,8 @@ document.getElementById('killogToggle').addEventListener('click', e=>{
   e.currentTarget.setAttribute('aria-label', col ? '전투 기록 펼치기' : '전투 기록 접기');
 });
 window.addEventListener('resize', layout);
+/* 브라우저 AudioContext 정책 — 첫 사용자 입력(포인터·키·터치)에서 resume */
+['pointerdown','keydown','touchstart'].forEach(evt=> window.addEventListener(evt, ()=> Sfx.init(), { once:true, passive:true }));
 
 let lastT = 0;
 function loop(ts){
@@ -4351,6 +4589,7 @@ window.tk = function(){
     phaseLabel: (document.getElementById('phaseLabel') || {}).textContent || null,
     phaseIndex: phaseIndexAt(CFG.matchTime - state.timeLeft),
     phaseName: PHASE_STEPS[phaseIndexAt(CFG.matchTime - state.timeLeft)].label,
+    sfx: Sfx.info(),
     towers: state.buildings.filter(b=> b.alive && b.kind==='tower').map(b=> ({ team:b.team, lv:b.lv, slot:b.slot,
       x:+b.x.toFixed(3), y:+b.y.toFixed(3), hp:Math.round(b.hp), maxHp:b.maxHp, range:b.range,
       dmg:Math.round(b.dmg), interval:+b.interval.toFixed(2), shot:b.shot })),
@@ -4372,6 +4611,10 @@ window.tkSkill = function(team){
   triggerGeneralSkill(gen);
   return { skill: gen.skill.name, casts: gen.skillCount, effects: state.effects.length };
 };
+
+/* 검증용: v2.7 사운드 확장 — 모든 효과음 함수를 한 번씩 안전 호출(window.tkSfxTest()) */
+window.tkSfxTest = function(){ return Sfx.testAll(); };
+window.tkSfx = Sfx;
 
 /* 검증·시연용: 빨리감기 — window.tkJump(180)처럼 경과 시간을 앞으로 보낸다 */
 window.tkJump = function(sec){
