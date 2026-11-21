@@ -2140,7 +2140,7 @@ function baseProtected(team){ const cs = castlesOf(team); return cs.length>=2 &&
 function baseDmgMul(team){ const alive = castlesOf(team).filter(c=> c.alive).length; return alive>=2 ? 0 : alive===1 ? 0.5 : 1; }
 function towerCount(team){ return state.buildings.filter(b=> b.team===team && b.kind==='tower' && b.alive).length; }
 function towerOfSlot(team, slotIdx){ return state.buildings.find(b=> b.alive && b.team===team && b.kind==='tower' && b.slot===slotIdx) || null; }
-function towerUpCost(b){ return (!b || b.lv >= TOWER_LV.length) ? 0 : TOWER_LV[b.lv].upCost; }
+function towerUpCost(b){ return (!b || b.lv >= TOWER_LV.length) ? 0 : TOWER_LV[b.lv - 1].upCost; }
 function towerLabelOf(b){ return (b.lv >= TOWER_LV.length ? '★' : '▲') + (TOWER_LV[b.lv] ? TOWER_LV[b.lv].name : b.label); }
 
 /* 건설/강화 이펙트 — 먼지 기둥 + 금빛 섬광 (Canvas 2D만 사용) */
@@ -3425,6 +3425,15 @@ function drawDefenseOverlay(time){
     rangeEllipse(t.x, t.y, t.range, strong ? '#ffe1a2' : '#9fe8d6', strong ? [7,4] : [3,7], strong ? 0.9 : 0.22, strong ? 1.8 : 1);
   }
 
+}
+
+/* 배지·안내는 건물/유닛 스프라이트 위에 그려야 가려지지 않는다 */
+function drawDefenseBadges(time){
+  if (state.phase !== 'playing') return;
+  const buildMode = !!(state.pending && state.pending.kind === 'build');
+  const myTowers = state.buildings.filter(b=> b.alive && b.team === 'me' && b.kind === 'tower');
+  const selB = state.selTower ? state.buildings.find(b=> b.id === state.selTower && b.alive) : null;
+
   // 2) 2·3열 곡물 지대를 지키는 방어진 — 사거리 안 곡물밭에 방패 표시
   for (const n of state.nodes){
     if (n.owner !== 'me' || n.tier < 2 || n.left <= 0) continue;
@@ -3552,6 +3561,7 @@ function render(time){
   }
 
   drawProjectiles();
+  drawDefenseBadges(time);
   for (const z of state.zones){
     const p = proj(z.x, z.y), rr = z.r * 2 * field.halfWBot * p.s;
     g.fillStyle = z.type==='rain' ? 'rgba(90,170,255,.22)' : 'rgba(255,110,60,.24)';
@@ -4020,7 +4030,7 @@ document.getElementById('btnUpg').addEventListener('click', ()=>{
 
 function buildPendingText(){
   const n = towerCount('me');
-  return `방어진 ${n}/${CFG.towerCap} · 🌾${Math.floor(state.me.food)} — 빈 슬롯 건설 / 탑 강화`;
+  return `방어진 ${n}/${CFG.towerCap} · 🌾${Math.floor(state.me.food)} — 슬롯 건설·탑 강화`;
 }
 document.getElementById('btnBuild').addEventListener('click', ()=>{
   if (state.phase !== 'playing') return;
