@@ -3077,8 +3077,8 @@ function aiThink(dt){
   /* 눈덩이 방지: 자동 웨이브를 뺀 소환 병력이 상한을 넘으면 더 부르지 않는다 */
   if (armyOf('foe').filter(u=> !u.wave).length >= (D.army || 10)) return;
 
-  /* v2.6 방어진 — 적도 식량이 넉넉하면 앞마당에 공격탑을 세운다(최대 2기) */
-  if (towerCount('foe') < 2 && A.food >= CFG.towerCost + 3 && Math.random() < 0.4){
+  /* v2.6 방어진 — 적은 2분 이후 식량이 크게 남을 때만 앞마당에 공격탑을 세운다(최대 2기) */
+  if (towerCount('foe') < 2 && (CFG.matchTime - state.timeLeft) > 120 && A.food >= CFG.towerCost + 6 && Math.random() < 0.16){
     const empty = slotsFor('foe').filter(s=> !towerOfSlot('foe', s.idx));
     if (empty.length){ tryTowerSlot(pick(empty).idx, 'foe'); return; }
   }
@@ -3414,6 +3414,11 @@ function drawDefenseOverlay(time){
   const myTowers = state.buildings.filter(b=> b.alive && b.team === 'me' && b.kind === 'tower');
   const selB = state.selTower ? state.buildings.find(b=> b.id === state.selTower && b.alive) : null;
 
+  // 0) 적 공격탑 사거리 — 붉은 점선으로 위험 범위만 은은하게
+  for (const t of state.buildings){
+    if (!t.alive || t.team !== 'foe' || t.kind !== 'tower') continue;
+    rangeEllipse(t.x, t.y, t.range, '#ff8a70', [3,6], 0.2, 1);
+  }
   // 1) 아군 공격탑 사거리 — 건설 모드·선택 시 진한 금빛, 평소엔 은은한 청록
   for (const t of myTowers){
     const strong = buildMode || (selB && selB.id === t.id);
@@ -4369,6 +4374,17 @@ window.tkRanged = function(){
   spawnUnit('foe', 'warrior', 0.44, 0.440);
   return { units: state.units.filter(u=> u.alive).length, projectiles: state.projectiles.length };
 };
+/* 검증·시연용: 월드 좌표 → 화면 좌표 (슬롯 탭 좌표 확인) — window.tkScreen(0.36, 0.255) */
+window.tkScreen = function(x, y){
+  const p = proj(x, y), r = cv.getBoundingClientRect();
+  const vw = window.innerWidth || 1, vh = window.innerHeight || 1;
+  return {
+    css:  { x: +(r.left + p.x).toFixed(1), y: +(r.top + p.y).toFixed(1) },
+    view: { x: +((r.left + p.x) / vw * 1000).toFixed(1), y: +((r.top + p.y) / vh * 1000).toFixed(1) },
+    s: +p.s.toFixed(3), camY: state.camY
+  };
+};
+
 /* 검증·시연용: 결과 화면 강제 표시 — window.tkEnd('win'|'lose'|'time') */
 window.tkEnd = function(mode){
   if (state.phase !== 'playing') return 'not playing';
