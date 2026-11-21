@@ -3395,6 +3395,7 @@ function generalSkillOf(gen){
 const SKILL_SCALED = new WeakMap();
 function scaledSkill(sk){
   if (!sk) return sk;
+  if (sk.__scaled) return sk;              // 이미 배율 적용된 사본은 다시 곱하지 않는다
   const hit = SKILL_SCALED.get(sk);
   if (hit) return hit;
   const P = BAL.skillPow, D = BAL.skillDur;
@@ -3424,6 +3425,7 @@ function scaledSkill(sk){
     atkSpeed: mul(out.morale.atkSpeed), dur: out.morale.dur * D
   };
   if (out.sword) out.sword = { dmg: Math.round(out.sword.dmg * P), r: out.sword.r, count: out.sword.count };
+  out.__scaled = true;
   SKILL_SCALED.set(sk, out);
   return out;
 }
