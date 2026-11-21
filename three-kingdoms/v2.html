@@ -4158,7 +4158,7 @@ function projScreen(px, py, arc, lift, t){
    v2.8 화살지원 — 본성 성루에서 목표 지점까지 '다다다닥' 지원 사격
    시차 발사 + 포물선 + 잔상 꼬리 + 착지 스파크/먼지 (적도 자기 본성에서 대칭 발사)
    ========================================================= */
-const VOLLEY = { wave: 0.26, per: 14, flight: 0.72, stagger: 0.022 };
+const VOLLEY = { wave: 0.24, per: 20, flight: 0.62, stagger: 0.016 };
 function arrowSourceOf(team){
   const base = state.buildings.find(b=> b.alive && b.team === team && b.kind === 'base');
   if (base) return { x: base.x, y: base.y };
@@ -4214,7 +4214,7 @@ function drawArrowVolley(z, time){
         const t = local / VOLLEY.flight;
         const hx = sp.x + (q.x - sp.x) * t;
         const hy = sp.y + (q.y - sp.y) * t - arcPx * Math.sin(Math.PI * t);
-        const t2 = Math.max(0, t - 0.055);
+        const t2 = Math.max(0, t - 0.075);
         const hx2 = sp.x + (q.x - sp.x) * t2;
         const hy2 = sp.y + (q.y - sp.y) * t2 - arcPx * Math.sin(Math.PI * t2);
         // 잔상 꼬리 (짧고 밝은 속도선) — 어두운 밑선으로 잔디 위에서도 또렷하게
