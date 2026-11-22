@@ -1008,7 +1008,7 @@ const LANE_NAMES = ['좌', '우'];
    ========================================================= */
 const GATE = {
   yMe: 0.180, yFoe: 0.820,        // 성벽이 놓이는 진입선(양 진영 대칭)
-  x0: 0.115, x1: 0.885,           // 성벽이 걸쳐 있는 좌우 범위
+  x0: 0.040, x1: 0.960,           // 성벽이 걸쳐 있는 좌우 범위(전장 폭을 가로지른다)
   cx: 0.500, half: 0.082,         // 성문 중심과 반폭(개구부 전체 0.164)
   hp: 2200,
   normalMul: 0.12,                // 일반 병력이 성벽에 주는 피해 배율
@@ -1715,8 +1715,8 @@ function drawGateWall(w, time){
   /* 3) 성문 문간 */
   const pg = proj(w.gateC, w.y);
   const gwHalf = w.gateH * pxPerX;
-  const archH = 38 * s;
-  const houseH = 54 * s;
+  const archH = 44 * s;
+  const houseH = 58 * s;
 
   if (!broken){
     /* 3-a) 양옆 망루 */
@@ -1779,7 +1779,7 @@ function drawGateWall(w, time){
     const archTop = pg.y - 8 * s - archH;
     g.save();
     g.fillStyle = 'rgba(8,10,9,.92)';
-    roundRect(g, pg.x - gwHalf, archTop, gwHalf * 2, archH + 8 * s, Math.min(gwHalf * 0.62, 16 * s));
+    roundRect(g, pg.x - gwHalf, archTop, gwHalf * 2, archH + 8 * s, Math.min(gwHalf * 0.32, 10 * s));
     g.fill();
     if (openK > 0.01){
       const glow = g.createLinearGradient(0, archTop, 0, pg.y);
