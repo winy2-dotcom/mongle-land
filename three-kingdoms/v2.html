@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#0b0f14">
-<title>삼국 전략 v3.12 · 성벽과 진군</title>
+<title>삼국 전략 v3.14 · 공성 대형</title>
 <style>
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{margin:0;height:100%;overflow:hidden;background:radial-gradient(circle at 50% 12%,#1a2230 0%,#0a0e13 55%,#05070a 100%);
@@ -13,6 +13,22 @@
   @supports (height:100dvh){ html,body{height:100dvh} }
   body{display:flex;align-items:center;justify-content:center}
   #app{position:relative;width:100%;height:100%;max-width:640px;display:flex;flex-direction:column;background:#080b10;overflow:hidden}
+  @media (max-width:400px){
+    #hud{gap:4px;padding:calc(6px + env(safe-area-inset-top)) 6px 5px}
+    .foeAvatar{width:26px;height:26px}
+    .sideTxt b{font-size:11px}
+    .sideTxt i{font-size:8.5px}
+    .clock{min-width:68px}
+    .clock span{font-size:14px}
+    .clock small{font-size:7.8px;max-width:78px;overflow:hidden;text-overflow:ellipsis}
+    .phaseTrack{width:46px}
+    .iconbtn{width:24px;height:24px;font-size:11px}
+    .killog{width:min(46%,154px)}
+    .lanePick{top:27px;padding:2px 3px 2px 6px}
+    .lanePick button{width:20px;height:18px;font-size:9.5px}
+    .armorChip{top:51px;font-size:8px;padding:2px 6px}
+    .fever{font-size:9.5px;padding:3px 7px}
+  }
   @media (min-width:600px){
     #app{height:min(96vh,960px);border-radius:24px;box-shadow:0 34px 90px rgba(0,0,0,.75),0 0 0 1px rgba(255,255,255,.07),0 0 60px rgba(60,120,140,.10)}
   }
@@ -419,7 +435,7 @@
     <div class="toast" id="toast"></div>
 
     <div class="overlay" id="startScreen">
-      <div class="title">삼국 <span>전략</span> <small style="font-size:12px;color:#ffd76e;letter-spacing:0">v3.12 · 성벽과 진군</small></div>
+      <div class="title">삼국 <span>전략</span> <small style="font-size:12px;color:#ffd76e;letter-spacing:0">v3.14 · 공성 대형</small></div>
       <div class="sub">🌾식량 단일 자원 · 고정 마법 2장(6종 풀) · 5초마다 전사 3기 자동 출격 · 장군 스킬 3종 자동 순환 · 전장 스크롤 · 시야 2단 · 전군 강화</div>
       <div class="factions" id="factionList"></div>
       <div class="deckPick">
@@ -446,7 +462,7 @@
     </div>
 
     <div class="overlay hidden" id="helpScreen">
-      <div class="title" style="font-size:19px">전술 가이드 (v3.12)</div>
+      <div class="title" style="font-size:19px">전술 가이드 (v3.14)</div>
       <div class="guide">
         <b>1. 곡물 수급</b>곡물은 자동으로 최대 <span>20</span>까지 차고, 하단에 초당 수급량이 표시됩니다.<br>
         <b>2. 중앙 들판</b>두 강 사이에 교전 구역이 있습니다. 지상 병력은 다리로 강을 건너고 돌담 사이의 길로 진군합니다. 들판의 표시된 자리에 아군이 접근하면 공격탑을 세울 수 있습니다.<br>
@@ -480,6 +496,8 @@
         <b>25. 성벽과 성문 (v3.12)</b>아군·적군 본진 앞 진입선에 <span>성벽</span>이 서고 가운데에 <span>성문</span>이 있습니다. 성벽이 살아 있는 동안 적군은 본진으로 들어오지 못하고 성벽을 부숩니다. <span>일반 병력</span>은 성벽에 제 피해의 <span>12%</span>만 넣지만, <span>투석기·거인전사·전투코끼리·화포</span> 같은 공성 병기는 건물 배율까지 그대로 얹혀 <span>훨씬 빠르게</span> 부숩니다(성벽 내구도 2,200 · 어느 진영이든 같은 규칙). 성벽이 부서지면 무너진 통로가 그대로 열려 적군이 본진으로 들어옵니다. 우리 병력이 성문에 닿으면 <span>문짝이 위에서 아래로 스르륵 내려가며 열리고</span>, 지나가면 다시 닫힙니다. 아군 병력은 성문으로만 나가고 들어옵니다.<br>
         <b>26. 다리 앞 진영 재배치 (v3.12)</b>다리 바로 앞을 막고 있던 전초성을 안쪽으로 물리고 성도 한 줄 뒤로 내렸습니다. 이제 병력이 <span>좌·우 다리로 진입하고 건너가는 모습</span>이 성에 가리지 않고 그대로 보입니다.<br>
         <b>27. 전장 정리 · 병력 모션 (v3.12)</b>병력 발밑의 상시 <span>원형 발판</span>과 공격탑의 상시 테두리 링을 없애 전장이 한결 깔끔해졌습니다. 사거리 프리뷰·건설 슬롯·스킬 이펙트처럼 <span>누르거나 조준할 때만 뜨는</span> 표시는 그대로 남습니다. 선택 링과 방패 진형 금빛 돔은 병력 <span>위에</span> 겹쳐 그려 스프라이트 병종에서도 보이고, 보행은 다리 흔들림과 상체 반동이, 타격은 상대 쪽으로 파고드는 <span>전진 러지</span>가 함께 움직입니다.<br>
+        <b>28. 성문 확장·붕괴 연출 & 360px 화면 정리 (v3.13)</b>본진 앞 <span>성문 통로 폭(0.164 → 0.196)</span>을 넓혀 병력 정체를 줄였고, 성벽이 무너질 때 양옆 망루 잔해·부서진 문짝·연쇄 먼지 파편 연출을 강화했습니다. 360px 이하 좁은 모바일 화면에서도 상단 배지와 좌우 버튼이 겹치지 않도록 HUD 간격을 다듬었습니다.<br>
+        <b>29. 공성 대형 (v3.14)</b>성벽을 때리는 <span>투석기·거인전사·전투코끼리</span>가 성문 앞 한 점에 겹쳐 서지 않고, 성문 좌·우로 갈라져 성벽 너비에 걸쳐 <span>줄 서서</span> 때립니다. 병기 크기에 맞춰 간격을 벌리고 자리가 모자라면 뒤 줄로 물러서며, 원거리 공성 병기는 사거리를 지킨 자리에서 옆으로만 이동해 대형을 맞춥니다.<br>
       </div>
       <button class="bigbtn" id="btnHelpClose">닫기</button>
     </div>
@@ -1009,7 +1027,7 @@ const LANE_NAMES = ['좌', '우'];
 const GATE = {
   yMe: 0.180, yFoe: 0.820,        // 성벽이 놓이는 진입선(양 진영 대칭)
   x0: 0.040, x1: 0.960,           // 성벽이 걸쳐 있는 좌우 범위(전장 폭을 가로지른다)
-  cx: 0.500, half: 0.082,         // 성문 중심과 반폭(개구부 전체 0.164)
+  cx: 0.500, half: 0.098,         // v3.13 성문 중심과 반폭(개구부 전체 0.196 — 본진 병목 완화)
   hp: 2200,
   normalMul: 0.12,                // 일반 병력이 성벽에 주는 피해 배율
   siegeMul: 1.00,                 // 공성 병기는 siege 배율을 그대로 받는다
@@ -1051,6 +1069,109 @@ function isSiegeUnit(u){
   if (!u) return false;
   if ((u.siege || 1) > 1) return true;
   return u.type === 'giant' || u.type === 'elephant' || u.type === 'oldSiege' || u.type === 'cannon' || u.type === 'trebuchet';
+}
+
+/* =========================================================
+   v3.14 공성 대형
+   성벽을 때리는 공성 병기(투석기·거인·코끼리…)는 성문 앞 한 점에 겹쳐 서지 않고
+   성문 좌·우로 갈라져 성벽 너비에 걸쳐 줄 서서 때린다.
+   병기 크기만큼 자리를 잡고, 한 줄이 모자라면 뒤 줄로 물러선다.
+   ========================================================= */
+const SIEGE_LINE = {
+  pad: 0.018,       // 성벽 양 끝에서 비켜서는 여유(월드 x)
+  mouth: 0.030,     // 성문 개구부 양옆 여유(월드 x)
+  gapY: 0.012,      // 병기 사이 최소 간격(세로 단위 = 화면 비율)
+  maxGapY: 0.055,   // 한 줄 안에서 벌릴 수 있는 최대 간격
+  rankY: 0.078,     // 앞 줄이 다 차면 뒷줄을 물리는 거리(세로 단위)
+  tolX: 0.010,      // 자기 자리 도착 판정(세로 단위를 x로 환산해 쓴다)
+  formSpeed: 1.9    // 대형을 잡는 동안의 이동 속도 배율
+};
+const SIEGE_RANKS_MAX = 3;
+/* 같은 성벽을 때리는 같은 편 공성 병기를 소환 순서대로 모은다(죽거나 표적이 바뀌면 자동 이탈) */
+function siegeLineMates(u, w){
+  const out = [];
+  for (const o of state.units){
+    if (!o.alive || o.flying || o.team !== u.team) continue;
+    if (!isSiegeUnit(o) || o.tgtId !== w.id) continue;
+    if (!gateOutside(o, w)) continue;
+    out.push(o);
+  }
+  out.sort((a,b)=> a.id - b.id);
+  return out;
+}
+/* 줄 배치 — 성문 좌·우 두 구간에 병기 폭만큼 자리를 잡고, 넘치면 뒤 줄로 물린다 */
+function siegeLinePlan(w, mates){
+  const ax = Math.max(0.12, field.ax);
+  const gapX = SIEGE_LINE.gapY / ax;
+  const maxGapX = SIEGE_LINE.maxGapY / ax;
+  const segs = [
+    [w.x0 + SIEGE_LINE.pad, w.gateC - w.gateH - SIEGE_LINE.mouth],
+    [w.gateC + w.gateH + SIEGE_LINE.mouth, w.x1 - SIEGE_LINE.pad]
+  ];
+  const segW = segs.map(sg=> Math.max(0.001, sg[1] - sg[0]));
+  const widthX = o=> Math.max(0.004, (o.rad || 0.02) * 2 / ax);
+  const rows = [[], []];
+  /* 1) 자리 배정 — 앞 줄부터, 좌·우를 번갈아 채워 한쪽에 뭉치지 않게 한다 */
+  for (const o of mates){
+    const own = (o.siegeSide === -1 || o.siegeSide === 1) ? (o.siegeSide < 0 ? 0 : 1)
+              : (o.x < w.gateC ? 0 : 1);
+    let best = null;
+    for (const si of [own, 1 - own]){
+      const list = rows[si];
+      for (let r = 0; r < SIEGE_RANKS_MAX; r++){
+        const row = list[r];
+        const used = row ? row.reduce((acc, x)=> acc + widthX(x) + gapX, 0) : 0;
+        if (!row || used + widthX(o) <= segW[si]){
+          const score = r * 100 + (si === own ? 0 : 20);
+          if (!best || score < best.score) best = { si, r, score };
+          break;
+        }
+      }
+    }
+    if (!best) best = { si: own, r: SIEGE_RANKS_MAX - 1 };
+    const list = rows[best.si];
+    for (let r = 0; r <= best.r; r++) if (!list[r]) list[r] = [];
+    list[best.r].push(o);
+    o.siegeSide = best.si === 0 ? -1 : 1;
+  }
+  /* 2) 줄 안에서 고르게 벌리고, 줄마다 반 칸씩 엇갈려 세운다 */
+  const plan = {};
+  for (let si = 0; si < 2; si++){
+    const a = segs[si][0], b = segs[si][1], W = segW[si];
+    const list = rows[si];
+    for (let r = 0; r < list.length; r++){
+      const row = list[r];
+      if (!row || !row.length) continue;
+      const k = row.length;
+      /* 한 기뿐인 줄은 가운데·바깥쪽·성문쪽으로 번갈아 놓아 뒤 줄이 앞 줄과 x에서 겹치지 않게 한다 */
+      if (k === 1){
+        const wd = widthX(row[0]);
+        const free = Math.max(0, W - wd);
+        const ph = [0.5, 1, 0][r % 3];
+        plan[row[0].id] = { x: a + wd / 2 + ph * free, rank: r, seg: si };
+        continue;
+      }
+      const total = row.reduce((acc, o)=> acc + widthX(o), 0);
+      const gap = clamp((W - total) / (k - 1), gapX, maxGapX);
+      const span = total + gap * (k - 1);
+      let cur = a + Math.max(0, (W - span) / 2);
+      for (const o of row){
+        const wd = widthX(o);
+        plan[o.id] = { x: clamp(cur + wd / 2, a + wd / 2, b - wd / 2), rank: r, seg: si };
+        cur += wd + gap;
+      }
+    }
+  }
+  for (const o of mates){
+    if (!plan[o.id]) plan[o.id] = { x: clamp(o.x, w.x0 + 0.030, w.x1 - 0.030), rank: 0, seg: 0 };
+  }
+  return plan;
+}
+/* 이 병기가 성벽 앞에서 설 자리 — 공성 병기가 아니면 null(기존 동작 그대로) */
+function siegeLineSlot(u, w){
+  if (!w || w.ent !== 'gate' || !isSiegeUnit(u)) return null;
+  const plan = siegeLinePlan(w, siegeLineMates(u, w));
+  return plan[u.id] || null;
 }
 
 /* 전사 자동 웨이브: 5초마다 3기 */
@@ -1820,21 +1941,41 @@ function drawGateWall(w, time){
     g.stroke();
     g.restore();
   } else {
-    /* 3-d) 무너진 문간 — 잔해 */
+    /* 3-d) v3.13 무너진 문간 — 양옆 망루 잔해 + 부서진 문짝 목재·판석 파편 + 그을음 */
     g.save();
-    for (let i = 0; i < 18; i++){
-      const xc = pg.x + (seedW() - 0.5) * (gwHalf * 2.4);
-      const bw2 = (2.4 + seedW() * 5.5) * s, bh2 = (2.0 + seedW() * 5.0) * s;
+    g.fillStyle = 'rgba(14,12,10,.42)';
+    g.beginPath(); g.ellipse(pg.x, baseY - 1 * s, gwHalf * 1.48, 7.5 * s, 0, 0, Math.PI * 2); g.fill();
+    for (const sd of [-1, 1]){
+      const p = proj(w.gateC + sd * (w.gateH + 0.012), w.y);
+      const hw2 = 0.013 * pxPerX;
+      g.fillStyle = '#4e4839';
+      g.fillRect(p.x - hw2, baseY - 14 * s, hw2 * 2, 14 * s);
+      g.fillStyle = '#736b58';
+      g.beginPath();
+      g.moveTo(p.x - hw2, baseY - 14 * s);
+      g.lineTo(p.x - hw2 * 0.3, baseY - 21 * s);
+      g.lineTo(p.x + hw2 * 0.5, baseY - 16 * s);
+      g.lineTo(p.x + hw2, baseY - 14 * s);
+      g.closePath(); g.fill();
+    }
+    for (let i = 0; i < 24; i++){
+      const xc = pg.x + (seedW() - 0.5) * (gwHalf * 2.5);
+      const yc = baseY + (seedW() - 0.45) * 7 * s;
+      const bw2 = (2.6 + seedW() * 6.0) * s, bh2 = (2.0 + seedW() * 5.2) * s;
       g.save();
-      g.translate(xc, baseY - seedW() * 2 * s); g.rotate((seedW() - 0.5) * 0.8);
-      g.fillStyle = seedW() > 0.5 ? 'rgba(88,82,70,.95)' : 'rgba(60,55,47,.95)';
-      g.fillRect(-bw2 / 2, -bh2, bw2, bh2);
-      g.fillStyle = 'rgba(140,133,116,.45)';
-      g.fillRect(-bw2 / 2, -bh2, bw2, Math.max(0.8, bh2 * 0.26));
+      g.translate(xc, yc); g.rotate((seedW() - 0.5) * 1.1);
+      if (i % 5 === 0){
+        /* 부서진 성문 목재 파편 */
+        g.fillStyle = '#5a3d24';
+        g.fillRect(-bw2 * 0.8, -bh2 * 0.45, bw2 * 1.6, Math.max(1.4, bh2 * 0.45));
+      } else {
+        g.fillStyle = seedW() > 0.5 ? 'rgba(96,90,77,.96)' : 'rgba(62,57,48,.96)';
+        g.fillRect(-bw2 / 2, -bh2, bw2, bh2);
+        g.fillStyle = 'rgba(154,146,128,.48)';
+        g.fillRect(-bw2 / 2, -bh2, bw2, Math.max(0.8, bh2 * 0.28));
+      }
       g.restore();
     }
-    g.fillStyle = 'rgba(14,12,10,.36)';
-    g.beginPath(); g.ellipse(pg.x, baseY - 1 * s, gwHalf * 1.35, 6 * s, 0, 0, Math.PI * 2); g.fill();
     g.restore();
   }
 
@@ -3749,16 +3890,27 @@ function routeToward(u,gx,gy){
   return path[path.length - 1] || { x:gx, y:gy };
 }
 
-/* 성벽을 부수러 갈 때는 성벽 중심이 아니라 자기 앞의 성벽 면으로 붙는다 */
-function moveToGate(u, w, dt){
-  const outSign = -gateInnerSign(w.team);
-  const gx = clamp(u.x, w.x0 + 0.020, w.x1 - 0.020);
-  const ty = w.y + outSign * (GT_wallStandoff(u));
-  if (distXY(u.x, u.y, gx, ty) < 0.005){ u.moving = false; return; }
-  moveToward(u, gx, ty, dt);
-}
 function GT_wallStandoff(u){
   return Math.max(GATE.thumb, (u.rad || 0.008) + 0.004);
+}
+/* 원거리 공성 병기는 사거리를 지키는 사격선에, 근접 공성 병기는 성벽 앞에 선다 */
+function siegeLineY(u, w, slot){
+  const outSign = -gateInnerSign(w.team);
+  const d = (u.ranged || u.range >= 0.10)
+    ? Math.max(GATE.thumb + 0.020, u.range * 0.92)
+    : GT_wallStandoff(u);
+  return w.y + outSign * (d + (slot ? slot.rank : 0) * SIEGE_LINE.rankY);
+}
+/* 성벽을 부수러 갈 때는 성벽 중심이 아니라 자기 앞의 성벽 면으로 붙는다.
+   v3.14 — 공성 병기는 성벽 너비에 걸쳐 잡아 둔 자기 자리로 간다. */
+function moveToGate(u, w, dt){
+  const slot = siegeLineSlot(u, w);
+  const outSign = -gateInnerSign(w.team);
+  const gx = slot ? slot.x : clamp(u.x, w.x0 + 0.020, w.x1 - 0.020);
+  const ty = slot ? siegeLineY(u, w, slot) : w.y + outSign * (GT_wallStandoff(u));
+  const tol = slot ? SIEGE_LINE.tolX : 0.005;
+  if (distXY(u.x, u.y, gx, ty) < tol){ u.moving = false; return; }
+  moveToward(u, gx, ty, dt);
 }
 function moveToward(u, gx, gy, dt){
   const wp = routeToward(u, gx, gy);
@@ -3769,6 +3921,7 @@ function moveToward(u, gx, gy, dt){
   for (const b of u.buffs) if (b.until > state.t && b.speed) sp *= b.speed;
   if (u.slowUntil > state.t) sp *= 0.55;
   if (u.pushedUntil > state.t && u.pushedSpeed) sp = Math.max(sp, u.pushedSpeed);
+  if (u.lineBoost){ sp *= SIEGE_LINE.formSpeed; u.lineBoost = false; }   // v3.14 대형 잡기
 
   const step = Math.min(sp * UNIT_MOVE_SCALE * dt, d);
   if (Math.abs(dx) > 0.009) u.artDirection = Math.sign(dx);
@@ -3909,10 +4062,23 @@ function unitThink(u, dt){
 
   if (tgt && !(u.disabledUntil > state.t)){
     u.tgtId = tgt.id; u.tgtKind = tgt.kind || tgt.type || tgt.ent;
-    const d = (tgt.ent === 'gate') ? gateReach(u, tgt) : distXY(u.x,u.y,tgt.x,tgt.y) - tgt.rad;
+    /* v3.14 — 공성 대형: 뒤 줄에 선 병기도 성벽까지 사거리가 닿는다 */
+    const slotPre = (tgt.ent === 'gate' && isSiegeUnit(u)) ? siegeLineSlot(u, tgt) : null;
+    const reachBonus = slotPre ? slotPre.rank * SIEGE_LINE.rankY : 0;
+    const d = (tgt.ent === 'gate') ? gateReach(u, tgt) - reachBonus
+                                   : distXY(u.x,u.y,tgt.x,tgt.y) - tgt.rad;
     if (d <= u.range){
-      u.moving = false;
       if (u.atkTimer <= 0) performAttack(u, tgt);
+      /* v3.14 — 공성 병기는 사거리 안에서도 자기 자리로 옮겨가며 때린다(대형 완성) */
+      if (slotPre){
+        const ty = siegeLineY(u, tgt, slotPre);
+        if (Math.abs(u.x - slotPre.x) > SIEGE_LINE.tolX || Math.abs(u.y - ty) > SIEGE_LINE.tolX){
+          u.lineBoost = true;                 // 이미 사거리 안 — 대형 잡는 동안만 조금 빠르게
+          moveToGate(u, tgt, dt);
+          return;
+        }
+      }
+      u.moving = false;
       return;
     }
   }
@@ -4391,12 +4557,16 @@ function hitEntity(ent, dmg, src){
   hitSpark(ent, dmg);
   if (ent.ent === 'gate' && ent.hp <= 0 && ent.alive){
     ent.alive = false; ent.hp = 0; ent.broken = true; ent.open = 1;
-    state.shake = Math.max(state.shake, 7);
-    for (let i = 0; i < 10; i++){
-      state.effects.push({ type:'dust', x: ent.gateC + rand(-0.09, 0.09), y: ent.y + rand(-0.01, 0.01),
-        t:-i*0.03, life:0.7 + Math.random()*0.4 });
+    state.shake = Math.max(state.shake, 8.5);
+    for (let i = 0; i < 16; i++){
+      state.effects.push({ type:'dust', x: ent.gateC + rand(-0.22, 0.22), y: ent.y + rand(-0.018, 0.018),
+        t:-i*0.025, life:0.75 + Math.random()*0.45 });
     }
-    state.effects.push({ type:'ring', x:ent.gateC, y:ent.y, t:0, life:0.85, color:'#ffcf8a', R:0.13 });
+    for (let i = 0; i < 12; i++){
+      state.effects.push({ type:'spark', x: ent.gateC + rand(-0.14, 0.14), y: ent.y + rand(-0.01, 0.01),
+        vx: rand(-0.08, 0.08), vy: rand(-0.04, 0.04), t:0, life:0.45 + Math.random()*0.25, color: i%3===0 ? '#8c7e6a' : '#ffcf8a' });
+    }
+    state.effects.push({ type:'ring', x:ent.gateC, y:ent.y, t:0, life:0.9, color:'#ffcf8a', R:0.16 });
     Sfx.boom();
     killogSys(ent.team === 'me' ? '🧱 아군 성벽 붕괴 — 적군이 본진으로 들어옵니다'
                                 : '🧱 적 성벽 붕괴 — 우리 병력이 적 본진으로 진입합니다');
@@ -6723,6 +6893,9 @@ window.tk = function(){
     unitVisualScale: UNIT_VISUAL_SCALE,
     view: VIEW,
     volley: state.zones.filter(z=> z.type === 'volley').map(z=> ({ x:+z.x.toFixed(3), y:+z.y.toFixed(3), r:+z.r.toFixed(3) })),
+    fieldAx: +field.ax.toFixed(3),
+    siegeLineCfg: { pad:SIEGE_LINE.pad, mouth:SIEGE_LINE.mouth, gapY:SIEGE_LINE.gapY, rankY:SIEGE_LINE.rankY,
+                    formSpeed:SIEGE_LINE.formSpeed },
     siege: alive.filter(u=> u.type === 'trebuchet').map(u=> ({ team:u.team, x:+u.x.toFixed(3), y:+u.y.toFixed(3),
       hp:Math.round(u.hp), maxHp:u.maxHp, range:u.range, buildingOnly:u.buildingOnly, order: u.order && u.order.type })),
     projectiles: state.projectiles.map(p=> ({ kind:p.kind, team:p.team, t:+p.t.toFixed(2), trail:(p.trail||[]).length })),
@@ -6903,6 +7076,34 @@ window.tkShield = function(x, y, team){
   const ok = castSpell('shieldLine', px, py, tm);
   return { ok, targetIds: targets, targets: targets.length,
            braced: state.units.filter(u=> u.alive && u.braceUntil > state.t).length };
+};
+/* 검증·시연용: v3.14 공성 대형 — window.tkSiegeLine('me') */
+window.tkSiegeLine = function(team){
+  const tm = team === 'me' ? 'me' : 'foe';
+  const w = gateOf(tm === 'me' ? 'foe' : 'me');
+  if (!w) return 'no gate';
+  const mates = state.units.filter(u=> u.alive && u.team === tm && isSiegeUnit(u)
+    && u.tgtId === w.id && gateOutside(u, w));
+  mates.sort((a,b)=> a.id - b.id);
+  const plan = siegeLinePlan(w, mates);
+  const ax = Math.max(0.12, field.ax);
+  const rows = mates.map(u=> {
+    const p = plan[u.id] || {};
+    return { id:u.id, type:u.type, x:+u.x.toFixed(4), y:+u.y.toFixed(4),
+             slotX:+(p.x || 0).toFixed(4), rank:p.rank || 0, seg:p.seg, side:u.siegeSide || 0,
+             atSlot: !!p.x && Math.abs(u.x - p.x) <= SIEGE_LINE.tolX };
+  });
+  let minSep = 999, minSlotSep = 999;
+  for (let i=0;i<rows.length;i++) for (let j=i+1;j<rows.length;j++){
+    const sep = Math.abs(rows[i].x - rows[j].x) * ax;
+    if (sep < minSep) minSep = sep;
+    const ssep = Math.abs(rows[i].slotX - rows[j].slotX) * ax;
+    if (ssep < minSlotSep) minSlotSep = ssep;
+  }
+  return { team:tm, wallTeam:w.team, wallY:+w.y.toFixed(3), count:rows.length,
+           minSep: rows.length > 1 ? +minSep.toFixed(4) : null,
+           minSlotSep: rows.length > 1 ? +minSlotSep.toFixed(4) : null,
+           ranks: rows.map(r=> r.rank), units: rows };
 };
 /* 검증·시연용: v3.12 성벽 — window.tkGate() / window.tkGateHit('me', 500) */
 window.tkGate = function(){
