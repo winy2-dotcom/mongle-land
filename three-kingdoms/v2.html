@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#0b0f14">
-<title>삼국 전략 v3.2 · 중앙 들판</title>
+<title>삼국 전략 v3.3 · 광활 전장</title>
 <style>
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{margin:0;height:100%;overflow:hidden;background:radial-gradient(circle at 50% 12%,#1a2230 0%,#0a0e13 55%,#05070a 100%);
@@ -429,8 +429,8 @@
     </div>
 
     <div class="overlay" id="startScreen">
-      <div class="title">삼국 <span>전략</span> <small style="font-size:12px;color:#ffd76e;letter-spacing:0">v3.2 · 중앙 들판</small></div>
-      <div class="sub">🌾식량 단일 자원 · 고정 마법 2장 · 5초마다 전사 3기 자동 출격 · 장군 스킬 2종 · 중앙 들판 전장</div>
+      <div class="title">삼국 <span>전략</span> <small style="font-size:12px;color:#ffd76e;letter-spacing:0">v3.3 · 광활 전장</small></div>
+      <div class="sub">🌾식량 단일 자원 · 고정 마법 2장 · 5초마다 전사 3기 자동 출격 · 장군 스킬 2종 · 위아래로 밀어 보는 넓은 본진·적진</div>
       <div class="factions" id="factionList"></div>
       <div class="deckPick">
         <div class="dpHead"><b>전투 덱 편성 <span id="deckCount">유닛 6/6 · 마법 2/2</span></b><button id="btnReco">추천 덱</button></div>
@@ -456,7 +456,7 @@
     </div>
 
     <div class="overlay hidden" id="helpScreen">
-      <div class="title" style="font-size:19px">전술 가이드 (v3.2)</div>
+      <div class="title" style="font-size:19px">전술 가이드 (v3.3)</div>
       <div class="guide">
         <b>1. 곡물 수급</b>곡물은 자동으로 최대 <span>20</span>까지 차고, 하단에 초당 수급량이 표시됩니다.<br>
         <b>2. 중앙 들판</b>두 강 사이에 교전 구역이 있습니다. 지상 병력은 다리로 강을 건너고 돌담 사이의 길로 진군합니다. 들판의 표시된 자리에 아군이 접근하면 공격탑을 세울 수 있습니다.<br>
@@ -476,6 +476,7 @@
         <b>돌팔매 고수</b>신라 기본 덱과 공용 유닛 목록에서 선택할 수 있습니다. 궁수보다 먼 거리에서 돌을 던져 표적과 주변 지상 적에게 피해를 주며 건물 피해는 낮습니다. 신라 석투당에 돌팔매 병력이 포함되었을 가능성에 착안한 창작 병종입니다.<br>
         <b>v2.9 전투</b>전체 버튼으로 양쪽 본진을 한눈에 봅니다. 궁수는 2기씩, 고구려 개마무사는 두 번째·세 번째 소환부터 자동으로 진화합니다. 정찰병은 적 병력이 발견하기 전까지 숨고, 성·탑 사격을 잠시 멈춘 뒤 공격력을 낮춥니다. 낙목 굴리기는 지상 적에게 피해를 주고 밀어냅니다.<br>
         <b>13. 장군·식량 상향 & 공성 투석기 (v2.8)</b>장군의 기본 체력은 <span>2배</span>입니다. 성 수리사 대신 <span>공성 투석기</span>가 합류합니다 — 체력 80의 유리대포로 <span>궁수의 2배가 넘는 사거리(0.265)</span>에서 <span>적 건물만</span> 포격하며, 적 유닛은 노리지 않고 사거리 안에 건물이 없으면 전진합니다.<br>
+        <b>14. 광활 전장 & 위아래 스크롤 (v3.3)</b>본진과 적진을 넓혀 성 앞 강변까지 <span>교전할 앞마당</span>을 만들었습니다. 전장은 화면 <span>2배 길이</span>로 펼쳐져 시작부터 확대 시점이고, 화면을 <span>위아래로 밀면</span> 아군 본진 뒤끝부터 적 본진 뒤끝까지 끊김 없이 훑어볼 수 있습니다(손가락을 내리면 적진 쪽, 올리면 아군 쪽). 우측 <span>전체</span>를 누르면 한눈에 들어오는 전체 조망으로 돌아가고, 다시 위아래로 밀면 그 자리에서 확대 시점으로 풀립니다. 마우스 휠로도 오르내릴 수 있습니다.<br>
       </div>
       <button class="bigbtn" id="btnHelpClose">닫기</button>
     </div>
@@ -880,15 +881,15 @@ const TOWER_LV = [
   { lv:3, name:'화포 방어진', hp:1180, dmg:70, interval:0.62, range:0.235,
     cost:CFG.towerCost, upCost:0, shot:'shell', splash:0.028, lift:26, arc:0.05 }
 ];
-/* 방어진 슬롯 — 2열 앞마당 곡물지대(y≈0.26)와 3열 강 건너 진입로(y≈0.41)를 지킨다(적 진영은 y를 뒤집어 사용) */
+/* 방어진 슬롯 — v3.3 본진 앞마당 1열(y≈0.29, 성문·앞마당)과 중앙 들판 진입로(y≈0.43)를 지킨다(적 진영은 y를 뒤집어 사용) */
 const DEF_SLOTS = [
-  { x:0.10, y:0.285, tag:'좌 성문 앞' },
-  { x:0.36, y:0.255, tag:'2열 곡물(좌)' },
-  { x:0.64, y:0.255, tag:'2열 곡물(우)' },
-  { x:0.90, y:0.285, tag:'우 성문 앞' },
-  { x:0.29, y:0.435, tag:'들판 좌측', field:true },
-  { x:0.71, y:0.435, tag:'들판 우측', field:true },
-  { x:0.59, y:0.465, tag:'들판 중앙', field:true }
+  { x:0.10, y:0.300, tag:'좌 성문 앞' },
+  { x:0.37, y:0.288, tag:'앞마당 좌' },
+  { x:0.63, y:0.288, tag:'앞마당 우' },
+  { x:0.90, y:0.300, tag:'우 성문 앞' },
+  { x:0.29, y:0.428, tag:'들판 좌측', field:true },
+  { x:0.71, y:0.428, tag:'들판 우측', field:true },
+  { x:0.59, y:0.458, tag:'들판 중앙', field:true }
 ];
 function slotsFor(team){
   return DEF_SLOTS.map((s,i)=> ({ idx:i, x:s.x, y: team==='foe' ? 1 - s.y : s.y, tag:s.tag, field:!!s.field }));
@@ -911,7 +912,8 @@ const DIFF = {
 const ENEMY_OF = { goguryeo:'baekje', baekje:'silla', silla:'goguryeo' };
 
 const BRIDGE_X = [0.14, 0.50, 0.86];
-const RIVERS = [{ lo:0.306, hi:0.356 }, { lo:0.644, hi:0.694 }];
+/* v3.3 — 강을 중앙 쪽으로 당겨 본진/적진을 33.5% → 34%로 넓히고, 성 앞 뒤로 교전할 땅을 확보했다 */
+const RIVERS = [{ lo:0.340, hi:0.374 }, { lo:0.626, hi:0.660 }];
 const HOME_EDGE = RIVERS[0].lo;
 const WALL_BAND = { lo:0.49, hi:0.51, wall:true };
 const STONE_WALLS = [
@@ -928,7 +930,7 @@ const WAVE_INTERVAL = 5.0;
 const WAVE_SIZE = 3;
 /* 눈덩이 방지: 한 팀이 필드에 유지할 수 있는 자동 전사 상한 */
 const WAVE_CAP = 21;
-const WAVE_Y = { me: 0.11, foe: 0.89 };
+const WAVE_Y = { me: 0.115, foe: 0.885 };
 
 /* 10분 매치 기준 3/6/9분 경과별 전사 갑옷 티어 */
 const ARMOR_TIERS = [
@@ -1124,8 +1126,8 @@ const state = {
   timeLeft:CFG.matchTime, t:0, nextId:1,
   stats:{ meDown:0, foeDown:0, meSummon:0, meKills:0, foeKills:0, meSkills:0, foeSkills:0, meCastles:0, foeCastles:0 },
   muted:false, fever:1,
-  camY: 0.5,
-  overview: true,
+  camY: 0.22,
+  overview: false,
   waveLane: 1, waveTimer: 0.8,
   foeWaveLane: 1, foeWaveTimer: 1.4,
   armorTier: 0,
@@ -1141,20 +1143,22 @@ const g = cv.getContext('2d');
 let dpr = 1, cvw = 0, cvh = 0;
 const field = { cx:0, worldH:1000, halfWBot:160, ax:0.5 };
 
+/* v3.3 카메라 — camY 0.18~0.82가 지도 0~1 전체를 맡는다(확대 시 스크롤 여유 100%) */
+const CAM_MIN = 0.18, CAM_MAX = 0.82;
 function camOffsetPx(){
   const maxScroll = Math.max(0, field.worldH - cvh);
-  const norm = clamp((state.camY - 0.18) / 0.64, 0, 1);
+  const norm = clamp((state.camY - CAM_MIN) / (CAM_MAX - CAM_MIN), 0, 1);
   return -maxScroll * (1 - norm);
 }
 
 /* v2.8 탑뷰 투영 — 원경 축소를 0.72→0.90으로 완화해 위에서 내려다보는 평행감을 준다 */
 const VIEW = {
-  worldK: 1.72,   // 확대 시 중앙 들판과 양 진영을 나눠 본다
+  worldK: 2.0,    // v3.3 확대 배율 — 전장이 화면 2배 길이로 펼쳐져 위아래로 훑어본다
   halfW: 0.505,   // 바닥 절반 폭 비율
   nearS: 1.0,     // 화면 아랫변(내 진영) 배율
   farS: 0.98,     // 화면 윗변(적 진영) 배율 — 원근 왜곡 완화
-  span: 0.92,     // 월드 y 0~1이 차지하는 세로 비율
-  base: 0.96
+  span: 1.0,      // 월드 y 0~1이 차지하는 세로 비율(스크롤 끝에서 지도 경계가 화면 끝에 맞닿는다)
+  base: 1.0
 };
 
 function proj(x, y){
@@ -1506,7 +1510,7 @@ function drawBattlefield(time){
   // 4) 3갈래 진격로
   for (let i = 0; i < BRIDGE_X.length; i++){
     const bx = BRIDGE_X[i];
-    const pts = [[0.5,0.055],[(0.5+bx)/2,0.155],[bx,0.245],[bx,0.755],[(0.5+bx)/2,0.845],[0.5,0.945]];
+    const pts = [[0.5,0.048],[(0.5+bx)/2,0.170],[bx,0.336],[bx,0.664],[(0.5+bx)/2,0.830],[0.5,0.952]];
     roadPath(pts, 34, 'rgba(52,40,24,.30)');
     roadPath(pts, 26, 'rgba(142,120,84,.34)');
     roadPath(pts, 17, 'rgba(176,152,110,.30)');
@@ -2867,17 +2871,18 @@ function tryTowerSlot(slotIdx, team){
 
 function setupBuildings(){
   state.buildings = [];
-  addBuilding('me','base',0.5,0.065);
-  addBuilding('me','castle',0.16,0.19,{ side:'L' });
-  addBuilding('me','castle',0.84,0.19,{ side:'R' });
-  addBuilding('me','fort',0.20,0.246,{ side:'L' });
-  addBuilding('me','fort',0.80,0.246,{ side:'R' });
+  /* v3.3 — 본성은 뒤로 물리고 성·전초성을 한 줄씩 더 벌려, 성 앞 강변까지 교전할 앞마당을 남긴다 */
+  addBuilding('me','base',0.5,0.058);
+  addBuilding('me','castle',0.155,0.178,{ side:'L' });
+  addBuilding('me','castle',0.845,0.178,{ side:'R' });
+  addBuilding('me','fort',0.215,0.262,{ side:'L' });
+  addBuilding('me','fort',0.785,0.262,{ side:'R' });
 
-  addBuilding('foe','base',0.5,0.935);
-  addBuilding('foe','castle',0.16,0.81,{ side:'L' });
-  addBuilding('foe','castle',0.84,0.81,{ side:'R' });
-  addBuilding('foe','fort',0.20,0.754,{ side:'L' });
-  addBuilding('foe','fort',0.80,0.754,{ side:'R' });
+  addBuilding('foe','base',0.5,0.942);
+  addBuilding('foe','castle',0.155,0.822,{ side:'L' });
+  addBuilding('foe','castle',0.845,0.822,{ side:'R' });
+  addBuilding('foe','fort',0.215,0.738,{ side:'L' });
+  addBuilding('foe','fort',0.785,0.738,{ side:'R' });
 }
 
 function initDeckCycle(){
@@ -2918,7 +2923,7 @@ function startMatch(facKey){
   state.me.up = {melee:0,ranged:0,armor:0}; state.foe.up = {melee:0,ranged:0,armor:0};
   state.ruins = [];
   state.stats = { meDown:0, foeDown:0, meSummon:0, meKills:0, foeKills:0, meSkills:0, foeSkills:0, meCastles:0, foeCastles:0 };
-  state.fever = 1; state.camY = 0.5; state.overview = true;
+  state.fever = 1; state.camY = 0.22; state.overview = false;
   state.selTower = null; state.shake = 0;
   state.waveLane = 1; state.waveTimer = 0.8;
   state.foeWaveLane = Math.floor(Math.random()*3); state.foeWaveTimer = 1.4;
@@ -2943,7 +2948,7 @@ function startMatch(facKey){
   document.getElementById('app').classList.remove('menu');
   layout();
   setPending(null);
-  toast(FACTIONS[facKey].name + '군 출진! 단일 자원 코스트로 직관적인 전략을 펼쳐보세요');
+  toast(FACTIONS[facKey].name + '군 출진! 화면을 위아래로 밀어 전장을 훑어보세요');
   Sfx.init(); Sfx.battleStart();
 }
 
@@ -4397,7 +4402,7 @@ function render(time){
   drawDefenseOverlay(time);
 
   if (state.pending && state.pending.kind === 'deploy' && UNITS[state.pending.card].kind !== 'spell'){
-    boardPath(g, 0.04, 0.06, 0.96, HOME_EDGE);
+    boardPath(g, 0.04, 0.03, 0.96, HOME_EDGE);
     g.fillStyle = 'rgba(100,220,255,.08)'; g.fill();
     g.strokeStyle = 'rgba(100,220,255,.45)'; g.setLineDash([5,4]); g.stroke(); g.setLineDash([]);
   }
@@ -4797,6 +4802,11 @@ function syncUpg(){
 }
 
 let dragScroll = null;
+/* 스와이프→스크롤 배율: 손가락 이동량과 지면 이동량을 1:1로 맞춘다(worldK가 바뀌어도 유지) */
+function dragCamPerPx(){
+  const spanPx = Math.max(1, field.worldH - cvh);
+  return (CAM_MAX - CAM_MIN) * cvh / spanPx;
+}
 cv.addEventListener('pointerdown', ev=>{
   ev.preventDefault(); Sfx.init();
   if (state.phase !== 'playing') return;
@@ -4807,7 +4817,7 @@ cv.addEventListener('pointerdown', ev=>{
   if (state.pending){
     if (state.pending.kind === 'deploy'){
       const cId = state.pending.card, u = UNITS[cId];
-      if (u.kind !== 'spell' && (w.y < 0.06 || w.y > HOME_EDGE)){ toast('내 진영(강 아래쪽)에 배치하세요'); return; }
+      if (u.kind !== 'spell' && (w.y < 0.02 || w.y > HOME_EDGE)){ toast('내 진영(강 아래쪽)에 배치하세요'); return; }
       if (!canPay(u.cost)){ toast('자원이 부족합니다'); return; }
       pay(u.cost);
       if (u.kind === 'spell'){
@@ -4872,19 +4882,37 @@ cv.addEventListener('pointerdown', ev=>{
 cv.addEventListener('pointermove', ev=>{
   if (!dragScroll) return;
   const dy = ev.clientY - dragScroll.startY;
-  if (state.overview && Math.abs(dy) < 16) return;
-  if (state.overview){ state.overview = false; layout(); }
+  if (state.overview){
+    if (Math.abs(dy) < 16) return;
+    /* 전체 조망 → 확대 시점: 지도 중심(y=0.5)을 화면에 고정한 채 스크롤 모드로 풀린다 */
+    state.overview = false;
+    state.camY = 0.5;
+    layout();
+    dragScroll.startY = ev.clientY;
+    dragScroll.startCam = 0.5;
+    syncCamButtons();
+    return;
+  }
   /* v2.8 — 스와이프 방향 반전: 손가락을 내리면 적진 쪽이 보이도록 */
-  state.camY = clamp(dragScroll.startCam + (dy / cvh) * 0.85, 0.18, 0.82);
+  state.camY = clamp(dragScroll.startCam + dy * dragCamPerPx(), CAM_MIN, CAM_MAX);
   syncCamButtons();
 });
 cv.addEventListener('pointerup', ()=> dragScroll = null);
 cv.addEventListener('pointercancel', ()=> dragScroll = null);
+/* 마우스 휠 — 아래로 굴리면 아군 쪽, 위로 굴리면 적진 쪽을 본다 */
+cv.addEventListener('wheel', ev=>{
+  if (state.phase !== 'playing') return;
+  ev.preventDefault();
+  if (state.overview){ state.overview = false; state.camY = 0.5; layout(); }
+  const step = Math.max(0.02, Math.min(0.08, Math.abs(ev.deltaY) / 1200));
+  state.camY = clamp(state.camY - Math.sign(ev.deltaY) * step, CAM_MIN, CAM_MAX);
+  syncCamButtons();
+}, { passive:false });
 
 function syncCamButtons(){
-  document.getElementById('camFoe').classList.toggle('on', !state.overview && state.camY > 0.62);
+  document.getElementById('camFoe').classList.toggle('on', !state.overview && state.camY > 0.60);
   document.getElementById('camMid').classList.toggle('on', state.overview);
-  document.getElementById('camMe').classList.toggle('on', !state.overview && state.camY < 0.35);
+  document.getElementById('camMe').classList.toggle('on', !state.overview && state.camY < 0.40);
 }
 function setCamera(overview, y){
   state.overview = overview;
@@ -4893,9 +4921,9 @@ function setCamera(overview, y){
   layout();
   syncCamButtons();
 }
-document.getElementById('camFoe').addEventListener('click', ()=> setCamera(false, 0.82));
+document.getElementById('camFoe').addEventListener('click', ()=> setCamera(false, CAM_MAX));
 document.getElementById('camMid').addEventListener('click', ()=> setCamera(true, 0.5));
-document.getElementById('camMe').addEventListener('click', ()=> setCamera(false, 0.18));
+document.getElementById('camMe').addEventListener('click', ()=> setCamera(false, CAM_MIN));
 
 const entrance = document.getElementById('generalEntrance');
 entrance.addEventListener('animationend', event=>{
