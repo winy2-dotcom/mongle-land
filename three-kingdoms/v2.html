@@ -4818,7 +4818,7 @@ function syncUpg(){
 let dragScroll = null;
 /* 스와이프→스크롤 배율: 손가락 이동량과 지면 이동량을 1:1로 맞춘다(worldK가 바뀌어도 유지) */
 function dragCamPerPx(){
-  return (CAM_MAX - CAM_MIN) / Math.max(1, camBot - camTop);
+  return (CAM_MAX - CAM_MIN) / Math.max(1, camTop - camBot);
 }
 cv.addEventListener('pointerdown', ev=>{
   ev.preventDefault(); Sfx.init();
