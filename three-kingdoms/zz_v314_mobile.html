@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>v3.14 모바일 확인</title>
+<style>
+  body{margin:0;background:#0d1117;color:#c9d1d9;font-family:system-ui,-apple-system,'Malgun Gothic',sans-serif}
+  h1{font-size:15px;margin:10px 14px 6px}
+  #wrap{display:flex;gap:14px;padding:0 14px 20px;align-items:flex-start;flex-wrap:wrap}
+  .box{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:8px}
+  .cap{font-size:12px;margin:0 0 6px 2px;color:#8b949e}
+  .cap b{color:#ffd76e}
+  iframe{border:0;border-radius:6px;background:#000;display:block}
+  .rep{font:12px/1.5 monospace;white-space:pre-wrap;color:#7ee787;max-width:360px}
+</style>
+</head>
+<body>
+<h1>삼국 전략 v3.14 · 공성 대형 — 모바일 뷰포트 확인</h1>
+<div id="wrap">
+  <div class="box"><p class="cap"><b>360×780</b> (소형 안드로이드)</p><iframe id="f360" src="v2.html?cb=e65b7f6&m=360" width="360" height="780"></iframe><div class="rep" id="r360">…</div></div>
+  <div class="box"><p class="cap"><b>390×844</b> (갤럭시 S24+ 급)</p><iframe id="f390" src="v2.html?cb=e65b7f6&m=390" width="390" height="844"></iframe><div class="rep" id="r390">…</div></div>
+  <div class="box"><p class="cap"><b>768×900</b> (태블릿)</p><iframe id="f768" src="v2.html?cb=e65b7f6&m=768" width="768" height="900"></iframe><div class="rep" id="r768">…</div></div>
+</div>
+<script>
+function report(id, f){
+  const w = f.contentWindow;
+  const el = document.getElementById(id);
+  if (!w || !w.document) { el.textContent = id + ': no window'; return; }
+  const title = w.document.title || '';
+  const errs = (w.__tkErrors || []).slice(0, 5);
+  const st = (w.tk && w.tk()) || {};
+  el.textContent = id + ' → ' + title.split('·')[0].trim()
+    + '\nphase=' + (st.phase || '-') + ' units=' + (st.totalUnits === undefined ? '-' : st.totalUnits)
+    + ' errs=' + errs.length + (errs.length ? '\n' + errs.join('\n') : '');
+}
+setTimeout(function(){
+  ['f360','f390','f768'].forEach(function(id){
+    const f = document.getElementById(id);
+    report('r' + id.slice(1), f);
+    const btn = f.contentWindow && f.contentWindow.document.getElementById('btnStart');
+    if (btn) btn.click();
+  });
+  setTimeout(function(){
+    ['f360','f390','f768'].forEach(function(id){
+      const f = document.getElementById(id);
+      report('r' + id.slice(1), f);
+      const w = f.contentWindow;
+      if (w && w.tkSpawn){
+        w.tkSpawn('trebuchet', 0.42, 0.775); w.tkSpawn('trebuchet', 0.58, 0.775);
+        w.tkSpawn('giant', 0.34, 0.775); w.tkSpawn('elephant', 0.66, 0.775);
+      }
+    });
+  }, 1200);
+}, 2500);
+</script>
+</body>
+</html>
