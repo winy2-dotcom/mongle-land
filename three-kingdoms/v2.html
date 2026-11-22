@@ -5370,6 +5370,14 @@ window.tkTrebuchet = function(team){
            buildingOnly: u.buildingOnly, archerRange: UNITS.archer.range,
            rangeRatio: +(u.range / UNITS.archer.range).toFixed(2) };
 };
+/* 검증·시연용: v3.4 AI 투석기 가드 확인 — window.tkTrebuchetGate() */
+window.tkTrebuchetGate = function(team){
+  const tm = team === 'me' ? 'me' : 'foe';
+  const n = trebuchetAlive(tm);
+  let pass = 0;
+  for (let i=0;i<200;i++) if (!aiTrebuchetBlocked(tm)) pass++;
+  return { team:tm, alive:n, max:AI_TREBUCHET.max, soft:AI_TREBUCHET.soft, passRate:+(pass/200).toFixed(3) };
+};
 /* 검증·시연용: 화살·포탄 궤적/착탄 확인용 소규모 교전 — window.tkRanged() */
 window.tkRanged = function(){
   if (state.phase !== 'playing') return 'not playing';
