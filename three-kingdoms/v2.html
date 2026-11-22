@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#0b0f14">
-<title>삼국 전략 v3.6 · 시야 2단 · 장군 3스킬</title>
+<title>삼국 전략 v3.7 · 전군 강화</title>
 <style>
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{margin:0;height:100%;overflow:hidden;background:radial-gradient(circle at 50% 12%,#1a2230 0%,#0a0e13 55%,#05070a 100%);
@@ -288,31 +288,11 @@
 
   .upgbtn{flex:1;display:flex;align-items:center;gap:5px;padding:3px 7px;border-radius:10px;min-width:0;
     border:1px solid rgba(255,205,110,.40);background:linear-gradient(180deg,rgba(48,39,22,.92),rgba(20,17,11,.92));color:#ffe6a8;cursor:pointer}
-  .upgbtn .ustars{font-size:10px;color:#ffd76e}
   .upgbtn .utxt{display:flex;flex-direction:column;align-items:flex-start;line-height:1.15;min-width:0;flex:1}
   .upgbtn .utxt b{font-size:9.5px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
   .upgbtn .utxt i{font-size:7.5px;font-style:normal;color:#c6b68e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
   .upgbtn .ucost{font-size:9.5px;font-weight:900;color:#ffe6a8;background:rgba(140,90,30,.55);border-radius:6px;padding:1px 5px}
 
-  .forgebtn{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:3px 9px;border-radius:10px;
-    border:1px solid rgba(226,176,115,.55);background:linear-gradient(180deg,rgba(60,38,18,.94),rgba(24,16,9,.94));color:#f3d9b4;cursor:pointer;line-height:1.1}
-  .forgebtn span{font-size:12px}
-  .forgebtn b{font-size:8px;font-weight:800}
-
-  .forge{position:absolute;left:8px;right:8px;bottom:8px;z-index:7;border-radius:14px;padding:9px;
-    background:rgba(12,16,22,.94);border:1px solid rgba(226,176,115,.45)}
-  .forge.hidden{display:none}
-  .forge .fh{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
-  .forge .fh b{font-size:11px;color:#f3d9b4}
-  .forge .fh button{border:none;background:rgba(255,255,255,.1);color:#dfe8f2;font-size:10.5px;font-weight:700;padding:4px 10px;border-radius:999px;cursor:pointer}
-  .frow{display:flex;align-items:center;gap:8px;width:100%;padding:6px 8px;margin-top:4px;border-radius:9px;cursor:pointer;text-align:left;
-    border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:#dfe8f2}
-  .frow .fi{font-size:15px;width:22px;text-align:center}
-  .frow .ft{flex:1;display:flex;flex-direction:column}
-  .frow .ft b{font-size:10.5px}
-  .frow .ft i{font-style:normal;font-size:8.5px;color:#8d9aab}
-  .frow .fc{font-size:10px;font-weight:900;color:#f3d9b4;background:rgba(150,95,40,.5);border-radius:6px;padding:2px 6px}
-  .frow.dis{opacity:.45}
 
   /* 손패 영역: 4장 유닛 로테이션 + 고정 마법 2슬롯 */
   .deckRow{display:flex;align-items:stretch;gap:5px}
@@ -344,12 +324,12 @@
   #dock{box-shadow:inset 0 1px #e5c07e35,0 -7px 26px #070b0f66}
   .overlay{background:radial-gradient(ellipse at 50% 2%,#38301ce3,transparent 58%),linear-gradient(175deg,#121d21f7,#0a1117f5)}
   .title,.resTitle{color:var(--ui-light);text-shadow:0 2px 0 #16110e,0 0 20px #c4974848}
-  .fcard,.deckPick,.resStats .row,.forge{border-color:#b18b4d64;background:linear-gradient(145deg,#242b2ce8,#141b21ed)}
+  .fcard,.deckPick,.resStats .row{border-color:#b18b4d64;background:linear-gradient(145deg,#242b2ce8,#141b21ed)}
   .fcard.on,.dp.on,.diffRow button.on{border-color:var(--ui-gold);background:linear-gradient(140deg,#3d3220,#26261f);box-shadow:inset 0 1px #f4d29a2b}
   .bigbtn{border-color:#f5d798;background:linear-gradient(180deg,#ecd09a,#bb8843);box-shadow:inset 0 1px #fff0bc,0 4px 12px #0c0a07a0;color:#281c0e}
   .camCtrl button,.ghostbtn{border-color:#b6955e66;background:linear-gradient(180deg,#263335ef,#121c24ef);color:#eadcbb}
   .camCtrl button.on{border-color:var(--ui-accent);color:#e3f9ec}
-  .towerbtn,.genbtn,.upgbtn,.forgebtn{border-color:#b38b53;background:linear-gradient(180deg,#3a2b20,#1f1b16);color:var(--ui-light)}
+  .towerbtn,.genbtn,.upgbtn{border-color:#b38b53;background:linear-gradient(180deg,#3a2b20,#1f1b16);color:var(--ui-light)}
   .grainRow,.nextBox{border-color:#ae915a70;background:#171f22;color:var(--ui-light)}
   .card{background:radial-gradient(ellipse at 50% 0%,#4d4936 0%,#222c2d 52%,#142026 100%);border-color:#bb985b8a;box-shadow:inset 0 1px #f5d9a031}
   .card.spellCard{background:linear-gradient(155deg,#41301f,#221a16);border-color:#ae7f4d}
@@ -440,20 +420,15 @@
 
     <div class="toast" id="toast"></div>
 
-    <div class="forge hidden" id="forgePanel">
-      <div class="fh"><b>⚒ 대장간 — 🌾식량 업그레이드</b><button id="forgeClose">닫기</button></div>
-      <div id="forgeRows"></div>
-    </div>
-
     <div class="overlay" id="startScreen">
-      <div class="title">삼국 <span>전략</span> <small style="font-size:12px;color:#ffd76e;letter-spacing:0">v3.6 · 시야 2단 · 장군 3스킬</small></div>
-      <div class="sub">🌾식량 단일 자원 · 고정 마법 2장 · 5초마다 전사 3기 자동 출격 · 장군 스킬 3종 자동 순환 · 가까이/멀리 시야</div>
+      <div class="title">삼국 <span>전략</span> <small style="font-size:12px;color:#ffd76e;letter-spacing:0">v3.7 · 전군 강화</small></div>
+      <div class="sub">🌾식량 단일 자원 · 고정 마법 2장 · 5초마다 전사 3기 자동 출격 · 장군 스킬 3종 자동 순환 · 전군 강화 2단계</div>
       <div class="factions" id="factionList"></div>
       <div class="deckPick">
         <div class="dpHead"><b>전투 덱 편성 <span id="deckCount">유닛 6/6 · 마법 2/2</span></b><button id="btnReco">추천 덱</button></div>
         <div class="dpSecLabel"><span>유닛 로테이션 덱 (6장 중 4장씩 순환)</span><span id="unitPickCnt">6/6</span></div>
         <div class="dpGrid" id="dpUnitGrid"></div>
-        <div class="dpSecLabel"><span>고정 전술 마법 (직접 2장 선택 · 5종 풀 · 🌾식량)</span><span id="spellPickCnt">2/2</span></div>
+        <div class="dpSecLabel"><span>고정 전술 마법 (직접 2장 선택 · 6종 풀 · 🌾식량)</span><span id="spellPickCnt">2/2</span></div>
         <div class="dpGrid" id="dpSpellGrid"></div>
       </div>
       <div class="diffRow" id="diffRow"><b>난이도</b>
@@ -473,7 +448,7 @@
     </div>
 
     <div class="overlay hidden" id="helpScreen">
-      <div class="title" style="font-size:19px">전술 가이드 (v3.6)</div>
+      <div class="title" style="font-size:19px">전술 가이드 (v3.7)</div>
       <div class="guide">
         <b>1. 곡물 수급</b>곡물은 자동으로 최대 <span>20</span>까지 차고, 하단에 초당 수급량이 표시됩니다.<br>
         <b>2. 중앙 들판</b>두 강 사이에 교전 구역이 있습니다. 지상 병력은 다리로 강을 건너고 돌담 사이의 길로 진군합니다. 들판의 표시된 자리에 아군이 접근하면 공격탑을 세울 수 있습니다.<br>
@@ -497,8 +472,10 @@
         <b>15. 공성 균형 (v3.4)</b>공성 투석기의 사거리를 <span>0.265 → 0.225</span>로 줄여, 성(0.170)과 초반 방어진(Lv1 0.175 · Lv2 0.205) 사거리 밖에서 압박하되 <span>3단계 화포 방어진(0.235)</span>의 사거리 <span>안</span>에 들어가게 했습니다. 이제 화포를 올려 두면 투석기를 <span>반격으로 끊을 수 있습니다</span>(방어진 사거리 판정도 병력의 몸집 가장자리까지 재도록 맞췄습니다). 사거리가 줄어든 만큼 체력은 <span>80 → 135</span>(유리대포는 유지), 피해 <span>46 → 52</span>·주기 2.90 → 3.00초·건물 배율 3.0 → 2.6으로 손맛은 살리고 성을 녹이는 속도는 낮췄으며, 비용은 <span>🌾4 → 🌾5</span>입니다. 적 AI도 투석기를 <span>한 번에 여러 기 쓸아붓지 않도록</span> 기수 상한(최대 2기, 1기 생존 시 추가 소환 대폭 감소)을 두었습니다.<br>
         <b>16. 방어진 전술 UI (v3.5)</b>하단 <span>공격탑</span> 버튼에 현재 방어진 기수(<span>2/3</span>)가 배지로 붙고, 들판 슬롯에 병력이 닿아 <span>지금 바로</span> 세울 수 있으면 은은한 청록빛과 함께 <span>들판 가능</span> 표시가 켜집니다. 건설 모드나 탑을 선택했을 때는 지금 사거리(금빛 실선) 바깥에 <span>다음 단계 사거리(연한 금빛 점선)</span>가 함께 그려져 강화하면 얼마나 넓어지는지 눈으로 확인할 수 있습니다. 들판 슬롯이 회색으로 잠겨 있으면 그 중앙에 <span>병력 접근</span>이라고 적혀, 병력을 먼저 보내야 한다는 것을 바로 알 수 있습니다.<br>
         <b>17. 시야 2단 (v3.6)</b>우측 <span>가까이</span>는 전장을 2.35배로 펼쳐 한 구역(본진·들판·적진)에 집중해 크게 보는 시야입니다. <span>멀리</span>는 1.4배로 뒤로 물러나 <span>본진과 들판이 한눈에</span> 들어오는 시야입니다. 두 시야 모두 위아래로 밀어 끝까지 훑을 수 있고, 전환해도 보던 지점이 화면 가운데에 그대로 남습니다. 짧게 탭하면 병력 선택·이동, 끌면 스크롤로 확실히 갈립니다.<br>
-        <b>18. 마법 개편 (v3.6)</b>로비 <span>고정 전술 마법</span>은 <span>화살지원·허수아비·회오리·기우제·낙목</span> 5종 중에서 <span>직접 2장</span>을 골라 씁니다. <span>무당의 소원</span>은 삭제되었습니다. <span>허수아비</span>는 원하는 지점에 10초 서서 주변 적 유닛을 유인하고, <span>회오리</span>는 4.5초 소용돌이로 범위 안 적을 중심으로 빨아들이며 피해와 이동 방해를 줍니다. <span>기우제</span>는 들판 한가운데 <span>신목</span>을 10초 세우고 들판 전체에 비를 내립니다 — 그동안 <span>식량 회복 ×1.3</span>이고 <span>들판의 아군은 본진으로 철수</span>하며, 신목이 사라지면 다시 전진합니다.<br>
+        <b>18. 마법 개편 (v3.6 · v3.7 방패 진형 추가)</b>로비 <span>고정 전술 마법</span>은 <span>화살지원·방패 진형·허수아비·회오리·기우제·낙목</span> 6종 중에서 <span>직접 2장</span>을 골라 씁니다. <span>무당의 소원</span>은 삭제되었습니다. <span>허수아비</span>는 원하는 지점에 10초 서서 주변 적 유닛을 유인하고, <span>회오리</span>는 4.5초 소용돌이로 범위 안 적을 중심으로 빨아들이며 피해와 이동 방해를 줍니다. <span>기우제</span>는 들판 한가운데 <span>신목</span>을 10초 세우고 들판 전체에 비를 내립니다 — 그동안 <span>식량 회복 ×1.3</span>이고 <span>들판의 아군은 본진으로 철수</span>하며, 신목이 사라지면 다시 전진합니다.<br>
         <b>19. 성 크기·공성 거인 (v3.6)</b>본성·성 이미지는 기존의 <span>약 70%</span>로 줄여 성 주변 공간이 넓어졌습니다. <span>거인전사</span>는 이제 병력을 외면하고 <span>공격탑(방어진)과 본성만</span> 노려 이동·공격합니다. 백제는 <span>전투 코끼리</span>(중장 돌격·건물 강타)가 거인전사를 대신합니다. 장군 기본 이동속도는 <span>2배</span>가 되었고, 장군 출진 초상은 화면 가운데 <span>작은 카드</span>로 뜨게 다듬었습니다.<br>
+        <b>20. 전군 강화 (v3.7)</b>하단 <span>전군 강화</span> 버튼으로 아군 전 병력을 <span>2단계</span>까지 키웁니다(🌾6 → 🌾9). 단계마다 <span>이미 전장에 있는 병력과 앞으로 출전하는 병력 모두</span> 공격력·최대 체력이 기본치 대비 <span>+8%</span>씩 오르고, 체력은 오른 만큼 비율대로 채워집니다. 함께 있던 <span>대장간</span>(무기·활·갑옷 3종)은 이 버튼 하나로 합쳤습니다. 강화할 때마다 <span>주력 병종</span>이 다음 출전부터 별이 오릅니다 — 백제 <span>백제신궁</span> ★2·★3, 신라 <span>화랑검객</span> ★2·★3(고구려 개마무사는 소환 횟수로 진화). 적도 같은 강화를 하므로 전투 기록에 <span>적 전군 강화</span>가 뜹니다.<br>
+        <b>21. 방패 진형 (v3.7)</b>전술 마법 <span>방패 진형</span>(🌾3)은 탭한 지점 <span>반경 0.105</span> 안의 아군 <span>지상</span> 병력을 4초 동안 <span>받는 피해 25% 감소</span>로 묶습니다. 병력 위에 <span>금빛 반투명 방패 돔</span>이 떠서 누가 보호받는지 바로 보입니다. 범위에 아군 지상 병력이 없으면 <span>식량도 쿨타임도 쓰지 않고</span> 취소됩니다. 공중 병력(연날리개·독수리)은 대상이 아닙니다.<br>
       </div>
       <button class="bigbtn" id="btnHelpClose">닫기</button>
     </div>
@@ -523,16 +500,14 @@
         <img id="genPortrait" alt="장군">
         <span class="gt"><b id="genName">을지문덕</b><i id="genState">🌾4 소환</i></span>
       </button>
-      <button class="upgbtn" id="btnUpg">
-        <span class="ustars" id="upgStars">★☆☆</span>
-        <span class="utxt"><b id="upgName">주력 병종</b><i id="upgDesc">별 진화</i></span>
-        <span class="ucost" id="upgCost">🌾4</span>
+      <button class="upgbtn" id="btnUpg" title="아군 병력의 공격력과 최대 체력을 강화합니다">
+        <span class="utxt"><b id="upgName">전군 강화</b><i id="upgDesc">0/2 · 공격·체력</i></span>
+        <span class="ucost" id="upgCost">🌾6</span>
       </button>
       <button class="towerbtn" id="btnBuild" aria-pressed="false" title="공격탑 건설 및 강화">
         <span class="ttxt"><b>공격탑</b><span class="tstat"><small class="tcnt" id="towerCount">0/3</small><small class="frdy" id="fieldReady" hidden>들판 가능</small></span></span>
         <span class="towerCost">🌾4</span>
       </button>
-      <button class="forgebtn" id="btnForge"><span>⚒</span><b>대장간</b></button>
     </div>
 
     <div class="deckRow">
@@ -768,6 +743,13 @@ const Sfx = {
   },
   /* 전술 마법별 효과음 */
   spellSfx(id){
+    if (id === 'shieldLine'){
+      /* 방패 진형 — 방패를 맞붙는 금속 울림 + 짧은 상승음 */
+      this.tone(294, 0.23, 'triangle', 0.065, 440);
+      this.tone(587, 0.32, 'sine', 0.046, null, 0.11);
+      this.noise(0.18, 0.05, 2800, { q:1.4, decay:1.8, delay:0.02 });
+      return;
+    }
     if (id === 'rollingLog'){
       this.noise(0.52, 0.09, 420, { type:'lowpass', sweep:150, q:0.8, decay:1.4 });
       [0, 0.16, 0.34].forEach((delay,i)=> this.tone(95-i*12, 0.12, 'triangle', 0.055, 62, delay));
@@ -867,6 +849,7 @@ const Sfx = {
       ['spell-scarecrow', ()=> { self.gateAt = {}; self.spellSfx('scarecrow'); }],
       ['spell-whirlwind', ()=> self.spellSfx('whirlwind')],
       ['spell-rollingLog', ()=> self.spellSfx('rollingLog')],
+      ['spell-shieldLine', ()=> self.spellSfx('shieldLine')],
       ['click', ()=> { self.gateAt = {}; self.click(); }],
       ['select', ()=> self.select()],
       ['move', ()=> self.move()],
@@ -1150,7 +1133,9 @@ const UNITS = {
   rainRitual:   { name:'기우제', kind:'spell', rarity:'advanced', icon:'rain', role:'들판 신목 · 아군 철수 · 식량 ×1.3', cost:{food:4} },
   scarecrow:    { name:'허수아비', kind:'spell', rarity:'rare', icon:'scarecrow', role:'10초 적 어그로 유인', cost:{food:3} },
   whirlwind:    { name:'회오리', kind:'spell', rarity:'advanced', icon:'tornado', role:'적 흡인 · 4.5초 소용돌이', cost:{food:4} },
-  rollingLog:   { name:'낙목 굴리기', kind:'spell', rarity:'rare', icon:'log', role:'지상 적 피해 · 밀어내기', cost:{food:4} }
+  rollingLog:   { name:'낙목 굴리기', kind:'spell', rarity:'rare', icon:'log', role:'지상 적 피해 · 밀어내기', cost:{food:4} },
+  /* v3.7 — 방패 진형: 범위 안 아군 지상 병력 4초 피해 25% 감소 */
+  shieldLine:   { name:'방패 진형', kind:'spell', rarity:'rare', icon:'shield', role:'4초 피해 감소', cost:{food:3} }
 };
 
 const BEASTS = {
@@ -1161,19 +1146,21 @@ const BEASTS = {
 
 /* 전사는 덱 카드가 아닌 자동 웨이브 전용 (UNITS.warrior 데이터·신라 화랑검객 ★진화는 유지) */
 const UNIT_POOL_IDS = ['archer','slinger','shieldman','trebuchet','specialForces','scout','monk','cavalry','sniper','giant','elephant','kite','oldSiege','cannon','hermit','royalGuard','beastMaster'];
-const SPELL_POOL_IDS = ['arrowRain','scarecrow','whirlwind','rainRitual','rollingLog'];
+const SPELL_POOL_IDS = ['arrowRain','scarecrow','whirlwind','rainRitual','rollingLog','shieldLine'];
 
-const FORGE = {
-  melee:  { name:'무기 단련', icon:'⚔', desc:'근접 공격력 +10%/단계' },
-  ranged: { name:'활·화포 개량', icon:'🏹', desc:'원거리 공격력 +10%/단계' },
-  armor:  { name:'갑옷 보강', icon:'🛡', desc:'전 병력 체력 +10%/단계' }
-};
-const FORGE_COST = [ { food:3 }, { food:5 }, { food:7 } ];
+/* v3.7 전군 강화 — 대장간(FORGE) + 주력 병종 별 진화(STAR_UP)를 2단계 버튼 하나로 통합.
+   단계마다 전장의 아군과 앞으로 출전할 아군 모두 공격력·최대 체력 기본치 대비 +8%. */
+const ARMY_UPGRADE_COST = [6, 9];
+const ARMY_UPGRADE_BONUS = 0.08;
+const FACTION_ELITE_UNIT = { goguryeo:'cavalry', baekje:'archer', silla:'warrior' };
+/* v3.7 방패 진형 — 반경 0.105 아군 지상 병력 4초 피해 25% 감소 */
+const SHIELD_LINE = { radius:0.105, duration:4, reduction:0.25, color:'#f9d996' };
 
+/* 주력 병종 진화 — 별은 전군 강화 단계(백제·신라)와 개마무사 소환 횟수(고구려)로 오른다 */
 const STAR_UP = {
-  goguryeo: { type:'cavalry', line:'개마무사', cost2:{food:4}, cost3:{food:7}, s2:'공격력·이동 속도 증가', s3:'중갑 · 체력 증가' },
-  baekje:   { type:'archer',  line:'백제신궁', cost2:{food:4}, cost3:{food:7}, s2:'사거리↑ · 연사 강화', s3:'불화살 · 화상 도트' },
-  silla:    { type:'warrior', line:'화랑검객', cost2:{food:4}, cost3:{food:7}, s2:'발업 · 이속/공속↑', s3:'광역 검기 베기' }
+  goguryeo: { type:'cavalry', line:'개마무사', s2:'공격력·이동 속도 증가', s3:'중갑 · 체력 증가' },
+  baekje:   { type:'archer',  line:'백제신궁', s2:'사거리↑ · 연사 강화', s3:'불화살 · 화상 도트' },
+  silla:    { type:'warrior', line:'화랑검객', s2:'발업 · 이속/공속↑', s3:'광역 검기 베기' }
 };
 
 function displayName(facKey, id){
@@ -1189,8 +1176,8 @@ function cardInfo(facKey, id){
 
 const state = {
   phase:'menu',
-  me:{ faction:'goguryeo', food:CFG.foodStart, star:1, genCd:0, up:{melee:0,ranged:0,armor:0} },
-  foe:{ faction:'baekje', food:CFG.foodStart, star:1, genCd:0, up:{melee:0,ranged:0,armor:0} },
+  me:{ faction:'goguryeo', food:CFG.foodStart, star:1, genCd:0, armyLevel:0 },
+  foe:{ faction:'baekje', food:CFG.foodStart, star:1, genCd:0, armyLevel:0, shieldLineReadyAt:0 },
   pickUnits: FACTIONS.goguryeo.defaultUnits.slice(),
   pickSpells: FACTIONS.goguryeo.defaultSpells.slice(),
   hand: [],       // 유닛 4장
@@ -2895,13 +2882,14 @@ function drawSoldier(u, p, time){
     g.strokeStyle = '#ffd76e'; g.lineWidth = 1.5;
     g.beginPath(); g.ellipse(x, y + 1, 11.0 * s, 5.0 * s, 0, 0, Math.PI * 2); g.stroke();
   }
-  // 보호막 — 푸른 반투명 돔
-  if (u.shieldHp > 0 && u.shieldUntil > state.t){
+  // 보호막 — 푸른 반투명 돔 / v3.7 방패 진형 — 금빗 돔
+  const braced = u.braceUntil > state.t;
+  if (braced || (u.shieldHp > 0 && u.shieldUntil > state.t)){
     g.save();
     g.globalAlpha = 0.36 + 0.16 * Math.sin(time * 6 + u.seed);
-    g.strokeStyle = '#bfeaff'; g.lineWidth = 1.5;
+    g.strokeStyle = braced ? SHIELD_LINE.color : '#bfeaff'; g.lineWidth = braced ? 2 : 1.5;
     g.beginPath(); g.ellipse(x, y - 2 * s, 8.6 * s, 12 * s, 0, Math.PI * 1.02, Math.PI * 1.98); g.stroke();
-    g.fillStyle = 'rgba(150,225,255,.10)';
+    g.fillStyle = braced ? 'rgba(249,217,150,.14)' : 'rgba(150,225,255,.10)';
     g.beginPath(); g.ellipse(x, y - 2 * s, 8.6 * s, 12 * s, 0, Math.PI * 1.02, Math.PI * 1.98); g.fill();
     g.restore();
   }
@@ -3155,7 +3143,9 @@ function startMatch(facKey){
   }
   state.me.star = 1; state.foe.star = 1;
   state.me.cavalryCalls = 0; state.foe.cavalryCalls = 0;
-  state.me.up = {melee:0,ranged:0,armor:0}; state.foe.up = {melee:0,ranged:0,armor:0};
+  state.me.armyLevel = 0; state.foe.armyLevel = 0;
+  state.foe.shieldLineReadyAt = 0;
+  upgUIKey = null;
   state.ruins = [];
   state.stats = { meDown:0, foeDown:0, meSummon:0, meKills:0, foeKills:0, meSkills:0, foeSkills:0, meCastles:0, foeCastles:0 };
   state.fever = 1; state.camY = 0.22; state.zoom = 'near'; state.camVel = 0;
@@ -3167,7 +3157,7 @@ function startMatch(facKey){
   killogSys('전투 개시 · 처치/파괴 기록');
 
   initDeckCycle();
-  state.foeDeck = [...FACTIONS[state.foe.faction].defaultUnits, ...FACTIONS[state.foe.faction].defaultSpells].map(id=> cardInfo(state.foe.faction, id));
+  state.foeDeck = [...FACTIONS[state.foe.faction].defaultUnits, ...FACTIONS[state.foe.faction].defaultSpells, 'shieldLine'].map(id=> cardInfo(state.foe.faction, id));
 
   setupBuildings();
   document.getElementById('generalEntrance').hidden = true;
@@ -3821,6 +3811,7 @@ function hitEntity(ent, dmg, src){
   if (!ent.alive) return;
   if (ent.evade && Math.random() < ent.evade) return;
   if (ent.armor) dmg *= (1 - ent.armor);
+  if (ent.ent === 'unit' && ent.braceUntil > state.t) dmg *= 1 - SHIELD_LINE.reduction;  // v3.7 방패 진형
   if (ent.ent === 'unit' && ent.aura) dmg *= 0.85;   // 장군 지휘 오라: 받는 피해 -15%
   if (ent.ent==='building' && ent.kind==='base'){
     const mul = baseDmgMul(ent.team);
@@ -3860,17 +3851,46 @@ function hitEntity(ent, dmg, src){
   }
 }
 
+/* ── v3.7 전군 강화 ────────────────────────────────────────────
+   armyLevel 0/1/2 → 아군 공격력·최대 체력 기본치 대비 ×1.00/1.08/1.16.
+   단계 상승 시 이미 전장에 있는 병력도 체력 비율을 유지한 채 함께 오른다. */
+function armyMultiplier(team){
+  return 1 + ((state[team] && state[team].armyLevel) || 0) * ARMY_UPGRADE_BONUS;
+}
+function refreshUnitHealth(u){
+  if (!u.baseMaxHp) return;
+  const previous = u.maxHp;
+  /* 거신 등 일시 체력 버프(growth.extraHp)가 걸려 있으면 그대로 더해 유지한다 */
+  u.maxHp = Math.round(u.baseMaxHp * armyMultiplier(u.team)) + (u.growth ? u.growth.extraHp : 0);
+  if (previous > 0) u.hp = Math.min(u.maxHp, u.hp * u.maxHp / previous);
+  else u.hp = Math.min(u.maxHp, u.hp);
+}
+function upgradeArmy(team){
+  const side = state[team];
+  const cost = ARMY_UPGRADE_COST[side.armyLevel];
+  if (state.phase !== 'playing' || cost == null || side.food < cost) return false;
+  side.food -= cost;
+  side.armyLevel++;
+  /* 백제신궁·화랑검객은 다음 출전부터 별 진화 (고구려 개마무사는 소환 횟수로 진화) */
+  if (side.faction !== 'goguryeo') side.star = Math.min(3, 1 + side.armyLevel);
+  const mul = armyMultiplier(team);
+  for (const u of armyOf(team)){
+    refreshUnitHealth(u);
+    if (u.baseDamage != null) u.dmg = u.baseDamage * mul;
+  }
+  return true;
+}
+
 function spawnUnit(team, type, x, y){
   const src = UNITS[type] || BEASTS[type];
   if (!src) return null;
   const facK = team==='me' ? state.me.faction : state.foe.faction;
   const fac = FACTIONS[facK];
-  const up = (team==='me' ? state.me.up : state.foe.up);
   const star = (STAR_UP[facK] && STAR_UP[facK].type===type) ? (team==='me'?state.me.star:state.foe.star) : 1;
 
-  let hpMul = (fac.hpMul || 1) * (1 + 0.1*up.armor);
+  let hpMul = (fac.hpMul || 1);
   if (type === 'general') hpMul *= BAL.genHp;      // v2.8 — 장군 기본 HP ×2
-  let dmgMul = 1 + 0.1*(src.ranged ? up.ranged : up.melee);
+  let dmgMul = 1;
   let spdMul = fac.speedMul || 1;
   let rangeAdd = 0, splash = src.splash || 0;
 
@@ -3890,13 +3910,17 @@ function spawnUnit(team, type, x, y){
     armorV = Math.max(armorV, T.armor);
   }
 
-  const hp = Math.round(src.hp * hpMul);
+  /* v3.7 — 기본치를 따로 저장해 두고 전군 강화 배율은 그 위에 곱한다 */
+  const baseMaxHp = Math.round(src.hp * hpMul);
+  const baseDamage = src.dmg * dmgMul;
+  const armyMul = armyMultiplier(team);
+  const hp = Math.round(baseMaxHp * armyMul);
   const u = {
     id: state.nextId++, ent:'unit', team, type,
     name: BEASTS[type] ? BEASTS[type].name : displayName(facK, type),
     rarity: src.rarity || 'common', look: src.look || 'sword',
     x: clamp(x, 0.05, 0.95), y: clamp(y, 0.02, 0.98),
-    hp, maxHp: hp, dmg: src.dmg * dmgMul, range: src.range + rangeAdd,
+    hp, maxHp: hp, baseMaxHp, baseDamage, dmg: baseDamage * armyMul, range: src.range + rangeAdd,
     speed: src.speed * spdMul, aggro: src.aggro, rad: src.rad,
     atkInterval: src.atk, atkTimer: 0.2, ranged: !!src.ranged,
     splash, siege: src.siege || 1, armor: armorV, evade: src.evade || 0,
@@ -3994,8 +4018,10 @@ function applyArmorTier(newTier){
     if (!u.alive || u.type !== 'warrior') continue;
     const prev = ARMOR_TIERS[u.armorTier || 0] || ARMOR_TIERS[0];
     const ratio = T.hpMul / prev.hpMul;
-    u.maxHp = Math.round(u.maxHp * ratio);
+    /* v3.7 — 기본치를 늘리고 전군 강화 배율을 다시 곱해 체력이 어긋나지 않게 한다 */
+    u.baseMaxHp = Math.round(u.baseMaxHp * ratio);
     u.hp = Math.min(u.maxHp, Math.round(u.hp * ratio));
+    refreshUnitHealth(u);
     u.armor = Math.max(u.armor || 0, T.armor);
     u.armorTier = newTier;
   }
@@ -4107,8 +4133,42 @@ function castSpell(id, x, y, team){
     state.zones.push(z);
     state.effects.push({ type:'ring', x, y, t:0, life:0.6, color: mine ? '#bfe9ff' : '#ffc2ac' });
     if (mine) toast('회오리 — ' + WHIRL.life.toFixed(1) + '초간 적을 중심으로 빨아들입니다');
+  } else if (id === 'shieldLine'){
+    /* v3.7 방패 진형 — 범위 안 아군 지상 병력을 4초 묶어 피해 25% 감소.
+       아군 지상 병력이 하나도 없으면 식량·쿨타임을 쓰지 않고 취소한다. */
+    const targets = shieldLineTargets(team, x, y);
+    if (!targets.length){
+      if (mine) toast('방패 진형 — 범위 안에 아군 지상 병력이 없습니다 (식량·쿨타임 미소모)');
+      return false;
+    }
+    for (const u of targets){
+      u.braceUntil = t + SHIELD_LINE.duration;
+      if (mine || scoutSpotted(u)){
+        state.effects.push({ type:'shield', x:u.x, y:u.y, t:0, life:0.7, color:SHIELD_LINE.color });
+      }
+    }
+    state.effects.push({ type:'ring', x, y, t:0, life:0.75, color:SHIELD_LINE.color, R:SHIELD_LINE.radius });
+    if (mine) toast(`🛡 방패 진형 — 아군 ${targets.length}기 · 4초간 피해 25% 감소`);
   }
   Sfx.spellSfx(id);
+  return true;
+}
+
+/* 방패 진형 대상 — 반경 안의 아군 지상 병력(공중·허수아비 제외) */
+function shieldLineTargets(team,x,y){
+  return armyOf(team).filter(u=> !u.flying && !u.isDecoy && distXY(u.x,u.y,x,y) <= SHIELD_LINE.radius);
+}
+/* 적 AI가 방패 진형을 펼 자리 — 교전 중인 아군 무리 한가운데 */
+function enemyShieldPosition(){
+  const enemies = armyOf('me').filter(scoutSpotted);
+  const allies = armyOf('foe').filter(u=> !u.flying && !u.isDecoy);
+  let best = null, count = 1;
+  for (const leader of allies){
+    if (!enemies.some(enemy=> distXY(leader.x,leader.y,enemy.x,enemy.y) < 0.16)) continue;
+    const nearby = allies.filter(u=> distXY(leader.x,leader.y,u.x,u.y) <= SHIELD_LINE.radius).length;
+    if (nearby > count){ best = leader; count = nearby; }
+  }
+  return best;
 }
 
 /* v3.6 전술 마법 상수 */
@@ -4197,6 +4257,15 @@ function aiThink(dt){
   const D = DIFF[state.diff] || DIFF.normal;
   ai.timer = rand(1.2, 1.9) * D.tick;
 
+  /* v3.7 — 적 전군 강화. 병력 상한에 막혀 아무것도 못 하는 후반에 식량이 쌓이므로
+     눈덩이 방지 상한 판정보다 먼저 검토한다. */
+  const upgradeCost = ARMY_UPGRADE_COST[A.armyLevel];
+  const timeToUpgrade = (85 + A.armyLevel*125) * D.tick / 2;
+  if (upgradeCost != null && (CFG.matchTime - state.timeLeft) >= timeToUpgrade && A.food >= upgradeCost + 4 && upgradeArmy('foe')){
+    killogSys('적 전군 강화 ' + A.armyLevel + '단계');
+    return;
+  }
+
   /* 눈덩이 방지: 자동 웨이브를 뺀 소환 병력이 상한을 넘으면 더 부르지 않는다 */
   if (armyOf('foe').filter(u=> !u.wave).length >= (D.army || 10)) return;
 
@@ -4209,18 +4278,25 @@ function aiThink(dt){
   if (A.food >= CFG.genCost.food && Math.random() < 0.45 && deployGeneral('foe')) return;
   const aff0 = state.foeDeck.filter(c=> A.food >= (c.cost.food||0));
   /* v3.4 — 공성 투석기 가드: 이미 1기 살아있으면 추가 소환을 크게 줄이고, 2기가 되면 덱에서 빼둔다 */
-  const aff = aff0.some(c=> c.id === 'trebuchet') && aiTrebuchetBlocked('foe')
+  let aff = aff0.some(c=> c.id === 'trebuchet') && aiTrebuchetBlocked('foe')
     ? aff0.filter(c=> c.id !== 'trebuchet') : aff0;
+  /* v3.7 — 방패 진형은 교전 중인 아군 무리가 있을 때만 후보에 남긴다 */
+  const shieldPosition = (A.food >= (UNITS.shieldLine.cost.food||0) && state.t >= (A.shieldLineReadyAt || 0))
+    ? enemyShieldPosition() : null;
+  if (aff.some(c=> c.id === 'shieldLine') && !shieldPosition) aff = aff.filter(c=> c.id !== 'shieldLine');
   if (!aff.length) return;
   const card = pick(aff);
-  A.food -= card.cost.food || 0;
   const bx = pick(BRIDGE_X);
   if (card.id === 'rollingLog'){
     const target = state.units.filter(u=> u.alive && u.team==='me' && !u.flying && scoutSpotted(u))
       .sort((a,b)=> b.y-a.y)[0];
     castSpell(card.id, target?.x ?? bx, target?.y ?? 1-HOME_EDGE, 'foe');
+  } else if (card.id === 'shieldLine'){
+    if (!castSpell(card.id, shieldPosition.x, shieldPosition.y, 'foe')) return;
+    A.shieldLineReadyAt = state.t + CFG.spellCd;
   } else if (card.kind === 'spell') castSpell(card.id, bx, chooseSpellTarget(bx), 'foe');
   else summon('foe', card.id, bx + rand(-0.04,0.04), rand(0.80,0.88));
+  A.food -= card.cost.food || 0;
 }
 
 function update(dt){
@@ -5408,13 +5484,22 @@ function syncCards(){
   }
 }
 
+let upgUIKey = null;
 function syncUpg(){
-  const su = STAR_UP[state.me.faction], s = state.me.star;
-  document.getElementById('btnUpg').hidden = state.me.faction === 'goguryeo';
-  document.getElementById('upgStars').textContent = '★'.repeat(s) + '☆'.repeat(3-s);
-  document.getElementById('upgName').textContent = su.line + ' ★' + s;
-  document.getElementById('upgDesc').textContent = s>=3 ? su.s3 : (s===1 ? su.s2 : su.s3);
-  document.getElementById('upgCost').textContent = s>=3 ? 'MAX' : costLabel(s===1?su.cost2:su.cost3);
+  const level = state.me.armyLevel || 0;
+  const cost = ARMY_UPGRADE_COST[level];
+  const key = level + '|' + (state.me.food >= (cost || 0)) + '|' + state.me.faction + '|' + state.me.star;
+  if (key === upgUIKey) return;
+  upgUIKey = key;
+  const btn = document.getElementById('btnUpg');
+  const bonus = Math.round(ARMY_UPGRADE_BONUS * 100 * level);
+  document.getElementById('upgName').textContent = '전군 강화 ' + level + '/2';
+  document.getElementById('upgDesc').textContent = bonus ? '+' + bonus + '% · 공격·체력' : '공격·체력 +8%/단계';
+  document.getElementById('upgCost').textContent = cost == null ? 'MAX' : costLabel({ food: cost });
+  btn.classList.toggle('on', level > 0);
+  btn.setAttribute('aria-disabled', String(cost == null || state.me.food < cost));
+  btn.title = '전군 강화 ' + level + '/' + ARMY_UPGRADE_COST.length +
+    ' · 현재 병력 및 새로 출전하는 병력 공격·최대 체력 +8%/단계';
 }
 
 /* ── v3.6 스와이프 스크롤 ──────────────────────────────
@@ -5442,11 +5527,13 @@ function handleCanvasTap(w){
       const cId = state.pending.card, u = UNITS[cId];
       if (u.kind !== 'spell' && (w.y < 0.02 || w.y > HOME_EDGE)){ toast('내 진영(강 아래쪽)에 배치하세요'); return; }
       if (!canPay(u.cost)){ toast('자원이 부족합니다'); return; }
-      pay(u.cost);
       if (u.kind === 'spell'){
+        /* v3.7 — 방패 진형은 대상 아군이 없으면 castSpell이 false를 돌려준다(식량·쿨타임 미소모) */
+        if (!castSpell(cId, w.x, w.y, 'me')){ state.pending = null; setPending(null); syncCards(); return; }
+        pay(u.cost);
         state.spellCds[cId] = state.t + CFG.spellCd;
-        castSpell(cId, w.x, w.y, 'me');
       } else {
+        pay(u.cost);
         summon('me', cId, w.x, w.y);
         cycleUnitCard(state.pending.handIdx);
       }
@@ -5617,13 +5704,17 @@ document.getElementById('btnGen').addEventListener('click', ()=>{
 });
 
 document.getElementById('btnUpg').addEventListener('click', ()=>{
-  if (state.phase !== 'playing' || state.me.faction === 'goguryeo') return;
+  if (state.phase !== 'playing') return;
+  Sfx.init();
+  const cost = ARMY_UPGRADE_COST[state.me.armyLevel];
+  if (cost == null){ toast('전군 강화는 이미 최대 단계입니다'); return; }
+  if (!upgradeArmy('me')){ toast('🌾식량 ' + cost + '개가 필요합니다'); return; }
+  syncUpg();
+  Sfx.skill();
   const su = STAR_UP[state.me.faction];
-  if (state.me.star >= 3) return;
-  const cost = state.me.star === 1 ? su.cost2 : su.cost3;
-  if (!canPay(cost)){ toast('🌾식량이 부족합니다'); return; }
-  pay(cost); state.me.star++; syncUpg();
-  toast(`${su.line} ★${state.me.star} 각성 완료!`); Sfx.skill();
+  const starNote = (state.me.faction !== 'goguryeo' && su) ? ` · ${su.line} ★${state.me.star}` : '';
+  toast(`⚒ 전군 강화 ${state.me.armyLevel}단계 — 아군 공격력·최대 체력 +${Math.round(ARMY_UPGRADE_BONUS * 100 * state.me.armyLevel)}%${starNote}`);
+  killogSys(`아군 전군 강화 ${state.me.armyLevel}단계`);
 });
 
 function buildPendingText(){
@@ -5643,27 +5734,6 @@ document.getElementById('btnBuild').addEventListener('click', ()=>{
 });
 
 document.getElementById('pendingCancel').addEventListener('click', ()=>{ state.pending = null; state.selTower = null; setPending(null); syncCards(); });
-
-const forgePanel = document.getElementById('forgePanel');
-document.getElementById('btnForge').addEventListener('click', ()=>{ forgePanel.classList.toggle('hidden'); renderForge(); });
-document.getElementById('forgeClose').addEventListener('click', ()=> forgePanel.classList.add('hidden'));
-function renderForge(){
-  const rows = document.getElementById('forgeRows');
-  rows.innerHTML = Object.keys(FORGE).map(k=>{
-    const f = FORGE[k], lv = state.me.up[k], max = lv>=3, c = max ? null : FORGE_COST[lv];
-    return `<button class="frow ${max||!canPay(c)?'dis':''}" data-k="${k}">
-      <span class="fi">${f.icon}</span>
-      <span class="ft"><b>${f.name} <span class="pips">${'●'.repeat(lv)+'○'.repeat(3-lv)}</span></b><i>${f.desc}</i></span>
-      <span class="fc">${max?'MAX':costLabel(c)}</span>
-    </button>`;
-  }).join('');
-  rows.querySelectorAll('.frow').forEach(btn=> btn.addEventListener('click', ()=>{
-    const k = btn.dataset.k, lv = state.me.up[k];
-    if (lv>=3 || !canPay(FORGE_COST[lv])) return;
-    pay(FORGE_COST[lv]); state.me.up[k]++;
-    toast(`${FORGE[k].name} ${lv+1}단계 강화 완료!`); Sfx.skill(); renderForge();
-  }));
-}
 
 function syncLaneButtons(){
   document.querySelectorAll('#lanePick button').forEach(b=>{
@@ -5809,6 +5879,7 @@ function updateHud(){
   const income = grainRate('me');
   document.getElementById('grainStatus').textContent = '곡물 수급 +' + income.toFixed(2) + '/초';
   syncCards();
+  syncUpg();
 }
 
 document.getElementById('btnReco').addEventListener('click', ()=>{
@@ -5859,6 +5930,7 @@ function loop(ts){
 }
 
 buildLobby();
+syncUpg();
 layout();
 requestAnimationFrame(loop);
 
@@ -5896,6 +5968,20 @@ window.tk = function(){
       buffs: g.buffs.filter(b=> b.until > state.t)
     })),
     shieldAllies: alive.filter(u=> u.shieldHp > 0).length,
+    braced: alive.filter(u=> u.braceUntil > state.t).length,
+    shieldLineCfg: { radius: SHIELD_LINE.radius, duration: SHIELD_LINE.duration, reduction: SHIELD_LINE.reduction },
+    army: {
+      me: { level: state.me.armyLevel || 0, mult: +armyMultiplier('me').toFixed(3), star: state.me.star,
+            cost: ARMY_UPGRADE_COST[state.me.armyLevel] ?? null },
+      foe: { level: state.foe.armyLevel || 0, mult: +armyMultiplier('foe').toFixed(3), star: state.foe.star,
+             shieldLineReadyIn: Math.max(0, +((state.foe.shieldLineReadyAt || 0) - state.t).toFixed(1)) }
+    },
+    upgButton: { name: (document.getElementById('upgName') || {}).textContent || null,
+                 desc: (document.getElementById('upgDesc') || {}).textContent || null,
+                 cost: (document.getElementById('upgCost') || {}).textContent || null,
+                 disabled: (document.getElementById('btnUpg') || {}).getAttribute ?
+                   document.getElementById('btnUpg').getAttribute('aria-disabled') : null },
+    spellPool: SPELL_POOL_IDS.slice(),
     effects: state.effects.map(e=> e.type),
     auraBuffed: alive.filter(u=> u.aura).length,
     rallying: alive.filter(u=> u.rally || u.muster).map(u=> ({ team:u.team, name:u.name, x:+u.x.toFixed(3), y:+u.y.toFixed(3) })),
@@ -5932,7 +6018,9 @@ window.tk = function(){
     buildingsBrief: state.buildings.filter(b=> b.alive).map(b=> ({ k:b.kind, team:b.team, x:+b.x.toFixed(3), y:+b.y.toFixed(3),
       hp:Math.round(b.hp), maxHp:b.maxHp, lv:b.lv || null })),
     unitsBrief: alive.map(u=> ({ id:u.id, t:u.type, team:u.team, x:+u.x.toFixed(3), y:+u.y.toFixed(3),
-      hp:Math.round(u.hp), decoy:!!u.isDecoy, retreat: u.retreat ? +u.retreat.until.toFixed(1) : null,
+      hp:Math.round(u.hp), maxHp:u.maxHp, baseMaxHp:u.baseMaxHp || null, dmg:+(u.dmg || 0).toFixed(1),
+      brace: u.braceUntil > state.t ? +(u.braceUntil - state.t).toFixed(1) : null,
+      decoy:!!u.isDecoy, retreat: u.retreat ? +u.retreat.until.toFixed(1) : null,
       target: u.order ? u.order.type : null, tgt: u.tgtKind || null, tgtId: u.tgtId || null })),
     unitVisualScale: UNIT_VISUAL_SCALE,
     view: VIEW,
@@ -6097,6 +6185,43 @@ window.tkGenSkill = function(team, kind){
   const sk = triggerGeneralSkill(gen);
   return { skill: sk ? sk.name : null, kind: sk ? sk.kind : null, casts: state[t].generalCasts,
            hpOfFoes: state.units.filter(u=> u.alive && u.team !== t).map(u=> Math.round(u.hp)).slice(0,6) };
+};
+/* 검증·시연용: v3.7 전군 강화 — window.tkArmy('me') / window.tkArmy('foe', 2) */
+window.tkArmy = function(team, times){
+  const tm = team === 'foe' ? 'foe' : 'me';
+  const n = Math.max(1, Math.min(2, times || 1));
+  let done = 0;
+  for (let i=0;i<n;i++){ if (upgradeArmy(tm)) done++; }
+  syncUpg();
+  return { team: tm, done, level: state[tm].armyLevel, mult: +armyMultiplier(tm).toFixed(3),
+           star: state[tm].star, food: +state[tm].food.toFixed(1) };
+};
+/* 검증·시연용: v3.7 방패 진형 — window.tkShield(0.5, 0.5, 'me') — true면 적용, false면 대상 없음 */
+window.tkShield = function(x, y, team){
+  if (state.phase !== 'playing') return 'not playing';
+  const tm = team === 'foe' ? 'foe' : 'me';
+  const px = x === undefined ? 0.5 : x, py = y === undefined ? 0.5 : y;
+  const targets = shieldLineTargets(tm, px, py).map(u=> u.id);
+  const ok = castSpell('shieldLine', px, py, tm);
+  return { ok, targetIds: targets, targets: targets.length,
+           braced: state.units.filter(u=> u.alive && u.braceUntil > state.t).length };
+};
+/* 검증·시연용: 세력 지정 출전 — window.tkStart('baekje') */
+window.tkStart = function(fac){
+  const key = FACTIONS[fac] ? fac : 'goguryeo';
+  state.pickUnits = FACTIONS[key].defaultUnits.slice();
+  state.pickSpells = FACTIONS[key].defaultSpells.slice();
+  startMatch(key);
+  return { faction: key, phase: state.phase, army: state.me.armyLevel, star: state.me.star };
+};
+/* 검증·시연용: 피해 감소 확인 — window.tkHit(유닛id, 10) */
+window.tkHit = function(id, dmg){
+  const u = state.units.find(x=> x.alive && x.id === id);
+  if (!u) return 'no unit';
+  const before = u.hp;
+  hitEntity(u, dmg === undefined ? 10 : dmg, { team: u.team === 'me' ? 'foe' : 'me', name:'검증', kind:'test' });
+  return { id: +id, before: Math.round(before*100)/100, after: Math.round(u.hp*100)/100,
+           dealt: Math.round((before - u.hp)*100)/100, braced: u.braceUntil > state.t };
 };
 /* 검증·시연용: 결과 화면 강제 표시 — window.tkEnd('win'|'lose'|'time') */
 window.tkEnd = function(mode){
