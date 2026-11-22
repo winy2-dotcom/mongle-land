@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#0b0f14">
-<title>삼국 전략 v3.4 · 공성 균형</title>
+<title>삼국 전략 v3.5 · 방어진 전술 UI</title>
 <style>
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{margin:0;height:100%;overflow:hidden;background:radial-gradient(circle at 50% 12%,#1a2230 0%,#0a0e13 55%,#05070a 100%);
@@ -355,7 +355,16 @@
     padding:3px 7px;border:1px solid #b38b53;border-radius:10px;cursor:pointer}
   .towerbtn .ttxt{display:flex;flex-direction:column;align-items:flex-start;gap:2px;line-height:1.1}
   .towerbtn b{font-size:10px;white-space:nowrap}
+  .towerbtn .tstat{display:flex;align-items:center;gap:3px}
   .towerbtn small{font-size:8px;color:#e9c893;white-space:nowrap}
+  .towerbtn .tcnt{font-size:8px;line-height:11px;padding:0 3px;border-radius:6px;border:1px solid #b38b5366;
+    background:#0d181bbb;color:#f5e2b6;font-variant-numeric:tabular-nums;letter-spacing:.2px}
+  .towerbtn .tcnt.full{color:#ffd0a0;border-color:#c07a4a99;background:#2416099e}
+  .towerbtn .frdy{font-size:7.5px;line-height:10px;padding:0 3px;border-radius:6px;border:1px solid #4f958966;
+    background:#0e2a26d9;color:#a8f0e2;letter-spacing:0}
+  .towerbtn .frdy[hidden]{display:none}
+  .towerbtn.fieldReady{border-color:#5fb3a4;box-shadow:inset 0 1px #a9f0e32e,0 0 7px #2c7a6e3d}
+  .towerbtn.fieldReady .ttxt b{color:#d6fff5}
   .towerbtn .towerCost{color:#ffe6a8;font-size:9px;font-weight:800;white-space:nowrap}
   .towerbtn.on{border-color:#ffd479;background:linear-gradient(180deg,#5d4318,#2a2213);color:#fff4d2;
     box-shadow:0 0 10px rgba(255,203,96,.36),inset 0 1px rgba(255,236,190,.35)}
@@ -429,7 +438,7 @@
     </div>
 
     <div class="overlay" id="startScreen">
-      <div class="title">삼국 <span>전략</span> <small style="font-size:12px;color:#ffd76e;letter-spacing:0">v3.4 · 공성 균형</small></div>
+      <div class="title">삼국 <span>전략</span> <small style="font-size:12px;color:#ffd76e;letter-spacing:0">v3.5 · 방어진 전술 UI</small></div>
       <div class="sub">🌾식량 단일 자원 · 고정 마법 2장 · 5초마다 전사 3기 자동 출격 · 장군 스킬 2종 · 위아래로 밀어 보는 넓은 본진·적진</div>
       <div class="factions" id="factionList"></div>
       <div class="deckPick">
@@ -456,7 +465,7 @@
     </div>
 
     <div class="overlay hidden" id="helpScreen">
-      <div class="title" style="font-size:19px">전술 가이드 (v3.4)</div>
+      <div class="title" style="font-size:19px">전술 가이드 (v3.5)</div>
       <div class="guide">
         <b>1. 곡물 수급</b>곡물은 자동으로 최대 <span>20</span>까지 차고, 하단에 초당 수급량이 표시됩니다.<br>
         <b>2. 중앙 들판</b>두 강 사이에 교전 구역이 있습니다. 지상 병력은 다리로 강을 건너고 돌담 사이의 길로 진군합니다. 들판의 표시된 자리에 아군이 접근하면 공격탑을 세울 수 있습니다.<br>
@@ -478,6 +487,7 @@
         <b>13. 장군·식량 상향 & 공성 투석기 (v2.8)</b>장군의 기본 체력은 <span>2배</span>입니다. 성 수리사 대신 <span>공성 투석기</span>가 합류합니다 — 체력 80의 유리대포로 <span>궁수의 2배가 넘는 사거리(0.265)</span>에서 <span>적 건물만</span> 포격하며, 적 유닛은 노리지 않고 사거리 안에 건물이 없으면 전진합니다. <span>(v3.4에서 사거리 0.225 · 체력 135 · 🌾5로 조정)</span><br>
         <b>14. 광활 전장 & 위아래 스크롤 (v3.3)</b>본진과 적진을 넓혀 성 앞 강변까지 <span>교전할 앞마당</span>을 만들었습니다. 전장은 화면 <span>2배 길이</span>로 펼쳐져 시작부터 확대 시점이고, 화면을 <span>위아래로 밀면</span> 아군 본진 뒤끝부터 적 본진 뒤끝까지 끊김 없이 훑어볼 수 있습니다(손가락을 내리면 적진 쪽, 올리면 아군 쪽). 우측 <span>전체</span>를 누르면 한눈에 들어오는 전체 조망으로 돌아가고, 다시 위아래로 밀면 그 자리에서 확대 시점으로 풀립니다. 마우스 휠로도 오르내릴 수 있습니다.<br>
         <b>15. 공성 균형 (v3.4)</b>공성 투석기의 사거리를 <span>0.265 → 0.225</span>로 줄여, 성(0.170)과 초반 방어진(Lv1 0.175 · Lv2 0.205) 사거리 밖에서 압박하되 <span>3단계 화포 방어진(0.235)</span>의 사거리 <span>안</span>에 들어가게 했습니다. 이제 화포를 올려 두면 투석기를 <span>반격으로 끊을 수 있습니다</span>(방어진 사거리 판정도 병력의 몸집 가장자리까지 재도록 맞췄습니다). 사거리가 줄어든 만큼 체력은 <span>80 → 135</span>(유리대포는 유지), 피해 <span>46 → 52</span>·주기 2.90 → 3.00초·건물 배율 3.0 → 2.6으로 손맛은 살리고 성을 녹이는 속도는 낮췄으며, 비용은 <span>🌾4 → 🌾5</span>입니다. 적 AI도 투석기를 <span>한 번에 여러 기 쓸아붓지 않도록</span> 기수 상한(최대 2기, 1기 생존 시 추가 소환 대폭 감소)을 두었습니다.<br>
+        <b>16. 방어진 전술 UI (v3.5)</b>하단 <span>공격탑</span> 버튼에 현재 방어진 기수(<span>2/3</span>)가 배지로 붙고, 들판 슬롯에 병력이 닿아 <span>지금 바로</span> 세울 수 있으면 은은한 청록빛과 함께 <span>들판 가능</span> 표시가 켜집니다. 건설 모드나 탑을 선택했을 때는 지금 사거리(금빛 실선) 바깥에 <span>다음 단계 사거리(연한 금빛 점선)</span>가 함께 그려져 강화하면 얼마나 넓어지는지 눈으로 확인할 수 있습니다. 들판 슬롯이 회색으로 잠겨 있으면 그 중앙에 <span>병력 접근</span>이라고 적혀, 병력을 먼저 보내야 한다는 것을 바로 알 수 있습니다.<br>
       </div>
       <button class="bigbtn" id="btnHelpClose">닫기</button>
     </div>
@@ -508,7 +518,7 @@
         <span class="ucost" id="upgCost">🌾4</span>
       </button>
       <button class="towerbtn" id="btnBuild" aria-pressed="false" title="공격탑 건설 및 강화">
-        <span class="ttxt"><b>공격탑</b><small id="towerCount">0/3</small></span>
+        <span class="ttxt"><b>공격탑</b><span class="tstat"><small class="tcnt" id="towerCount">0/3</small><small class="frdy" id="fieldReady" hidden>들판 가능</small></span></span>
         <span class="towerCost">🌾4</span>
       </button>
       <button class="forgebtn" id="btnForge"><span>⚒</span><b>대장간</b></button>
@@ -2822,6 +2832,18 @@ function castlesOf(team){ return state.buildings.filter(b=> b.team===team && b.k
 function baseProtected(team){ const cs = castlesOf(team); return cs.length>=2 && cs.every(c=> c.alive); }
 function baseDmgMul(team){ const alive = castlesOf(team).filter(c=> c.alive).length; return alive>=2 ? 0 : alive===1 ? 0.5 : 1; }
 function towerCount(team){ return state.buildings.filter(b=> b.team===team && b.kind==='tower' && b.alive).length; }
+/* v3.5 — 하단 공격탑 버튼 배지용: 지금 당장 들판 슬롯에 세울 수 있는 곳이 있는지 */
+function fieldBuildable(team){
+  const T = team === 'foe' ? 'foe' : 'me';
+  const S = T === 'me' ? state.me : state.foe;
+  if (towerCount(T) >= CFG.towerCap) return null;
+  if (S.food < CFG.towerCost) return null;
+  for (const s of slotsFor(T)){
+    if (!s.field || towerOfSlot(T, s.idx)) continue;
+    if (fieldTowerReady(s, T)) return s;
+  }
+  return null;
+}
 function towerOfSlot(team, slotIdx){ return state.buildings.find(b=> b.alive && b.team===team && b.kind==='tower' && b.slot===slotIdx) || null; }
 function towerUpCost(b){ return (!b || b.lv >= TOWER_LV.length) ? 0 : TOWER_LV[b.lv - 1].upCost; }
 function towerLabelOf(b){ return (b.lv >= TOWER_LV.length ? '★' : '▲') + (TOWER_LV[b.lv] ? TOWER_LV[b.lv].name : b.label); }
@@ -4300,6 +4322,13 @@ function drawDefenseOverlay(time){
     const strong = buildMode || (selB && selB.id === t.id);
     rangeEllipse(t.x, t.y, t.range, strong ? '#ffe1a2' : '#9fe8d6', strong ? [7,4] : [3,7], strong ? 0.9 : 0.22, strong ? 1.8 : 1);
   }
+  // 2) 강화 프리뷰(v3.5) — 다음 단계 사거리를 연한 금빛 점선으로 겹쳐 확장 폭을 바로 보여준다
+  for (const t of myTowers){
+    const strong = buildMode || (selB && selB.id === t.id);
+    if (!strong || t.lv >= TOWER_LV.length) continue;
+    const nx = TOWER_LV[t.lv];   // TOWER_LV[0]=Lv1 → 현재 lv가 곧 다음 단계 인덱스
+    rangeEllipse(t.x, t.y, nx.range, '#ffd98a', [2,6], (selB && selB.id === t.id) ? 0.66 : 0.44, 1.2);
+  }
 
 }
 
@@ -4328,11 +4357,18 @@ function drawDefenseBadges(time){
         g.setLineDash([]);
         g.fillStyle = can ? 'rgba(60,225,200,.15)' : 'rgba(150,170,180,.10)';
         g.beginPath(); g.ellipse(p.x, p.y, 17 * p.s + 3, (17 * p.s + 3) * 0.55, 0, 0, Math.PI * 2); g.fill();
-        g.fillStyle = can ? '#d8fff6' : '#c2ccd2';
-        g.font = '800 ' + (16 * p.s).toFixed(1) + 'px sans-serif'; g.textAlign = 'center';
-        g.fillText('+', p.x, p.y + 5 * p.s);
+        if (!ready){
+          g.fillStyle = '#c8d2d6';
+          g.font = '800 ' + (8.8 * p.s).toFixed(1) + 'px sans-serif';
+          g.textAlign = 'center'; g.textBaseline = 'middle';
+          g.fillText('병력 접근', p.x, p.y - 1 * p.s);
+        } else {
+          g.fillStyle = can ? '#d8fff6' : '#c2ccd2';
+          g.font = '800 ' + (16 * p.s).toFixed(1) + 'px sans-serif'; g.textAlign = 'center';
+          g.fillText('+', p.x, p.y + 5 * p.s);
+        }
         g.restore();
-        cvBadge(p.x, p.y - 27 * p.s, ready ? '건설 🌾' + CFG.towerCost : '아군 접근 필요', can ? 'rgba(14,52,46,.94)' : 'rgba(28,32,36,.82)', can ? '#8ff0dd' : '#9fb0b8', sc);
+        cvBadge(p.x, p.y - 27 * p.s, ready ? '건설 🌾' + CFG.towerCost : '들판 잠김', can ? 'rgba(14,52,46,.94)' : 'rgba(28,32,36,.82)', can ? '#8ff0dd' : '#9fb0b8', sc);
         g.save();
         g.font = '700 ' + (8.4 * p.s).toFixed(1) + 'px sans-serif'; g.textAlign = 'center';
         g.fillStyle = 'rgba(210,236,232,.8)';
@@ -4372,7 +4408,7 @@ function drawDefenseBadges(time){
     const up = towerUpCost(selB);
     const lines = [
       'Lv' + selB.lv + ' ' + selB.label,
-      '사거리 ' + selB.range.toFixed(3) + ' · ' + Math.round(selB.dmg) + '피해/' + selB.interval.toFixed(2) + '초',
+      '사거리 ' + selB.range.toFixed(3) + ((up && TOWER_LV[selB.lv]) ? ' → ' + TOWER_LV[selB.lv].range.toFixed(3) : '') + ' · ' + Math.round(selB.dmg) + '피해/' + selB.interval.toFixed(2) + '초',
       up ? ('공격탑 버튼 → ▲강화 🌾' + up) : '★ 최대 단계'
     ];
     const sc = Math.max(0.85, p.s);
@@ -4815,7 +4851,17 @@ function syncCards(){
   bc.classList.toggle('on', buildMode);
   bc.setAttribute('aria-pressed', String(buildMode));
   const tc = document.getElementById('towerCount');
-  if (tc) tc.textContent = nT + '/' + CFG.towerCap;
+  if (tc){
+    tc.textContent = nT + '/' + CFG.towerCap;
+    tc.classList.toggle('full', nT >= CFG.towerCap);
+  }
+  /* v3.5 — 들판 슬롯에 지금 세울 수 있으면 버튼에 '들판 가능' 배지 + 은은한 청록 */
+  const fr = document.getElementById('fieldReady');
+  if (fr){
+    const open = !!fieldBuildable('me');
+    fr.hidden = !open;
+    bc.classList.toggle('fieldReady', open);
+  }
   if (buildMode){
     const pt = document.getElementById('pendingText');
     const txt = buildPendingText();
@@ -5281,6 +5327,9 @@ window.tk = function(){
                   foe: slotsFor('foe').map(s=> ({ idx:s.idx, built: !!towerOfSlot('foe', s.idx) })) },
     buildMode: !!(state.pending && state.pending.kind === 'build'),
     selectedTower: state.selTower,
+    fieldBuildable: (()=>{ const s = fieldBuildable('me'); return s ? { slot:s.idx, tag:s.tag } : null; })(),
+    towerBadge: { count: (document.getElementById('towerCount') || {}).textContent || null,
+                  fieldReady: !(document.getElementById('fieldReady') || {}).hidden },
     shake: +state.shake.toFixed(2),
     camY: +state.camY.toFixed(2),
     bal: BAL,
