@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#0b0f14">
-<title>삼국 전략 v3.3 · 광활 전장</title>
+<title>삼국 전략 v3.4 · 공성 균형</title>
 <style>
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{margin:0;height:100%;overflow:hidden;background:radial-gradient(circle at 50% 12%,#1a2230 0%,#0a0e13 55%,#05070a 100%);
@@ -429,7 +429,7 @@
     </div>
 
     <div class="overlay" id="startScreen">
-      <div class="title">삼국 <span>전략</span> <small style="font-size:12px;color:#ffd76e;letter-spacing:0">v3.3 · 광활 전장</small></div>
+      <div class="title">삼국 <span>전략</span> <small style="font-size:12px;color:#ffd76e;letter-spacing:0">v3.4 · 공성 균형</small></div>
       <div class="sub">🌾식량 단일 자원 · 고정 마법 2장 · 5초마다 전사 3기 자동 출격 · 장군 스킬 2종 · 위아래로 밀어 보는 넓은 본진·적진</div>
       <div class="factions" id="factionList"></div>
       <div class="deckPick">
@@ -456,7 +456,7 @@
     </div>
 
     <div class="overlay hidden" id="helpScreen">
-      <div class="title" style="font-size:19px">전술 가이드 (v3.3)</div>
+      <div class="title" style="font-size:19px">전술 가이드 (v3.4)</div>
       <div class="guide">
         <b>1. 곡물 수급</b>곡물은 자동으로 최대 <span>20</span>까지 차고, 하단에 초당 수급량이 표시됩니다.<br>
         <b>2. 중앙 들판</b>두 강 사이에 교전 구역이 있습니다. 지상 병력은 다리로 강을 건너고 돌담 사이의 길로 진군합니다. 들판의 표시된 자리에 아군이 접근하면 공격탑을 세울 수 있습니다.<br>
@@ -475,8 +475,9 @@
         <b>12. 화살지원 지원 사격 (v2.8)</b>화살지원의 범위가 1.45배(반경 0.085 → 0.123)로 넓어졌습니다. 발동하면 <span>아군 본성 성루에서 목표 지점까지 화살이 다다다닥 줄지어 날아가 꽂히고</span> 착지마다 스파크·먼지가 튑니다. 적이 쓰면 적 본성에서 대칭으로 날아옵니다.<br>
         <b>돌팔매 고수</b>신라 기본 덱과 공용 유닛 목록에서 선택할 수 있습니다. 궁수보다 먼 거리에서 돌을 던져 표적과 주변 지상 적에게 피해를 주며 건물 피해는 낮습니다. 신라 석투당에 돌팔매 병력이 포함되었을 가능성에 착안한 창작 병종입니다.<br>
         <b>v2.9 전투</b>전체 버튼으로 양쪽 본진을 한눈에 봅니다. 궁수는 2기씩, 고구려 개마무사는 두 번째·세 번째 소환부터 자동으로 진화합니다. 정찰병은 적 병력이 발견하기 전까지 숨고, 성·탑 사격을 잠시 멈춘 뒤 공격력을 낮춥니다. 낙목 굴리기는 지상 적에게 피해를 주고 밀어냅니다.<br>
-        <b>13. 장군·식량 상향 & 공성 투석기 (v2.8)</b>장군의 기본 체력은 <span>2배</span>입니다. 성 수리사 대신 <span>공성 투석기</span>가 합류합니다 — 체력 80의 유리대포로 <span>궁수의 2배가 넘는 사거리(0.265)</span>에서 <span>적 건물만</span> 포격하며, 적 유닛은 노리지 않고 사거리 안에 건물이 없으면 전진합니다.<br>
+        <b>13. 장군·식량 상향 & 공성 투석기 (v2.8)</b>장군의 기본 체력은 <span>2배</span>입니다. 성 수리사 대신 <span>공성 투석기</span>가 합류합니다 — 체력 80의 유리대포로 <span>궁수의 2배가 넘는 사거리(0.265)</span>에서 <span>적 건물만</span> 포격하며, 적 유닛은 노리지 않고 사거리 안에 건물이 없으면 전진합니다. <span>(v3.4에서 사거리 0.225 · 체력 135 · 🌾5로 조정)</span><br>
         <b>14. 광활 전장 & 위아래 스크롤 (v3.3)</b>본진과 적진을 넓혀 성 앞 강변까지 <span>교전할 앞마당</span>을 만들었습니다. 전장은 화면 <span>2배 길이</span>로 펼쳐져 시작부터 확대 시점이고, 화면을 <span>위아래로 밀면</span> 아군 본진 뒤끝부터 적 본진 뒤끝까지 끊김 없이 훑어볼 수 있습니다(손가락을 내리면 적진 쪽, 올리면 아군 쪽). 우측 <span>전체</span>를 누르면 한눈에 들어오는 전체 조망으로 돌아가고, 다시 위아래로 밀면 그 자리에서 확대 시점으로 풀립니다. 마우스 휠로도 오르내릴 수 있습니다.<br>
+        <b>15. 공성 균형 (v3.4)</b>공성 투석기의 사거리를 <span>0.265 → 0.225</span>로 줄여, 성(0.170)과 초반 방어진(Lv1 0.175 · Lv2 0.205) 사거리 밖에서 압박하되 <span>3단계 화포 방어진(0.235)</span>의 사거리 <span>안</span>에 들어가게 했습니다. 이제 화포를 올려 두면 투석기를 <span>반격으로 끊을 수 있습니다</span>. 사거리가 줄어든 만큼 체력은 <span>80 → 135</span>(유리대포는 유지), 피해 <span>46 → 52</span>·주기 2.90 → 3.00초·건물 배율 3.0 → 2.6으로 손맛은 살리고 성을 녹이는 속도는 낮췄으며, 비용은 <span>🌾4 → 🌾5</span>입니다. 적 AI도 투석기를 <span>한 번에 여러 기 쓸아붓지 않도록</span> 기수 상한(최대 2기, 1기 생존 시 추가 소환 대폭 감소)을 두었습니다.<br>
       </div>
       <button class="bigbtn" id="btnHelpClose">닫기</button>
     </div>
@@ -1036,10 +1037,10 @@ const UNITS = {
                   ranged:true, splash:0.047, look:'slinger' },
   shieldman:    { name:'방패병', kind:'unit', rarity:'advanced', icon:'wall', role:'2인조 중장벽', cost:{food:4},
                   hp:340, dmg:11, atk:1.30, range:0.034, speed:0.026, aggro:0.095, rad:0.020, armor:0.45, squad:2, pushable:true, look:'shield' },
-  /* v2.8 — 성 수리사 → 초장거리 공성 투석기 (건물 전용·초저체력 유리대포) */
-  trebuchet:    { name:'공성 투석기', kind:'unit', rarity:'advanced', icon:'catapult', role:'초장거리 건물 전용', cost:{food:4},
-                  hp:80, dmg:46, atk:2.90, range:0.265, speed:0.024, aggro:0.30, rad:0.023,
-                  ranged:true, siege:3.0, splash:0, buildingOnly:true, look:'trebuchet' },
+  /* v2.8 — 성 수리사 → 초장거리 공성 투석기 (건물 전용 유리대포) · v3.4 공성 균형 조정 */
+  trebuchet:    { name:'공성 투석기', kind:'unit', rarity:'advanced', icon:'catapult', role:'장거리 공성 · 건물 전용', cost:{food:5},
+                  hp:135, dmg:52, atk:3.00, range:0.225, speed:0.024, aggro:0.28, rad:0.023,
+                  ranged:true, siege:2.6, splash:0, buildingOnly:true, look:'trebuchet' },
   specialForces:{ name:'특전사들', kind:'unit', rarity:'advanced', icon:'dagger', role:'3인 고속기습', cost:{food:4},
                   hp:85, dmg:13, atk:0.68, range:0.030, speed:0.078, aggro:0.12, rad:0.014, squad:3, look:'scout' },
   scout:        { name:'정찰병', kind:'unit', rarity:'rare', icon:'eye', role:'잠입 · 성과 탑 약화', cost:{food:2},
@@ -1138,6 +1139,17 @@ const state = {
   diff: 'normal'
 };
 const ai = { timer:3 };
+/* v3.4 공성 균형 — AI가 공성 투석기를 쓸아붓지 않도록 기수별 소환 문턱을 둔다.
+   살아있는 기수 0기: 정상 / 1기: soft 확률로만 추가 / max기 이상: 덱 후보에서 제외 */
+const AI_TREBUCHET = { max:2, soft:0.18 };
+function trebuchetAlive(team){
+  return state.units.filter(u=> u.alive && u.team === team && u.type === 'trebuchet').length;
+}
+function aiTrebuchetBlocked(team){
+  const n = trebuchetAlive(team);
+  if (n >= AI_TREBUCHET.max) return true;
+  return n >= 1 && Math.random() >= AI_TREBUCHET.soft;
+}
 
 const stage = document.getElementById('stage');
 const cv = document.getElementById('cv');
@@ -3798,7 +3810,10 @@ function aiThink(dt){
   }
 
   if (A.food >= CFG.genCost.food && Math.random() < 0.45 && deployGeneral('foe')) return;
-  const aff = state.foeDeck.filter(c=> A.food >= (c.cost.food||0));
+  const aff0 = state.foeDeck.filter(c=> A.food >= (c.cost.food||0));
+  /* v3.4 — 공성 투석기 가드: 이미 1기 살아있으면 추가 소환을 크게 줄이고, 2기가 되면 덱에서 빼둔다 */
+  const aff = aff0.some(c=> c.id === 'trebuchet') && aiTrebuchetBlocked('foe')
+    ? aff0.filter(c=> c.id !== 'trebuchet') : aff0;
   if (!aff.length) return;
   const card = pick(aff);
   A.food -= card.cost.food || 0;
