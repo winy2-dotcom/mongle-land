@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#0b0f14">
-<title>삼국 전략 v3.11 · 통합 전장</title>
+<title>삼국 전략 v3.12 · 성벽과 진군</title>
 <style>
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{margin:0;height:100%;overflow:hidden;background:radial-gradient(circle at 50% 12%,#1a2230 0%,#0a0e13 55%,#05070a 100%);
@@ -419,7 +419,7 @@
     <div class="toast" id="toast"></div>
 
     <div class="overlay" id="startScreen">
-      <div class="title">삼국 <span>전략</span> <small style="font-size:12px;color:#ffd76e;letter-spacing:0">v3.11 · 통합 전장</small></div>
+      <div class="title">삼국 <span>전략</span> <small style="font-size:12px;color:#ffd76e;letter-spacing:0">v3.12 · 성벽과 진군</small></div>
       <div class="sub">🌾식량 단일 자원 · 고정 마법 2장(6종 풀) · 5초마다 전사 3기 자동 출격 · 장군 스킬 3종 자동 순환 · 전장 스크롤 · 시야 2단 · 전군 강화</div>
       <div class="factions" id="factionList"></div>
       <div class="deckPick">
@@ -446,7 +446,7 @@
     </div>
 
     <div class="overlay hidden" id="helpScreen">
-      <div class="title" style="font-size:19px">전술 가이드 (v3.11)</div>
+      <div class="title" style="font-size:19px">전술 가이드 (v3.12)</div>
       <div class="guide">
         <b>1. 곡물 수급</b>곡물은 자동으로 최대 <span>20</span>까지 차고, 하단에 초당 수급량이 표시됩니다.<br>
         <b>2. 중앙 들판</b>두 강 사이에 교전 구역이 있습니다. 지상 병력은 다리로 강을 건너고 돌담 사이의 길로 진군합니다. 들판의 표시된 자리에 아군이 접근하면 공격탑을 세울 수 있습니다.<br>
@@ -477,6 +477,9 @@
         <b>22. 방패 진형 (v3.11)</b>전술 마법 <span>방패 진형</span>(🌾3)은 탭한 지점 <span>반경 0.105</span> 안의 아군 <span>지상</span> 병력을 4초 동안 <span>받는 피해 25% 감소</span>로 묶습니다. 병력 위에 <span>금빛 반투명 방패 돔</span>이 떠서 누가 보호받는지 바로 보입니다. 범위에 아군 지상 병력이 없으면 <span>식량도 쿨타임도 쓰지 않고</span> 취소됩니다. 공중 병력(연날리개·독수리)은 대상이 아닙니다.<br>
         <b>23. 들판 2배 · 좌우 2경로 · 만충 자동 출격 (v3.8)</b>중앙 들판이 기존 대비 <span>약 2배</span>로 넓어지고, 가운데 다리가 사라져 <span>좌·우 2경로</span>로만 진격합니다. 식량이 <span>20</span>에 도달하면 본성에서 좌·우 무작위로 병력이 바닥날 때까지 연속 출격하며, 장군이 부활 가능 상태였다면 식량이 비는 순간 <span>식량 소비 없이 무료 출진</span>하며 진영 응원가가 10초간 울려 퍼집니다.<br>
         <b>24. 코끼리·유닛 모션 정교화 & 미니 킬로그 (v3.9)</b>전투 코끼리의 관절 보행·귀 펄럭임·코/상아 들이받기 모션과 일반 병종의 공격 전진(러지)·타격 베기 호를 추가해 전투 생동감을 높였습니다. 좌상단 <span>전투 기록(킬로그)</span>은 시야를 가리지 않도록 기본 접힘·최대 3줄로 다듬었으며 <span>+</span> 버튼으로 언제든 펼칠 수 있습니다.<br>
+        <b>25. 성벽과 성문 (v3.12)</b>아군·적군 본진 앞 진입선에 <span>성벽</span>이 서고 가운데에 <span>성문</span>이 있습니다. 성벽이 살아 있는 동안 적군은 본진으로 들어오지 못하고 성벽을 부숩니다. <span>일반 병력</span>은 성벽에 제 피해의 <span>12%</span>만 넣지만, <span>투석기·거인전사·전투코끼리·화포</span> 같은 공성 병기는 건물 배율까지 그대로 얹혀 <span>훨씬 빠르게</span> 부숩니다(성벽 내구도 2,200 · 어느 진영이든 같은 규칙). 성벽이 부서지면 무너진 통로가 그대로 열려 적군이 본진으로 들어옵니다. 우리 병력이 성문에 닿으면 <span>문짝이 위에서 아래로 스르륵 내려가며 열리고</span>, 지나가면 다시 닫힙니다. 아군 병력은 성문으로만 나가고 들어옵니다.<br>
+        <b>26. 다리 앞 진영 재배치 (v3.12)</b>다리 바로 앞을 막고 있던 전초성을 안쪽으로 물리고 성도 한 줄 뒤로 내렸습니다. 이제 병력이 <span>좌·우 다리로 진입하고 건너가는 모습</span>이 성에 가리지 않고 그대로 보입니다.<br>
+        <b>27. 전장 정리 · 병력 모션 (v3.12)</b>병력 발밑의 상시 <span>원형 발판</span>과 공격탑의 상시 테두리 링을 없애 전장이 한결 깔끔해졌습니다. 사거리 프리뷰·건설 슬롯·스킬 이펙트처럼 <span>누르거나 조준할 때만 뜨는</span> 표시는 그대로 남습니다. 선택 링과 방패 진형 금빛 돔은 병력 <span>위에</span> 겹쳐 그려 스프라이트 병종에서도 보이고, 보행은 다리 흔들림과 상체 반동이, 타격은 상대 쪽으로 파고드는 <span>전진 러지</span>가 함께 움직입니다.<br>
       </div>
       <button class="bigbtn" id="btnHelpClose">닫기</button>
     </div>
@@ -550,6 +553,7 @@ const shuffle = arr=>{
 const byId = id=>{
   for (const u of state.units) if (u.id===id && u.alive) return u;
   for (const b of state.buildings) if (b.id===id && b.alive) return b;
+  for (const w of state.gates) if (w.id===id && w.alive) return w;
   return null;
 };
 
@@ -996,6 +1000,59 @@ const LANE_INDICES = [0,1];
 const BRIDGE_HALF = [0.068, 0.068];
 const LANE_NAMES = ['좌', '우'];
 
+/* =========================================================
+   v3.12 성벽과 성문
+   본진 앞 진입선에 성벽을 세우고 가운데 성문으로만 드나든다.
+   적군은 성벽을 부수기 전에는 본진으로 들어올 수 없고,
+   아군이 다가오면 성문이 위에서 아래로 내려가듯 스르륵 열린다.
+   ========================================================= */
+const GATE = {
+  yMe: 0.180, yFoe: 0.820,        // 성벽이 놓이는 진입선(양 진영 대칭)
+  x0: 0.115, x1: 0.885,           // 성벽이 걸쳐 있는 좌우 범위
+  cx: 0.500, half: 0.082,         // 성문 중심과 반폭(개구부 전체 0.164)
+  hp: 2200,
+  normalMul: 0.12,                // 일반 병력이 성벽에 주는 피해 배율
+  siegeMul: 1.00,                 // 공성 병기는 siege 배율을 그대로 받는다
+  openSpeed: 3.6,                 // 성문 개폐 속도(1/초)
+  thumb: 0.014                    // 성문 앞 정지 거리
+};
+function gateY(team){ return team === 'me' ? GATE.yMe : GATE.yFoe; }
+/* 본진은 성벽보다 안쪽 — 아군은 y가 작은 쪽(적은 큰 쪽)에 있다 */
+function gateInnerSign(team){ return team === 'me' ? -1 : 1; }
+function makeGate(team){
+  const fac = FACTIONS[team === 'me' ? state.me.faction : state.foe.faction];
+  const hp = Math.round(GATE.hp * (fac.buildingHpMul || 1));
+  return {
+    id: state.nextId++, ent:'gate', kind:'gate', team,
+    x: GATE.cx, y: gateY(team), x0: GATE.x0, x1: GATE.x1,
+    gateC: GATE.cx, gateH: GATE.half,
+    hp, maxHp: hp, alive:true, broken:false,
+    open: 0, flash: 0, dustAt: 0,
+    label: team === 'me' ? '아군 성벽' : '적 성벽'
+  };
+}
+function gateOf(team){ return state.gates.find(g=> g.team === team) || null; }
+/* 맞은편 성벽이 살아 있으면 그 앞에서 먼저 부순다 */
+function gateWallFor(u){ const g = gateOf(u.team === 'me' ? 'foe' : 'me'); return (g && g.alive) ? g : null; }
+function gateOutside(u, w){ return u.team === 'me' ? u.y < w.y : u.y > w.y; }
+function gateBehind(w, target){ return w.team === 'me' ? target.y < w.y : target.y > w.y; }
+/* 성벽 선까지의 (화면 비율로 환산한) 최단 거리 */
+function gateReach(u, w){
+  const cx = clamp(u.x, w.x0, w.x1);
+  return Math.hypot((u.x - cx) * field.ax, u.y - w.y);
+}
+/* 성문 개구부 안쪽인가 */
+function insideGateMouth(x, w, k){
+  const f = k === undefined ? 0.94 : k;
+  return Math.abs(x - w.gateC) <= w.gateH * f;
+}
+/* 공성 병기 판정 — 성벽을 실질적으로 빠르게 부수는 병종 */
+function isSiegeUnit(u){
+  if (!u) return false;
+  if ((u.siege || 1) > 1) return true;
+  return u.type === 'giant' || u.type === 'elephant' || u.type === 'oldSiege' || u.type === 'cannon' || u.type === 'trebuchet';
+}
+
 /* 전사 자동 웨이브: 5초마다 3기 */
 const WAVE_INTERVAL = 5.0;
 const WAVE_SIZE = 3;
@@ -1208,7 +1265,7 @@ const state = {
   drawPile: [],   // 유닛 2장 대기 (NEXT 포함)
   spellCds: {},   // 고정 마법 쿨타임 기록
   foeDeck: [],
-  units:[], buildings:[], projectiles:[], effects:[], zones:[], ruins:[],
+  units:[], buildings:[], projectiles:[], effects:[], zones:[], ruins:[], gates:[],
   selection:new Set(),
   pending:null,
   timeLeft:CFG.matchTime, t:0, nextId:1,
@@ -1562,6 +1619,159 @@ function drawStoneWall(wall){
   }
 }
 
+/* =========================================================
+   v3.12 성벽·성문 렌더 — 판석 벽체 · 성가퀴 · 중앙 성문(문짝이 아래로 내려가며 열린다)
+   ========================================================= */
+function drawGateWall(w, time){
+  const me = w.team === 'me';
+  const pL = proj(w.x0, w.y), pR = proj(w.x1, w.y);
+  const s = pL.s;
+  const pxPerX = Math.abs(pR.x - pL.x) / Math.max(0.001, w.x1 - w.x0);
+  const H = 27 * s, hd = 4.2 * s, colW = 0.030;
+  const broken = !w.alive;
+  const bodyH = broken ? H * 0.42 : H;
+  const stone = me ? ['#c9bc9d', '#9c9179', '#6f6754'] : ['#c7b197', '#99866d', '#6d5c49'];
+  const lit = me ? 'rgba(52,226,198,' : 'rgba(255,104,80,';
+  const seedW = mulberry32(1200 + (w.team === 'me' ? 3 : 7));
+
+  /* 1) 성벽 그림자 — 벽 아래로 길게 깔린다 */
+  g.save();
+  const shg = g.createLinearGradient(0, pL.y - 4 * s, 0, pL.y + 11 * s);
+  shg.addColorStop(0, 'rgba(0,0,0,.34)');
+  shg.addColorStop(0.55, 'rgba(0,0,0,.16)');
+  shg.addColorStop(1, 'rgba(0,0,0,0)');
+  g.fillStyle = shg;
+  g.fillRect(pL.x - 6 * s, pL.y - 4 * s, (pR.x - pL.x) + 12 * s, 15 * s);
+  g.restore();
+
+  /* 2) 성벽 몸체 — 판석 한 칸씩 아이소 상자로 쌓는다 */
+  const segs = [[w.x0, w.gateC - w.gateH], [w.gateC + w.gateH, w.x1]];
+  for (const seg of segs){
+    const ax = seg[0], bx = seg[1];
+    const n = Math.max(2, Math.round((bx - ax) / colW));
+    for (let i = 0; i < n; i++){
+      const xc = lerp(ax, bx, (i + 0.5) / n);
+      const p = proj(xc, w.y);
+      const hw = (bx - ax) / n * pxPerX * 0.52;
+      const wobble = broken ? (0.55 + seedW() * 0.75) : 1;
+      isoBox(g, p.x, p.y, hw * 1.10, hd * 1.15, 5 * s, '#8b8270', '#5b5447', '#6d6657');
+      isoBox(g, p.x, p.y - 5 * s, hw, hd * 0.92, bodyH * wobble, stone[0], stone[1], stone[2]);
+      if (!broken && i % 2 === 0){
+        isoBox(g, p.x, p.y - 5 * s - H, hw * 0.86, hd * 0.78, 7 * s, stone[0], stone[1], stone[2]);
+      }
+      if (w.hitFlash > 0){
+        g.save(); g.globalAlpha = Math.min(0.55, w.hitFlash * 3);
+        g.fillStyle = '#fff';
+        g.beginPath(); g.ellipse(p.x, p.y - 5 * s - bodyH * 0.5, hw * 0.92, bodyH * 0.5, 0, 0, Math.PI * 2); g.fill();
+        g.restore();
+      }
+    }
+  }
+
+  const pg = proj(w.gateC, w.y);
+  const gwHalf = w.gateH * pxPerX;
+  const archH = H * 1.20;
+
+  if (!broken){
+    /* 3) 성문 양옆 망루 */
+    for (const sd of [-1, 1]){
+      const p = proj(w.gateC + sd * (w.gateH + 0.013), w.y);
+      const hw2 = 0.014 * pxPerX;
+      isoBox(g, p.x, p.y, hw2, hd * 1.7, H * 1.55, stone[0], stone[1], stone[2]);
+      for (const md of [-1, 1]){
+        isoBox(g, p.x + md * hw2 * 0.55, p.y - H * 1.55, hw2 * 0.42, hd * 1.5, 9 * s, stone[0], stone[1], stone[2]);
+      }
+      /* 망루 위 군기 */
+      g.strokeStyle = '#3c3226'; g.lineWidth = Math.max(1, 1.2 * s);
+      g.beginPath(); g.moveTo(p.x, p.y - H * 1.55 - 9 * s); g.lineTo(p.x, p.y - H * 1.55 - 26 * s); g.stroke();
+      const wave = Math.sin(time * 3.0 + sd * 1.7 + (me ? 0 : 2)) * 2.0 * s;
+      g.fillStyle = me ? '#25d8bc' : '#ff4a32';
+      g.beginPath();
+      g.moveTo(p.x, p.y - H * 1.55 - 26 * s);
+      g.lineTo(p.x + sd * 11 * s, p.y - H * 1.55 - 23 * s + wave * 0.4);
+      g.lineTo(p.x + sd * 6 * s, p.y - H * 1.55 - 18 * s);
+      g.lineTo(p.x + sd * 11 * s, p.y - H * 1.55 - 13 * s + wave * 0.4);
+      g.lineTo(p.x, p.y - H * 1.55 - 15 * s);
+      g.closePath(); g.fill();
+    }
+
+    /* 4) 성문 통로(아치) — 열린 만큼 안쪽 불빛이 밝아진다 */
+    g.save();
+    const openK = clamp(w.open, 0, 1);
+    g.fillStyle = 'rgba(12,14,12,.90)';
+    roundRect(g, pg.x - gwHalf, pg.y - archH, gwHalf * 2, archH + 2 * s, Math.min(10 * s, gwHalf * 0.42));
+    g.fill();
+    if (openK > 0.01){
+      const glow = g.createLinearGradient(0, pg.y - archH, 0, pg.y);
+      glow.addColorStop(0, 'rgba(255,198,116,' + (0.04 + 0.26 * openK).toFixed(3) + ')');
+      glow.addColorStop(0.7, 'rgba(255,176,86,' + (0.02 + 0.16 * openK).toFixed(3) + ')');
+      glow.addColorStop(1, 'rgba(255,168,80,0)');
+      g.fillStyle = glow;
+      g.fillRect(pg.x - gwHalf, pg.y - archH, gwHalf * 2, archH);
+    }
+    /* 문짝 — 위에서 아래로 스르륵 내려가며 열린다 */
+    if (openK < 0.995){
+      const doorH = archH * (1 - openK);
+      const dy = pg.y - doorH;
+      for (const sd of [-1, 1]){
+        const x0 = sd < 0 ? pg.x - gwHalf : pg.x;
+        g.fillStyle = sd < 0 ? '#5b4028' : '#6b4b2f';
+        g.fillRect(x0, dy, gwHalf, doorH);
+        g.strokeStyle = 'rgba(28,18,10,.55)'; g.lineWidth = Math.max(1, 1.3 * s);
+        for (let k = 1; k < 4; k++){
+          const lx = x0 + gwHalf * k / 4;
+          g.beginPath(); g.moveTo(lx, dy); g.lineTo(lx, pg.y); g.stroke();
+        }
+        g.fillStyle = 'rgba(198,208,216,.55)';
+        g.fillRect(x0, dy + doorH * 0.20, gwHalf, Math.max(1.4, 2.0 * s));
+        g.fillRect(x0, dy + doorH * 0.64, gwHalf, Math.max(1.4, 2.0 * s));
+        g.fillStyle = '#e8d28c';
+        g.beginPath();
+        g.arc(sd < 0 ? x0 + gwHalf - 5 * s : x0 + 5 * s, dy + doorH * 0.46, Math.max(1.2, 1.9 * s), 0, Math.PI * 2);
+        g.fill();
+      }
+    }
+    /* 5) 상인방 */
+    g.fillStyle = stone[0];
+    g.fillRect(pg.x - gwHalf - 4 * s, pg.y - archH - 6 * s, gwHalf * 2 + 8 * s, 6 * s);
+    g.fillStyle = 'rgba(255,255,255,.16)';
+    g.fillRect(pg.x - gwHalf - 4 * s, pg.y - archH - 6 * s, gwHalf * 2 + 8 * s, Math.max(1, 1.6 * s));
+    g.strokeStyle = lit + '0.35)'; g.lineWidth = Math.max(1, 1.2 * s);
+    g.beginPath();
+    g.moveTo(pg.x - gwHalf - 2 * s, pg.y - archH + 1 * s);
+    g.lineTo(pg.x + gwHalf + 2 * s, pg.y - archH + 1 * s);
+    g.stroke();
+    g.restore();
+  } else {
+    /* 6) 무너진 성문 — 잔해와 열린 통로 */
+    g.save();
+    for (let i = 0; i < 16; i++){
+      const xc = w.gateC + (seedW() - 0.5) * (w.gateH * 2.6);
+      const p = proj(xc, w.y + (seedW() - 0.5) * 0.02);
+      const bw = (2.4 + seedW() * 5.5) * s, bh = (2.0 + seedW() * 5.0) * s;
+      g.save();
+      g.translate(p.x, p.y); g.rotate((seedW() - 0.5) * 0.8);
+      g.fillStyle = seedW() > 0.5 ? 'rgba(88,82,70,.95)' : 'rgba(60,55,47,.95)';
+      g.fillRect(-bw / 2, -bh, bw, bh);
+      g.fillStyle = 'rgba(140,133,116,.45)';
+      g.fillRect(-bw / 2, -bh, bw, Math.max(0.8, bh * 0.26));
+      g.restore();
+    }
+    g.fillStyle = 'rgba(16,14,12,.42)';
+    g.beginPath(); g.ellipse(pg.x, pg.y, gwHalf * 1.5, 7 * s, 0, 0, Math.PI * 2); g.fill();
+    g.restore();
+  }
+
+  /* 7) 성벽 체력 — 맞았을 때만 조용히 표시 */
+  if (w.alive && w.hp < w.maxHp){
+    const bw = Math.min(150 * s, (pR.x - pL.x) * 0.26);
+    hpBar(g, pg.x, pg.y - H * 2.05, bw, w.hp / w.maxHp, me ? '#57d6a8' : '#e05a4a', 3.4);
+    g.font = '700 ' + (8.6 * Math.max(0.8, s)).toFixed(1) + 'px sans-serif';
+    g.textAlign = 'center'; g.fillStyle = 'rgba(238,246,255,.88)';
+    g.fillText(w.label + ' ' + Math.ceil(w.hp / w.maxHp * 100) + '%', pg.x, pg.y - H * 2.05 - 4 * s);
+  }
+}
+
 function drawBattlefield(time){
   const p0 = proj(0,BOARD.bot), p1 = proj(1,BOARD.bot), p2 = proj(1,BOARD.top), p3 = proj(0,BOARD.top);
   g.save();
@@ -1872,24 +2082,16 @@ function drawBuilding(b, time){
   g.beginPath(); g.arc(0, 0, w * 0.62, 0, Math.PI * 2); g.fill();
   g.restore();
 
-  // 공격탑 진영 표시
+  /* v3.12 — 공격탑의 상시 원형 테두리를 없애고 은은한 진영 빛만 남긴다
+     (건설·선택 시의 사거리 링은 drawDefenseOverlay가 그대로 그린다) */
   if (b.kind === 'tower'){
-    const pulse = 0.58 + Math.abs(Math.sin(time * 1.5 + b.id)) * 0.34;
-    g.beginPath(); g.ellipse(p.x, gy, w * 0.52, w * 0.185, 0, 0, Math.PI * 2);
     const aura = g.createRadialGradient(p.x, gy, 1, p.x, gy, w * 0.52);
-    aura.addColorStop(0, me ? 'rgba(52,232,200,.26)' : 'rgba(250,72,48,.30)');
-    aura.addColorStop(0.6, me ? 'rgba(40,200,180,.10)' : 'rgba(228,60,40,.12)');
+    aura.addColorStop(0, me ? 'rgba(52,232,200,.20)' : 'rgba(250,72,48,.22)');
+    aura.addColorStop(0.6, me ? 'rgba(40,200,180,.08)' : 'rgba(228,60,40,.09)');
     aura.addColorStop(1, me ? 'rgba(40,200,180,0)' : 'rgba(228,60,40,0)');
     g.save(); g.translate(p.x, gy); g.scale(1, 0.36); g.translate(-p.x, -gy);
     g.fillStyle = aura; g.beginPath(); g.arc(p.x, gy, w * 0.52, 0, Math.PI * 2); g.fill();
     g.restore();
-    g.strokeStyle = me ? 'rgba(126,255,228,' + pulse.toFixed(2) + ')'
-                       : 'rgba(255,116,88,' + pulse.toFixed(2) + ')';
-    g.lineWidth = me ? 1.5 : 2;
-    g.beginPath(); g.ellipse(p.x, gy, w * 0.52, w * 0.185, 0, 0, Math.PI * 2); g.stroke();
-    g.strokeStyle = me ? 'rgba(126,255,228,.22)' : 'rgba(255,116,88,.30)';
-    g.lineWidth = 1;
-    g.beginPath(); g.ellipse(p.x, gy, w * 0.40, w * 0.140, 0, 0, Math.PI * 2); g.stroke();
   }
 
   // 3) 건물 스프라이트
@@ -2028,7 +2230,6 @@ function drawBuildingVec(b, time){
   } else if (b.kind === 'tower'){
     const w = 15*s, hh = 7*s;
     ellipse(g, p.x, p.y+2*s, w*1.5, hh*0.85, 'rgba(0,0,0,.35)');
-    teamRing(p.x, p.y+2*s, w*1.5, hh*0.85, b.team);
     isoBox(g, p.x, p.y+1*s, w*1.25, hh*0.7, 20*s, '#7d7466', '#4f4a40', '#615b4e');
     isoBox(g, p.x, p.y+1*s, w, hh*0.55, 27*s, '#8f8676', '#5b5548', '#6e6759');
     g.fillStyle = bannerCol; g.fillRect(p.x - 2*s, p.y - 14*s, 4*s, 5*s);
@@ -2250,18 +2451,28 @@ function unitPal(me){
 }
 function uSwing(u){ return u.anim > 0 ? Math.sin(clamp(1 - u.anim / 0.25, 0, 1) * Math.PI) : 0; }
 
-/* 지면 그림자 + 진영 발판 링 (유닛이 떠 보이지 않게 지면에 고정) */
+/* v3.12 — 상시 원형 발판·테두리를 걷어내고 부드러운 접지 그림자만 남긴다 */
 function uGround(x, y, s, me){
   g.save();
-  g.globalAlpha = 0.46; g.fillStyle = '#05090b';
-  g.beginPath(); g.ellipse(x + 0.7 * s, y + 1.4 * s, 7.4 * s, 3.0 * s, 0, 0, Math.PI * 2); g.fill();
-  g.globalAlpha = 0.26;
-  g.beginPath(); g.ellipse(x + 1.5 * s, y + 2.4 * s, 4.8 * s, 1.7 * s, 0, 0, Math.PI * 2); g.fill();
+  g.globalAlpha = 0.42; g.fillStyle = '#05090b';
+  g.beginPath(); g.ellipse(x + 0.7 * s, y + 1.5 * s, 7.2 * s, 2.9 * s, 0, 0, Math.PI * 2); g.fill();
+  g.globalAlpha = 0.22;
+  g.beginPath(); g.ellipse(x + 1.5 * s, y + 2.4 * s, 4.6 * s, 1.6 * s, 0, 0, Math.PI * 2); g.fill();
   g.restore();
-  g.beginPath(); g.ellipse(x, y + 0.8 * s, 7.8 * s, 3.5 * s, 0, 0, Math.PI * 2);
-  g.fillStyle = me ? 'rgba(34,208,180,.20)' : 'rgba(226,62,46,.22)'; g.fill();
-  g.strokeStyle = me ? 'rgba(150,255,235,.62)' : 'rgba(255,154,134,.66)';
-  g.lineWidth = Math.max(1, 1.05 * s); g.stroke();
+}
+/* v3.11 방패 진형 — 금빛 돔 + 발치 링 (병력 위에 겹쳐 그려 스프라이트 병종도 보이게 한다) */
+function braceFx(x, y, s, time, seed){
+  g.save();
+  const pulse = 0.50 + 0.18 * Math.sin(time * 6 + (seed || 0));
+  g.strokeStyle = SHIELD_LINE.color;
+  g.globalAlpha = pulse;
+  g.lineWidth = 2.4;
+  g.beginPath(); g.ellipse(x, y - 2 * s, 9.6 * s, 13 * s, 0, Math.PI * 1.02, Math.PI * 1.98); g.stroke();
+  g.fillStyle = 'rgba(249,217,150,.16)';
+  g.beginPath(); g.ellipse(x, y - 2 * s, 9.6 * s, 13 * s, 0, Math.PI * 1.02, Math.PI * 1.98); g.fill();
+  g.globalAlpha = pulse * 0.95; g.lineWidth = 1.8;
+  g.beginPath(); g.ellipse(x, y + 1, 11.4 * s, 5.2 * s, 0, 0, Math.PI * 2); g.stroke();
+  g.restore();
 }
 function uGlow(x, yy, s, me){
   g.save();
@@ -3011,6 +3222,23 @@ function paintElephant(u, x, yy, s, pal, o){
   g.restore();
 }
 
+/* v3.12 — 병력 위에 겹쳐 그리는 지면 표시(선택 링 · 방패 진형 금빛 돔).
+   스프라이트 병종(UNIT_ART 19종)도 표시가 몸에 가려지지 않는다. */
+function drawGroundMarks(time){
+  for (const u of state.units){
+    if (!u.alive) continue;
+    if (u.team === 'foe' && !scoutSpotted(u)) continue;
+    const p = proj(u.x, u.y);
+    const scaleMul = (u.type === 'giant' ? 3.55 : u.type === 'elephant' ? 2.95 : u.type === 'shieldman' ? 2.6 : u.rarity === 'legend' ? 2.0 : 1.8);
+    const s = Math.max(0.72, p.s * UNIT_VISUAL_SCALE * scaleMul * (u.growth && u.growth.scale ? u.growth.scale : 1));
+    if (u.braceUntil > state.t) braceFx(p.x, p.y, s, time, u.seed);
+    if (u.team === 'me' && state.selection.has(u.id)){
+      g.strokeStyle = 'rgba(255,215,110,.95)'; g.lineWidth = 1.9;
+      g.beginPath(); g.ellipse(p.x, p.y + 1, 11.6 * s, 5.4 * s, 0, 0, Math.PI * 2); g.stroke();
+    }
+  }
+}
+
 function drawSoldier(u, p, time){
   if (u.isDecoy){ drawScarecrow(u, p, time); return; }
   const me = u.team === 'me';
@@ -3021,16 +3249,18 @@ function drawSoldier(u, p, time){
   const s = p.s * UNIT_VISUAL_SCALE * scaleMul * growth;
   const x = p.x, y = p.y;
   const lk = u.look || 'sword';
+  /* v3.12 — 보행은 다리 흔들림과 상체 반동을 함께, 정지 중에는 천천히 숨쉬는 흔들림 */
   const walking = !!u.moving;
-  const step = walking ? Math.sin(time * 8.6 + u.seed * 3) : 0;
-  const bob = walking ? Math.abs(Math.sin(time * 8.6 + u.seed * 3)) * 0.45 * s : 0;
-  const flyH = u.flying ? 15 * p.s * UNIT_VISUAL_SCALE : 0;
+  const gait = time * (walking ? 8.6 : 1.9) + u.seed * 3;
+  const step = walking ? Math.sin(gait) : Math.sin(gait * 0.7) * 0.12;
+  const bob = walking ? Math.abs(Math.sin(gait)) * 0.52 * s : Math.sin(gait * 0.9) * 0.20 * s;
+  const flyH = u.flying ? 15 * p.s * UNIT_VISUAL_SCALE + Math.sin(time * 2.2 + u.seed) * 1.2 * p.s : 0;
   const yy = y - bob - flyH;
   const sw = uSwing(u);
   const flut = Math.sin(time * 3.6 + u.seed) * 0.55 * s;
   const lift = (u.anim > 0) ? -0.7 * s * Math.min(1, u.anim / 0.2) : 0;
 
-  // 지면 그림자 · 진영 발판
+  // 지면 그림자 (v3.12 — 진영 원형 발판은 제거)
   uGround(x, y, s, me);
 
   // v3.7 지휘 오라 표시 (피아 구분 글로우 링 + 실선 테두리)
@@ -3043,29 +3273,12 @@ function drawSoldier(u, p, time){
     g.beginPath(); g.ellipse(x, y + 1, 10.2 * s, 4.7 * s, 0, 0, Math.PI * 2); g.stroke();
     g.restore();
   }
-  if (me && state.selection.has(u.id)){
-    g.strokeStyle = '#ffd76e'; g.lineWidth = 1.9;
-    g.beginPath(); g.ellipse(x, y + 1, 11.6 * s, 5.4 * s, 0, 0, Math.PI * 2); g.stroke();
-  }
   if (u.pushedUntil > state.t){
     g.strokeStyle = '#ffd76e'; g.lineWidth = 1.5;
     g.beginPath(); g.ellipse(x, y + 1, 11.0 * s, 5.0 * s, 0, 0, Math.PI * 2); g.stroke();
   }
-  // 보호막 — 푸른 반투명 돔 / v3.11 방패 진형 — 금빛 돔 + 금빛 발치 링
-  const braced = u.braceUntil > state.t;
-  if (braced){
-    g.save();
-    const pulse = 0.5 + 0.18 * Math.sin(time * 6 + u.seed);
-    g.strokeStyle = SHIELD_LINE.color;
-    g.globalAlpha = pulse;
-    g.lineWidth = 2.4;
-    g.beginPath(); g.ellipse(x, y - 2 * s, 9.6 * s, 13 * s, 0, Math.PI * 1.02, Math.PI * 1.98); g.stroke();
-    g.fillStyle = 'rgba(249,217,150,.16)';
-    g.beginPath(); g.ellipse(x, y - 2 * s, 9.6 * s, 13 * s, 0, Math.PI * 1.02, Math.PI * 1.98); g.fill();
-    g.globalAlpha = pulse * 0.95; g.lineWidth = 1.8;
-    g.beginPath(); g.ellipse(x, y + 1, 11.4 * s, 5.2 * s, 0, 0, Math.PI * 2); g.stroke();
-    g.restore();
-  } else if (u.shieldHp > 0 && u.shieldUntil > state.t){
+  // 보호막 — 푸른 반투명 돔 (방패 진형 금빛 돔·선택 링은 drawGroundMarks가 병력 위에 그린다)
+  if (u.shieldHp > 0 && u.shieldUntil > state.t){
     g.save();
     g.globalAlpha = 0.36 + 0.16 * Math.sin(time * 6 + u.seed);
     g.strokeStyle = '#bfeaff'; g.lineWidth = 1.5;
@@ -3115,8 +3328,11 @@ function drawSoldier(u, p, time){
     tier: (u.armorTier != null ? u.armorTier : state.armorTier)
   };
   const lungeY = (u.anim > 0) ? (me ? -1 : 1) * Math.sin(Math.min(1, u.anim / 0.22) * Math.PI) * 2.2 * s : 0;
+  /* v3.12 — 타격 순간 몸이 상대 쪽으로 확 밀려 들어가는 전진 러지 */
+  const face = u.artDirection || (me ? 1 : -1);
+  const lungeX = (u.anim > 0) ? face * Math.sin(Math.min(1, u.anim / 0.22) * Math.PI) * 2.4 * s : 0;
   g.save();
-  g.translate(0, lift + lungeY);
+  g.translate(lungeX, lift + lungeY);
   if (BEASTS[u.type]) paintBeast(u, x, yy, s, pal, time, step);
   else if (lk === 'ironCav') paintCavalry(u, x, yy, s, pal, o);
   else if (lk === 'hwacha') paintSiege(u, x, yy, s, pal, o);
@@ -3289,18 +3505,22 @@ function tryTowerSlot(slotIdx, team){
 
 function setupBuildings(){
   state.buildings = [];
-  /* v3.3 — 본성은 뒤로 물리고 성·전초성을 한 줄씩 더 벌려, 성 앞 강변까지 교전할 앞마당을 남긴다 */
+  state.gates = [];
+  /* v3.12 — 본성 앞에 성벽을 세우고, 다리 바로 앞을 비우도록 성·전초성을 안쪽으로 물렸다.
+     전초성은 좌·우 다리 통로(x 0.152~0.288 / 0.712~0.848)에서 비껴나 병력이 다리를 건너는 모습이 그대로 보인다. */
   addBuilding('me','base',0.5,0.048);
-  addBuilding('me','castle',0.175,0.132,{ side:'L' });
-  addBuilding('me','castle',0.825,0.132,{ side:'R' });
-  addBuilding('me','fort',0.225,0.195,{ side:'L' });
-  addBuilding('me','fort',0.775,0.195,{ side:'R' });
+  addBuilding('me','castle',0.170,0.112,{ side:'L' });
+  addBuilding('me','castle',0.830,0.112,{ side:'R' });
+  addBuilding('me','fort',0.322,0.158,{ side:'L' });
+  addBuilding('me','fort',0.678,0.158,{ side:'R' });
 
   addBuilding('foe','base',0.5,0.952);
-  addBuilding('foe','castle',0.175,0.868,{ side:'L' });
-  addBuilding('foe','castle',0.825,0.868,{ side:'R' });
-  addBuilding('foe','fort',0.225,0.805,{ side:'L' });
-  addBuilding('foe','fort',0.775,0.805,{ side:'R' });
+  addBuilding('foe','castle',0.170,0.888,{ side:'L' });
+  addBuilding('foe','castle',0.830,0.888,{ side:'R' });
+  addBuilding('foe','fort',0.322,0.842,{ side:'L' });
+  addBuilding('foe','fort',0.678,0.842,{ side:'R' });
+
+  state.gates.push(makeGate('me'), makeGate('foe'));
 }
 
 function initDeckCycle(){
@@ -3401,7 +3621,10 @@ function groundRoute(u,target,preferred){
       if (!wallBlocks(lineX(near),lineX(far))) continue;
     }
     const lane = inside ? laneAt(from.x) : bridgeLane(from,target,preferred);
-    const x = BRIDGE_X[lane];
+    /* v3.12 — 다리는 병종마다 좌우 열을 나눠 한 줄로 엉키지 않고 줄지어 건넌다 */
+    const colPad = strip.wall ? 0 : (u.gateCol || 0) * BRIDGE_HALF[lane] * 0.30;
+    const x = strip.wall ? BRIDGE_X[lane] :
+      clamp(BRIDGE_X[lane] + colPad, BRIDGE_X[lane] - BRIDGE_HALF[lane]*0.60, BRIDGE_X[lane] + BRIDGE_HALF[lane]*0.60);
     const pad = strip.wall ? 0.025 : BRIDGE_HALF[lane]*0.72;
     if (!inside) route.push({x,y:near});
     if (targetInside){
@@ -3415,11 +3638,51 @@ function groundRoute(u,target,preferred){
   return route;
 }
 
+/* v3.12 — 아군 성벽이 살아 있으면 길이 성벽을 넘을 때 반드시 가운데 성문을 거치게 한다 */
+function routeGateFix(path, u, w){
+  const pts = [{ x:u.x, y:u.y }].concat(path);
+  const out = [];
+  for (let i = 1; i < pts.length; i++){
+    const a = pts[i-1], b = pts[i];
+    if ((a.y - w.y) * (b.y - w.y) < 0){
+      const t = (w.y - a.y) / (b.y - a.y);
+      const cx = lerp(a.x, b.x, t);
+      if (Math.abs(cx - w.gateC) > w.gateH * 0.62){
+        const gx = clamp(w.gateC + (u.gateCol || 0) * w.gateH * 0.52,
+                         w.gateC - w.gateH * 0.74, w.gateC + w.gateH * 0.74);
+        const sA = Math.sign(a.y - w.y), sB = Math.sign(b.y - w.y);
+        /* 성벽에 이미 붙어 있으면 안쪽 경유지를 다시 넣지 않는다 — 넣으면 그 점에서 앞뒤로 떨린다 */
+        if (Math.abs(a.y - w.y) > 0.038) out.push({ x:gx, y: w.y + sA * 0.030 });
+        out.push({ x:gx, y: w.y + sB * 0.030 });
+      }
+    }
+    out.push(b);
+  }
+  return out;
+}
 function routeToward(u,gx,gy){
-  const path = groundRoute(u,{x:gx,y:gy},u.lane);
-  return path.find(p=>distXY(u.x,u.y,p.x,p.y)>0.0001) || path.at(-1);
+  let path = groundRoute(u,{x:gx,y:gy},u.lane);
+  const own = gateOf(u.team);
+  if (own && own.alive && !u.flying && Array.isArray(path)) path = routeGateFix(path, u, own);
+  if (!Array.isArray(path) || !path.length) return { x:gx, y:gy };
+  for (let i = 0; i < path.length; i++){
+    const p = path[i];
+    if (p && distXY(u.x,u.y,p.x,p.y) > 0.0001) return p;
+  }
+  return path[path.length - 1] || { x:gx, y:gy };
 }
 
+/* 성벽을 부수러 갈 때는 성벽 중심이 아니라 자기 앞의 성벽 면으로 붙는다 */
+function moveToGate(u, w, dt){
+  const outSign = -gateInnerSign(w.team);
+  const gx = clamp(u.x, w.x0 + 0.020, w.x1 - 0.020);
+  const ty = w.y + outSign * (GT_wallStandoff(u));
+  if (distXY(u.x, u.y, gx, ty) < 0.005){ u.moving = false; return; }
+  moveToward(u, gx, ty, dt);
+}
+function GT_wallStandoff(u){
+  return Math.max(GATE.thumb, (u.rad || 0.008) + 0.004);
+}
 function moveToward(u, gx, gy, dt){
   const wp = routeToward(u, gx, gy);
   const dx = (wp.x - u.x)*field.ax, dy = wp.y - u.y;
@@ -3559,9 +3822,17 @@ function unitThink(u, dt){
     }
   }
 
+  /* v3.12 성벽 — 맞은편 성벽이 살아 있으면 그 앞에서 먼저 부순다.
+     목표가 성벽 뒤(본진 쪽)에 있거나 갈 곳이 없으면 성벽이 목표가 된다. */
+  const foeGate = gateWallFor(u);
+  if (foeGate && gateOutside(u, foeGate)){
+    if (!tgt) tgt = foeGate;
+    else if (tgt.ent !== 'gate' && gateBehind(foeGate, tgt)) tgt = foeGate;
+  }
+
   if (tgt && !(u.disabledUntil > state.t)){
-    u.tgtId = tgt.id; u.tgtKind = tgt.kind || tgt.type;
-    const d = distXY(u.x,u.y,tgt.x,tgt.y) - tgt.rad;
+    u.tgtId = tgt.id; u.tgtKind = tgt.kind || tgt.type || tgt.ent;
+    const d = (tgt.ent === 'gate') ? gateReach(u, tgt) : distXY(u.x,u.y,tgt.x,tgt.y) - tgt.rad;
     if (d <= u.range){
       u.moving = false;
       if (u.atkTimer <= 0) performAttack(u, tgt);
@@ -3583,7 +3854,10 @@ function unitThink(u, dt){
       return;
     } else { u.rally = null; u.moving = false; }
   }
-  if (tgt){ moveToward(u, tgt.x, tgt.y, dt); return; }
+  if (tgt){
+    if (tgt.ent === 'gate'){ moveToGate(u, tgt, dt); return; }
+    moveToward(u, tgt.x, tgt.y, dt); return;
+  }
 
   const foeTeam = u.team==='me' ? 'foe' : 'me';
   let lane = u.x < 0.5 ? 'L' : 'R';
@@ -3915,6 +4189,11 @@ function performAttack(u, target){
   }
   if (u.aura) dmg *= 1.20;                    // 장군 지휘 오라: 공격력 +20%
   if (u.siege > 1 && target.ent === 'building') dmg *= u.siege;
+  /* v3.12 성벽 — 일반 병력은 성벽을 거의 못 부수고, 공성 병기만 실질 피해를 준다 */
+  if (target.ent === 'gate'){
+    if ((u.siege || 1) > 1) dmg *= u.siege;
+    if (!isSiegeUnit(u)) dmg *= GATE.normalMul;
+  }
   if (u.chargeLeft > 0 && target.ent === 'unit'){ u.chargeLeft = 0; dmg *= 1.8; }
 
   if (u.ranged){
@@ -3989,7 +4268,10 @@ function killogPush(victim, src){
              : a.team === 'foe' ? '<span class="tag f">적</span>' : '<span class="tag">?</span>';
   const vTag = victim.team === 'me' ? '<span class="tag m">아군</span>' : '<span class="tag f">적</span>';
   let vName, act = '처치', big = false, mark = '';
-  if (victim.ent === 'building'){
+  if (victim.ent === 'gate'){
+    vName = victim.label || '성벽';
+    act = '붕괴'; big = true; mark = '🧱';
+  } else if (victim.ent === 'building'){
     vName = victim.label || (BSTAT[victim.kind] ? BSTAT[victim.kind].label : '건물');
     act = '파괴'; big = true; mark = '💥';
   } else if (victim.type === 'general'){
@@ -4008,6 +4290,7 @@ function hitEntity(ent, dmg, src){
   if (!ent.alive) return;
   if (ent.evade && Math.random() < ent.evade) return;
   if (ent.armor) dmg *= (1 - ent.armor);
+  if (ent.ent === 'gate' && dmg <= 0) return;
   if (ent.ent === 'unit' && ent.braceUntil > state.t) dmg *= 1 - SHIELD_LINE.reduction;  // v3.11 방패 진형
   if (ent.ent === 'unit' && ent.aura) dmg *= 0.85;   // 장군 지휘 오라: 받는 피해 -15%
   if (ent.ent==='building' && ent.kind==='base'){
@@ -4026,8 +4309,24 @@ function hitEntity(ent, dmg, src){
     if (dmg <= 0.01) return;
   }
   ent.hp -= dmg; ent.hitFlash = 0.14;
+  if (ent.ent === 'gate'){ ent.flash = 0.16; if (ent.hp > 0) Sfx.stone(); }
   if (ent.ent === 'building' && ent.hp > 0) Sfx.stone();
   hitSpark(ent, dmg);
+  if (ent.ent === 'gate' && ent.hp <= 0 && ent.alive){
+    ent.alive = false; ent.hp = 0; ent.broken = true; ent.open = 1;
+    state.shake = Math.max(state.shake, 7);
+    for (let i = 0; i < 10; i++){
+      state.effects.push({ type:'dust', x: ent.gateC + rand(-0.09, 0.09), y: ent.y + rand(-0.01, 0.01),
+        t:-i*0.03, life:0.7 + Math.random()*0.4 });
+    }
+    state.effects.push({ type:'ring', x:ent.gateC, y:ent.y, t:0, life:0.85, color:'#ffcf8a', R:0.13 });
+    Sfx.boom();
+    killogSys(ent.team === 'me' ? '🧱 아군 성벽 붕괴 — 적군이 본진으로 들어옵니다'
+                                : '🧱 적 성벽 붕괴 — 우리 병력이 적 본진으로 진입합니다');
+    if (ent.team === 'me') toast('🧱 아군 성벽이 무너졌습니다 — 본진을 지키세요!');
+    else toast('🧱 적 성벽 붕괴! 적 본진으로 진입합니다');
+    return;
+  }
   if (ent.hp <= 0){
     ent.alive = false; ent.hp = 0;
     killogPush(ent, src);
@@ -4125,7 +4424,8 @@ function spawnUnit(team, type, x, y){
     flying: !!src.flying, buildingOnly: !!src.buildingOnly,
     isRepairer: !!src.isRepairer, lifeLeft: src.lifeSpan || 999,
     pusher: !!src.pusher, pushable: !!src.pushable, chargeLeft: src.charge ? 1 : 0,
-    alive:true, order:null, moving:false, buffs:[], hitFlash:0, anim:0, seed:Math.random()*9
+    alive:true, order:null, moving:false, buffs:[], hitFlash:0, anim:0, seed:Math.random()*9,
+    gateCol: (state.nextId % 3) - 1
   };
   if (type === 'general'){
     u.shieldHp = 0; u.shieldUntil = 0;
@@ -4504,6 +4804,63 @@ function aiThink(dt){
   A.food -= card.cost.food || 0;
 }
 
+/* v3.12 — 성문 개폐 상태: 아군이 성문 가까이 오면 스르륵 열리고, 지나가면 닫힌다 */
+function updateGates(dt){
+  for (const w of state.gates){
+    w.flash = Math.max(0, (w.flash || 0) - dt);
+    w.hitFlash = Math.max(0, (w.hitFlash || 0) - dt);
+    if (!w.alive){ w.open = 1; continue; }
+    let want = 0;
+    if (state.phase === 'playing'){
+      for (const u of state.units){
+        if (!u.alive || u.team !== w.team || u.flying || u.isDecoy) continue;
+        if (Math.abs(u.y - w.y) > 0.024) continue;
+        if (Math.abs(u.x - w.gateC) > w.gateH * 0.96) continue;
+        want = 1; break;
+      }
+    }
+    if (want) w.holdUntil = state.t + 0.40;
+    const dv = dt * GATE.openSpeed;
+    if (want || (w.holdUntil || 0) > state.t){ w.open = Math.min(1, w.open + dv); }
+    else { w.open = Math.max(0, w.open - dt * 2.8); }
+    /* 문이 오르내릴 때 성문 아래 먼지 */
+    if (dt > 0 && w.open > 0.03 && w.open < 0.97 && state.t >= (w.dustAt || 0)){
+      w.dustAt = state.t + 0.09;
+      state.effects.push({ type:'dust', x: w.gateC + rand(-w.gateH*0.7, w.gateH*0.7), y: w.y,
+        t:0, life:0.42 });
+    }
+  }
+}
+/* v3.12 — 성벽은 실제로 길을 막는다. 적군은 넘을 수 없고, 아군은 열린 성문으로만 지난다. */
+function applyGateBarriers(){
+  for (const u of state.units){
+    if (!u.alive || u.flying) continue;
+    const prev = (u._gateY == null) ? u.y : u._gateY;
+    for (const w of state.gates){
+      if (!w.alive) continue;
+      const rel = u.y - w.y, prevRel = prev - w.y;
+      if (rel === 0) continue;
+      if (u.team !== w.team){
+        const outSign = -gateInnerSign(w.team);
+        if (rel * outSign < 0){                        // 안쪽으로 파고들었다 → 밖으로 되돌린다
+          u.y = w.y + outSign * (GATE.thumb * 0.8);
+          u.moving = false;
+          u._gateY = u.y;
+        }
+        continue;
+      }
+      /* 아군 — 성문 밖에서 선을 넘으려 하면 되돌리고 성문 쪽으로 미끄러지게 한다 */
+      if (rel * prevRel >= 0) continue;
+      if (insideGateMouth(u.x, w, 1.45) && w.open > 0.22) continue;
+      u.y = w.y + Math.sign(prevRel) * 0.006;
+      const toward = Math.sign(w.gateC - u.x) || 1;
+      u.x = clamp(u.x + toward * 0.005, 0.03, 0.97);
+      u._gateY = u.y;
+    }
+    u._gateY = u.y;
+  }
+}
+
 function update(dt){
   state.t += dt;
   state.timeLeft = Math.max(0, state.timeLeft - dt);
@@ -4632,6 +4989,8 @@ function update(dt){
   }
   updateAuraFlags();
   resolvePhysicsAndPush();
+  updateGates(dt);
+  applyGateBarriers();
 
   for (const p of state.projectiles){
     p.t += dt / p.dur;
@@ -4745,7 +5104,7 @@ function hitSpark(ent, dmg){
   if (now - lastSparkFx < 42) return;
   lastSparkFx = now;
   if (state.effects.length > 300) return;
-  const stone = ent.ent === 'building';
+  const stone = ent.ent === 'building' || ent.ent === 'gate';
   state.effects.push({
     type:'sparkHit', x:ent.x, y:ent.y, t:0, life: stone ? 0.26 : 0.18,
     color: stone ? '#d8cdb2' : (ent.armor ? '#ffe9b0' : '#ffd9a8'),
@@ -5310,14 +5669,16 @@ function render(time){
 
   drawGeneralAuraFloor(time);
 
-  const list = [...STONE_WALLS, ...state.buildings.filter(b=>b.alive), ...state.units.filter(u=>u.alive && (u.team==='me' || scoutSpotted(u))), ...state.ruins];
+  const list = [...STONE_WALLS, ...state.gates, ...state.buildings.filter(b=>b.alive), ...state.units.filter(u=>u.alive && (u.team==='me' || scoutSpotted(u))), ...state.ruins];
   list.sort((a,b)=> b.y - a.y);
   for (const e of list){
     if (e.ent === 'wall') drawStoneWall(e);
+    else if (e.ent === 'gate') drawGateWall(e, time);
     else if (e.ent === 'ruin') drawRuin(e, time);
     else if (e.ent === 'building') drawBuilding(e, time);
     else drawSoldier(e, proj(e.x, e.y), time);
   }
+  drawGroundMarks(time);
 
   drawGeneralAuraOverlay(time);
   drawProjectiles();
@@ -6240,6 +6601,8 @@ window.tk = function(){
     auraByTeam: { me: alive.filter(u=> u.aura && u.team==='me').length, foe: alive.filter(u=> u.aura && u.team==='foe').length },
     bridgeX: BRIDGE_X.slice(),
     rivers: RIVERS.map(r=> ({...r})),
+    gates: state.gates.map(g=> ({ team:g.team, hp:Math.round(g.hp), maxHp:g.maxHp, alive:g.alive,
+      open:+g.open.toFixed(2), y:+g.y.toFixed(3), gateC:g.gateC, gateHalf:g.gateH, x0:g.x0, x1:g.x1 })),
     autoDump: !!state.me.autoDump,
     anthemLast: Sfx.anthemLast || null,
     rallying: alive.filter(u=> u.rally || u.muster).map(u=> ({ team:u.team, name:u.name, x:+u.x.toFixed(3), y:+u.y.toFixed(3) })),
@@ -6463,6 +6826,83 @@ window.tkShield = function(x, y, team){
   const ok = castSpell('shieldLine', px, py, tm);
   return { ok, targetIds: targets, targets: targets.length,
            braced: state.units.filter(u=> u.alive && u.braceUntil > state.t).length };
+};
+/* 검증·시연용: v3.12 성벽 — window.tkGate() / window.tkGateHit('me', 500) */
+window.tkGate = function(){
+  return state.gates.map(g=> ({ team:g.team, hp:Math.round(g.hp), maxHp:g.maxHp, alive:g.alive,
+    open:+g.open.toFixed(2), y:+g.y.toFixed(3), gateC:g.gateC, gateHalf:g.gateH, x0:g.x0, x1:g.x1 }));
+};
+window.tkGateHit = function(team, dmg){
+  const w = gateOf(team === 'foe' ? 'foe' : 'me');
+  if (!w) return 'no gate';
+  hitEntity(w, dmg === undefined ? 500 : dmg, { team: team === 'foe' ? 'me' : 'foe', name:'검증', kind:'test' });
+  return { team:w.team, hp:Math.round(w.hp), maxHp:w.maxHp, alive:w.alive, broken:w.broken };
+};
+/* 검증·시연용: 성벽 앞에 병력을 세워 차단·진입을 확인 — window.tkGateDuel('me') */
+window.tkGateDuel = function(attackerTeam, type){
+  if (state.phase !== 'playing') return 'not playing';
+  const atk = attackerTeam === 'me' ? 'me' : 'foe';
+  const wall = gateOf(atk === 'me' ? 'foe' : 'me');
+  if (!wall) return 'no gate';
+  const outSign = atk === 'me' ? -1 : 1;               // 성벽 바깥(강 쪽)
+  const u = spawnUnit(atk, type || 'warrior', wall.gateC, wall.y + outSign * 0.055);
+  return { id:u.id, team:atk, wallTeam:wall.team, x:+u.x.toFixed(3), y:+u.y.toFixed(3) };
+};
+/* 검증·시연용: 성벽 안쪽 침입 판정 — window.tkGateInside('me')는 상대 병력을 성벽 안쪽에 세운다 */
+window.tkGateInside = function(team){
+  if (state.phase !== 'playing') return 'not playing';
+  const wTeam = team === 'me' ? 'me' : 'foe';
+  const w = gateOf(wTeam);
+  if (!w) return 'no gate';
+  const atk = wTeam === 'me' ? 'foe' : 'me';
+  const u = spawnUnit(atk, 'warrior', w.gateC, w.y + gateInnerSign(wTeam) * 0.030);
+  if (!u) return 'no unit';
+  return { id:u.id, team:atk, wallTeam:wTeam, y:+u.y.toFixed(4), wallY:w.y, alive:w.alive };
+};
+/* 검증용: 병력 내부 상태와 다음 경유지 — window.tkDebugUnit(id) */
+window.tkDebugUnit = function(id){
+  const u = state.units.find(x=> x.id === id);
+  if (!u) return 'no unit';
+  let wp = null;
+  try {
+    const t = u.tgtId ? byId(u.tgtId) : null;
+    if (t){ const gx = t.ent === 'gate' ? clamp(u.x, t.x0, t.x1) : t.x;
+            const gy = t.ent === 'gate' ? t.y - gateInnerSign(t.team) * 0.018 : t.y;
+            wp = routeToward(u, gx, gy); }
+  } catch(e){ wp = 'err ' + e; }
+  return { id:u.id, team:u.team, x:+u.x.toFixed(4), y:+u.y.toFixed(4), moving:u.moving,
+    speed:+u.speed.toFixed(4), order:u.order && u.order.type, rally:!!u.rally, retreat:!!u.retreat,
+    muster:!!u.muster, guard:!!u.guard, logPush:!!u.logPush, pushed:+(u.pushedUntil||0) > state.t,
+    tgt:u.tgtKind, tgtId:u.tgtId, wp: wp ? { x:+wp.x.toFixed(3), y:+wp.y.toFixed(3) } : null,
+    buffs:u.buffs.length, gateCol:u.gateCol };
+};
+/* 검증·시연용: 성벽 피해 규칙 확인 — window.tkWallProbe('me','trebuchet') */
+window.tkWallProbe = function(team, type){
+  if (state.phase !== 'playing') return 'not playing';
+  const atkTeam = team === 'me' ? 'me' : 'foe';
+  const w = gateOf(atkTeam === 'me' ? 'foe' : 'me');
+  if (!w || !w.alive) return 'no gate';
+  const u = spawnUnit(atkTeam, type || 'warrior', w.gateC, w.y + (atkTeam === 'me' ? -0.05 : 0.05));
+  if (!u) return 'no unit';
+  const before = w.hp, pjLen = state.projectiles.length;
+  u.atkTimer = 0;
+  performAttack(u, w);
+  let per = before - w.hp;
+  if (state.projectiles.length > pjLen) per = state.projectiles.pop().dmg;
+  w.hp = before; w.alive = true; w.broken = false;
+  u.alive = false;
+  return { type:u.type, name:u.name, perHit:+per.toFixed(2), atkInterval:u.atkInterval,
+           dps:+(per / Math.max(0.05, u.atkInterval)).toFixed(1),
+           siege:u.siege, siegeUnit:isSiegeUnit(u) };
+};
+/* 검증·시연용: 아군을 성문 안쪽에 세워 개폐 확인 — window.tkGateMarch() */
+window.tkGateMarch = function(){
+  if (state.phase !== 'playing') return 'not playing';
+  const w = gateOf('me');
+  if (!w) return 'no gate';
+  const u = spawnUnit('me', 'warrior', w.gateC, w.y - 0.030);
+  u.lane = 1;
+  return { id:u.id, x:+u.x.toFixed(3), y:+u.y.toFixed(3), open:+w.open.toFixed(2), gateY:w.y };
 };
 /* 검증·시연용: 피해 감소 확인 — window.tkHit(유닛id, 10) */
 window.tkHit = function(id, dmg){
