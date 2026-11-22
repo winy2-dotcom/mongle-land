@@ -6030,6 +6030,14 @@ window.tkScreen = function(x, y){
   };
 };
 
+/* 검증·시연용: 시야 높이 지정 — window.tkCam(0.42) */
+window.tkCam = function(y){
+  if (typeof y !== 'number') return { camY: +state.camY.toFixed(3) };
+  state.camVel = 0;
+  state.camY = clamp(y, CAM_MIN, CAM_MAX);
+  syncViewButtons();
+  return { camY: +state.camY.toFixed(3), zoom: state.zoom, viewK: viewK() };
+};
 /* 검증·시연용: v3.6 시야 2단 — window.tkView('far') / window.tkView('near') */
 window.tkView = function(mode){
   setViewMode(mode === 'far' ? 'far' : 'near');
