@@ -1624,116 +1624,167 @@ function drawStoneWall(wall){
    ========================================================= */
 function drawGateWall(w, time){
   const me = w.team === 'me';
-  const pL = proj(w.x0, w.y), pR = proj(w.x1, w.y);
+  const pL = proj(w.x0, w.y);
   const s = pL.s;
-  const pxPerX = Math.abs(pR.x - pL.x) / Math.max(0.001, w.x1 - w.x0);
-  const H = 30 * s, hd = 4.4 * s, colW = 0.030;
+  const pxPerX = Math.abs(proj(w.x1, w.y).x - pL.x) / Math.max(0.001, w.x1 - w.x0);
+  const baseY = pL.y;
+  const H = 26 * s, D = 9 * s, MH = 7 * s;
   const broken = !w.alive;
-  const bodyH = broken ? H * 0.38 : H;
-  const stone = me ? ['#c0b394', '#93886f', '#67604e'] : ['#bda98e', '#8f7d64', '#655545'];
-  const lit = me ? 'rgba(52,226,198,' : 'rgba(255,104,80,';
+  const wallH = broken ? H * 0.34 : H;
   const seedW = mulberry32(1200 + (w.team === 'me' ? 3 : 7));
+  const TOP  = me ? '#cdc1a2' : '#c9b69b';
+  const FACE = me ? '#938b74' : '#8f7e68';
+  const FACE2= me ? '#6e6753' : '#6b5b48';
+  const EDGE = 'rgba(255,255,255,.16)';
+  const lit = me ? 'rgba(52,226,198,' : 'rgba(255,104,80,';
 
-  /* 1) 성벽 그림자 — 벽 아래로 길게 깔린다 */
+  /* 1) 성벽 그림자 */
   g.save();
-  const shg = g.createLinearGradient(0, pL.y - 3 * s, 0, pL.y + 12 * s);
-  shg.addColorStop(0, 'rgba(0,0,0,.38)');
-  shg.addColorStop(0.5, 'rgba(0,0,0,.18)');
+  const shg = g.createLinearGradient(0, baseY - 2 * s, 0, baseY + 13 * s);
+  shg.addColorStop(0, 'rgba(0,0,0,.34)');
+  shg.addColorStop(0.45, 'rgba(0,0,0,.17)');
   shg.addColorStop(1, 'rgba(0,0,0,0)');
   g.fillStyle = shg;
-  g.fillRect(pL.x - 8 * s, pL.y - 3 * s, (pR.x - pL.x) + 16 * s, 15 * s);
+  g.fillRect(pL.x - 10 * s, baseY - 2 * s, (proj(w.x1, w.y).x - pL.x) + 20 * s, 16 * s);
   g.restore();
 
-  /* 2) 성벽 몸체 — 기단 · 벽체 · 성가퀴를 한 칸씩 쌓는다 */
-  const segs = [[w.x0, w.gateC - w.gateH], [w.gateC + w.gateH, w.x1]];
-  for (const seg of segs){
-    const ax = seg[0], bx = seg[1];
-    const n = Math.max(2, Math.round((bx - ax) / colW));
-    const cw = (bx - ax) / n * pxPerX;
-    for (let i = 0; i < n; i++){
-      const xc = lerp(ax, bx, (i + 0.5) / n);
-      const p = proj(xc, w.y);
-      const hw = cw * 0.52;
-      const wobble = broken ? (0.55 + seedW() * 0.8) : 1;
-      isoBox(g, p.x, p.y, hw * 1.08, hd * 1.20, 6 * s, '#877e6b', '#57503f', '#6a6350');
-      isoBox(g, p.x, p.y - 6 * s, hw, hd * 0.94, bodyH * wobble, stone[0], stone[1], stone[2]);
-      if (!broken){
-        /* 상단 연속 성가퀴 띠 위에 총안(한 칸 걸러 솟은 돌) */
-        isoBox(g, p.x, p.y - 6 * s - H, hw, hd * 0.90, 4 * s, stone[0], stone[1], stone[2]);
-        if (i % 2 === 0){
-          isoBox(g, p.x, p.y - 6 * s - H - 4 * s, hw * 0.92, hd * 0.84, 6 * s, stone[0], stone[1], stone[2]);
-        }
+  /* 2) 벽체 한 구간 — 앞면 + 상단면 띠 + 총안 */
+  const drawSpan = (ax, bx) => {
+    const x0 = proj(ax, w.y).x, x1 = proj(bx, w.y).x;
+    const wide = x1 - x0;
+    if (wide < 1) return;
+    /* 기단 */
+    g.fillStyle = '#59523f';
+    g.fillRect(x0, baseY - 4 * s, wide, 4 * s);
+    g.fillStyle = '#7a7260';
+    g.fillRect(x0, baseY - 4 * s - 4 * s, wide, 4 * s);
+    /* 앞면 */
+    const fg = g.createLinearGradient(0, baseY - 8 * s - wallH, 0, baseY - 8 * s);
+    fg.addColorStop(0, FACE);
+    fg.addColorStop(1, FACE2);
+    g.fillStyle = fg;
+    g.fillRect(x0, baseY - 8 * s - wallH, wide, wallH);
+    /* 돌줄눈 */
+    g.strokeStyle = 'rgba(24,20,14,.20)'; g.lineWidth = Math.max(1, 1.1 * s);
+    for (let ry = baseY - 8 * s - wallH + 6 * s; ry < baseY - 9 * s; ry += 7 * s){
+      g.beginPath(); g.moveTo(x0, ry); g.lineTo(x1, ry); g.stroke();
+    }
+    if (!broken){
+      /* 상단면 */
+      g.fillStyle = TOP;
+      g.fillRect(x0, baseY - 8 * s - wallH - D, wide, D);
+      g.fillStyle = EDGE;
+      g.fillRect(x0, baseY - 8 * s - wallH - D, wide, Math.max(1, 1.4 * s));
+      /* 총안 — 0.05 간격으로 솟은 돌 */
+      const n = Math.max(2, Math.round((bx - ax) / 0.050));
+      const step = wide / n, mw = Math.max(3, step * 0.46);
+      for (let i = 0; i < n; i++){
+        const mx = x0 + step * (i + 0.5) - mw / 2;
+        g.fillStyle = FACE;
+        g.fillRect(mx, baseY - 8 * s - wallH - D - MH, mw, MH);
+        g.fillStyle = TOP;
+        g.fillRect(mx, baseY - 8 * s - wallH - D - MH - 4 * s, mw, 4 * s);
       }
-      if (w.hitFlash > 0){
-        g.save(); g.globalAlpha = Math.min(0.5, w.hitFlash * 3);
-        g.fillStyle = '#fff';
-        g.beginPath(); g.ellipse(p.x, p.y - 6 * s - bodyH * 0.5, hw * 0.9, bodyH * 0.52, 0, 0, Math.PI * 2); g.fill();
+    } else {
+      /* 무너진 구간 — 들쭉날쭉한 잔해 */
+      for (let i = 0; i < Math.round((bx - ax) / 0.024); i++){
+        const bx2 = x0 + seedW() * wide;
+        const bw2 = (2.2 + seedW() * 4.4) * s, bh2 = (1.8 + seedW() * 4.2) * s;
+        g.save();
+        g.translate(bx2, baseY - 1 * s); g.rotate((seedW() - 0.5) * 0.7);
+        g.fillStyle = seedW() > 0.5 ? '#6b6453' : '#4e4a3d';
+        g.fillRect(-bw2 / 2, -bh2, bw2, bh2);
+        g.fillStyle = 'rgba(160,152,132,.45)';
+        g.fillRect(-bw2 / 2, -bh2, bw2, Math.max(0.8, bh2 * 0.28));
         g.restore();
       }
     }
-  }
+    /* 피격 섬광 */
+    if (w.hitFlash > 0){
+      g.save();
+      g.globalAlpha = Math.min(0.45, w.hitFlash * 2.6);
+      g.fillStyle = '#fff';
+      g.fillRect(x0, baseY - 8 * s - wallH, wide, wallH);
+      g.restore();
+    }
+  };
 
+  const segs = [[w.x0, w.gateC - w.gateH], [w.gateC + w.gateH, w.x1]];
+  for (const seg of segs) drawSpan(seg[0], seg[1]);
+
+  /* 3) 성문 문간 */
   const pg = proj(w.gateC, w.y);
   const gwHalf = w.gateH * pxPerX;
-  const archH = H * 1.22;
-  const houseH = H * 1.92;
+  const archH = 38 * s;
+  const houseH = 54 * s;
 
   if (!broken){
-    /* 3) 성문 — 좌우 문간 망루 */
+    /* 3-a) 양옆 망루 */
     for (const sd of [-1, 1]){
       const p = proj(w.gateC + sd * (w.gateH + 0.012), w.y);
       const hw2 = 0.013 * pxPerX;
-      isoBox(g, p.x, p.y, hw2 * 1.08, hd * 1.8, 6 * s, '#877e6b', '#57503f', '#6a6350');
-      isoBox(g, p.x, p.y - 6 * s, hw2, hd * 1.55, houseH, stone[0], stone[1], stone[2]);
-      for (const md of [-1, 1]){
-        isoBox(g, p.x + md * hw2 * 0.52, p.y - 6 * s - houseH, hw2 * 0.44, hd * 1.45, 7 * s,
-               stone[0], stone[1], stone[2]);
+      g.fillStyle = '#58513f';
+      g.fillRect(p.x - hw2, baseY - 8 * s, hw2 * 2, 8 * s);
+      const fg = g.createLinearGradient(0, baseY - 8 * s - houseH, 0, baseY - 8 * s);
+      fg.addColorStop(0, FACE); fg.addColorStop(1, FACE2);
+      g.fillStyle = fg;
+      g.fillRect(p.x - hw2, baseY - 8 * s - houseH, hw2 * 2, houseH);
+      g.fillStyle = TOP;
+      g.fillRect(p.x - hw2, baseY - 8 * s - houseH - D * 1.6, hw2 * 2, D * 1.6);
+      g.fillStyle = EDGE;
+      g.fillRect(p.x - hw2, baseY - 8 * s - houseH - D * 1.6, hw2 * 2, Math.max(1, 1.4 * s));
+      for (const md of [-1, 0, 1]){
+        if (md === 0) continue;
+        g.fillStyle = FACE;
+        g.fillRect(p.x + md * hw2 * 0.45 - hw2 * 0.34, baseY - 8 * s - houseH - D * 1.6 - MH, hw2 * 0.68, MH);
+        g.fillStyle = TOP;
+        g.fillRect(p.x + md * hw2 * 0.45 - hw2 * 0.34, baseY - 8 * s - houseH - D * 1.6 - MH - 4 * s, hw2 * 0.68, 4 * s);
       }
-      /* 망루 군기 */
-      const fx = p.x, fy = p.y - 6 * s - houseH - 7 * s;
+      /* 군기 */
+      const fx = p.x, fy = baseY - 8 * s - houseH - D * 1.6 - MH;
       g.strokeStyle = '#3c3226'; g.lineWidth = Math.max(1, 1.2 * s);
-      g.beginPath(); g.moveTo(fx, fy); g.lineTo(fx, fy - 17 * s); g.stroke();
+      g.beginPath(); g.moveTo(fx, fy); g.lineTo(fx, fy - 18 * s); g.stroke();
       g.fillStyle = 'rgba(232,206,148,.95)';
-      g.beginPath(); g.arc(fx, fy - 17 * s, Math.max(1.1, 1.5 * s), 0, Math.PI * 2); g.fill();
+      g.beginPath(); g.arc(fx, fy - 18 * s, Math.max(1.1, 1.5 * s), 0, Math.PI * 2); g.fill();
       const wave = Math.sin(time * 3.0 + sd * 1.7 + (me ? 0 : 2)) * 1.8 * s;
       g.fillStyle = me ? '#25d8bc' : '#ff4a32';
       g.beginPath();
-      g.moveTo(fx, fy - 17 * s);
-      g.lineTo(fx + sd * 10 * s, fy - 14.5 * s + wave * 0.4);
-      g.lineTo(fx + sd * 5.5 * s, fy - 10 * s);
-      g.lineTo(fx + sd * 10 * s, fy - 5.5 * s + wave * 0.4);
-      g.lineTo(fx, fy - 7.5 * s);
+      g.moveTo(fx, fy - 18 * s);
+      g.lineTo(fx + sd * 10 * s, fy - 15.5 * s + wave * 0.4);
+      g.lineTo(fx + sd * 5.5 * s, fy - 11 * s);
+      g.lineTo(fx + sd * 10 * s, fy - 6.5 * s + wave * 0.4);
+      g.lineTo(fx, fy - 8.5 * s);
       g.closePath(); g.fill();
     }
 
-    /* 4) 문 위 상부 석축 — 양 망루를 잇는 문간楼 */
-    const topW = w.gateH * 2 * pxPerX + 0.026 * pxPerX;
-    g.fillStyle = stone[1];
-    g.fillRect(pg.x - topW / 2, pg.y - 6 * s - houseH, topW, houseH - archH);
-    g.fillStyle = stone[0];
-    g.fillRect(pg.x - topW / 2, pg.y - 6 * s - houseH, topW, (houseH - archH) * 0.62);
-    g.fillStyle = 'rgba(255,255,255,.14)';
-    g.fillRect(pg.x - topW / 2, pg.y - 6 * s - houseH, topW, Math.max(1, 1.6 * s));
-    /* 상부 총안 3개 */
+    /* 3-b) 문 위 문간楼 — 망루 사이를 잇는 상부 석축 */
+    const topW = gwHalf * 2 + 0.024 * pxPerX;
+    const upTop = baseY - 8 * s - houseH;
+    g.fillStyle = FACE2;
+    g.fillRect(pg.x - topW / 2, upTop, topW, houseH - archH);
+    g.fillStyle = FACE;
+    g.fillRect(pg.x - topW / 2, upTop, topW, (houseH - archH) * 0.55);
+    g.fillStyle = EDGE;
+    g.fillRect(pg.x - topW / 2, upTop, topW, Math.max(1, 1.3 * s));
     for (let i = -1; i <= 1; i++){
       const bx = pg.x + i * topW * 0.30;
-      g.fillStyle = stone[1];
-      g.fillRect(bx - topW * 0.10, pg.y - 6 * s - houseH - 6 * s, topW * 0.20, 6 * s);
-      g.fillStyle = stone[0];
-      g.fillRect(bx - topW * 0.10, pg.y - 6 * s - houseH - 6 * s, topW * 0.20, Math.max(1, 1.6 * s));
+      g.fillStyle = FACE;
+      g.fillRect(bx - topW * 0.075, upTop - MH, topW * 0.15, MH);
+      g.fillStyle = TOP;
+      g.fillRect(bx - topW * 0.075, upTop - MH - 4 * s, topW * 0.15, 4 * s);
     }
 
-    /* 5) 성문 통로 — 문이 내려간 만큼 안쪽 불빛이 밝아진다 */
-    g.save();
+    /* 3-c) 성문 통로 — 열린 만큼 안쪽 불빛 */
     const openK = clamp(w.open, 0, 1);
-    const archTop = pg.y - 6 * s - archH;
+    const archTop = pg.y - 8 * s - archH;
+    g.save();
     g.fillStyle = 'rgba(8,10,9,.92)';
-    roundRect(g, pg.x - gwHalf, archTop, gwHalf * 2, archH + 2 * s, Math.min(9 * s, gwHalf * 0.34));
+    roundRect(g, pg.x - gwHalf, archTop, gwHalf * 2, archH + 8 * s, Math.min(gwHalf * 0.62, 16 * s));
     g.fill();
     if (openK > 0.01){
       const glow = g.createLinearGradient(0, archTop, 0, pg.y);
-      glow.addColorStop(0, 'rgba(255,198,116,' + (0.05 + 0.30 * openK).toFixed(3) + ')');
-      glow.addColorStop(0.65, 'rgba(255,176,86,' + (0.03 + 0.18 * openK).toFixed(3) + ')');
+      glow.addColorStop(0, 'rgba(255,198,116,' + (0.03 + 0.16 * openK).toFixed(3) + ')');
+      glow.addColorStop(0.7, 'rgba(255,176,86,' + (0.02 + 0.10 * openK).toFixed(3) + ')');
       glow.addColorStop(1, 'rgba(255,168,80,0)');
       g.fillStyle = glow;
       g.fillRect(pg.x - gwHalf, archTop, gwHalf * 2, archH);
@@ -1741,62 +1792,59 @@ function drawGateWall(w, time){
     /* 문짝 — 위에서 아래로 스르륵 내려가며 열린다 */
     if (openK < 0.995){
       const doorH = archH * (1 - openK);
-      const dy = pg.y - doorH;
+      const dy = pg.y - doorH + 2 * s;
       for (const sd of [-1, 1]){
         const x0 = sd < 0 ? pg.x - gwHalf : pg.x;
         g.fillStyle = sd < 0 ? '#5b4028' : '#6b4b2f';
         g.fillRect(x0, dy, gwHalf, doorH);
-        g.strokeStyle = 'rgba(28,18,10,.55)'; g.lineWidth = Math.max(1, 1.3 * s);
+        g.strokeStyle = 'rgba(28,18,10,.5)'; g.lineWidth = Math.max(1, 1.2 * s);
         for (let k = 1; k < 5; k++){
           const lx = x0 + gwHalf * k / 5;
-          g.beginPath(); g.moveTo(lx, dy); g.lineTo(lx, pg.y); g.stroke();
+          g.beginPath(); g.moveTo(lx, dy); g.lineTo(lx, dy + doorH); g.stroke();
         }
         g.fillStyle = 'rgba(198,208,216,.55)';
-        g.fillRect(x0, dy + doorH * 0.16, gwHalf, Math.max(1.4, 2.0 * s));
-        g.fillRect(x0, dy + doorH * 0.58, gwHalf, Math.max(1.4, 2.0 * s));
+        g.fillRect(x0, dy + doorH * 0.18, gwHalf, Math.max(1.3, 1.9 * s));
+        g.fillRect(x0, dy + doorH * 0.62, gwHalf, Math.max(1.3, 1.9 * s));
         g.fillStyle = '#e8d28c';
         g.beginPath();
-        g.arc(sd < 0 ? x0 + gwHalf - 5 * s : x0 + 5 * s, dy + doorH * 0.40, Math.max(1.2, 1.9 * s), 0, Math.PI * 2);
+        g.arc(sd < 0 ? x0 + gwHalf - 5 * s : x0 + 5 * s, dy + doorH * 0.42, Math.max(1.2, 1.8 * s), 0, Math.PI * 2);
         g.fill();
       }
-      /* 닫힌 문의 아치 테두리 */
-      g.strokeStyle = 'rgba(180,170,146,.55)'; g.lineWidth = Math.max(1, 1.4 * s);
-      g.beginPath(); g.moveTo(pg.x, dy); g.lineTo(pg.x, pg.y); g.stroke();
+      g.strokeStyle = 'rgba(170,160,136,.6)'; g.lineWidth = Math.max(1, 1.3 * s);
+      g.beginPath(); g.moveTo(pg.x, dy); g.lineTo(pg.x, dy + doorH); g.stroke();
     }
-    /* 문틀 하이라이트 */
-    g.strokeStyle = lit + '0.30)'; g.lineWidth = Math.max(1, 1.2 * s);
+    g.strokeStyle = lit + '0.34)'; g.lineWidth = Math.max(1, 1.2 * s);
     g.beginPath();
-    g.moveTo(pg.x - gwHalf - 1 * s, archTop + 1 * s);
-    g.lineTo(pg.x + gwHalf + 1 * s, archTop + 1 * s);
+    g.moveTo(pg.x - gwHalf + 1 * s, archTop + 1 * s);
+    g.lineTo(pg.x + gwHalf - 1 * s, archTop + 1 * s);
     g.stroke();
     g.restore();
   } else {
-    /* 6) 무너진 성문 — 잔해와 뚫린 통로 */
+    /* 3-d) 무너진 문간 — 잔해 */
     g.save();
     for (let i = 0; i < 18; i++){
-      const xc = w.gateC + (seedW() - 0.5) * (w.gateH * 2.8);
-      const p = proj(xc, w.y + (seedW() - 0.5) * 0.022);
-      const bw = (2.4 + seedW() * 5.5) * s, bh = (2.0 + seedW() * 5.0) * s;
+      const xc = pg.x + (seedW() - 0.5) * (gwHalf * 2.4);
+      const bw2 = (2.4 + seedW() * 5.5) * s, bh2 = (2.0 + seedW() * 5.0) * s;
       g.save();
-      g.translate(p.x, p.y); g.rotate((seedW() - 0.5) * 0.8);
+      g.translate(xc, baseY - seedW() * 2 * s); g.rotate((seedW() - 0.5) * 0.8);
       g.fillStyle = seedW() > 0.5 ? 'rgba(88,82,70,.95)' : 'rgba(60,55,47,.95)';
-      g.fillRect(-bw / 2, -bh, bw, bh);
+      g.fillRect(-bw2 / 2, -bh2, bw2, bh2);
       g.fillStyle = 'rgba(140,133,116,.45)';
-      g.fillRect(-bw / 2, -bh, bw, Math.max(0.8, bh * 0.26));
+      g.fillRect(-bw2 / 2, -bh2, bw2, Math.max(0.8, bh2 * 0.26));
       g.restore();
     }
-    g.fillStyle = 'rgba(16,14,12,.40)';
-    g.beginPath(); g.ellipse(pg.x, pg.y, gwHalf * 1.4, 7 * s, 0, 0, Math.PI * 2); g.fill();
+    g.fillStyle = 'rgba(14,12,10,.36)';
+    g.beginPath(); g.ellipse(pg.x, baseY - 1 * s, gwHalf * 1.35, 6 * s, 0, 0, Math.PI * 2); g.fill();
     g.restore();
   }
 
-  /* 7) 성벽 체력 — 맞았을 때만 조용히 표시 */
+  /* 4) 성벽 체력 — 맞았을 때만 조용히 */
   if (w.alive && w.hp < w.maxHp){
-    const bw = Math.min(150 * s, (pR.x - pL.x) * 0.26);
-    hpBar(g, pg.x, pg.y - H * 2.5, bw, w.hp / w.maxHp, me ? '#57d6a8' : '#e05a4a', 3.4);
+    const bw = Math.min(150 * s, gwHalf * 3.2);
+    hpBar(g, pg.x, baseY - 8 * s - houseH - 26 * s, bw, w.hp / w.maxHp, me ? '#57d6a8' : '#e05a4a', 3.4);
     g.font = '700 ' + (8.6 * Math.max(0.8, s)).toFixed(1) + 'px sans-serif';
     g.textAlign = 'center'; g.fillStyle = 'rgba(238,246,255,.88)';
-    g.fillText(w.label + ' ' + Math.ceil(w.hp / w.maxHp * 100) + '%', pg.x, pg.y - H * 2.5 - 4 * s);
+    g.fillText(w.label + ' ' + Math.ceil(w.hp / w.maxHp * 100) + '%', pg.x, baseY - 8 * s - houseH - 26 * s - 4 * s);
   }
 }
 
