@@ -915,6 +915,8 @@ const BRIDGE_X = [0.14, 0.50, 0.86];
 /* v3.3 — 강을 중앙 쪽으로 당겨 본진/적진을 33.5% → 34%로 넓히고, 성 앞 뒤로 교전할 땅을 확보했다 */
 const RIVERS = [{ lo:0.340, hi:0.374 }, { lo:0.626, hi:0.660 }];
 const HOME_EDGE = RIVERS[0].lo;
+/* 지도 바깥 여유 — 스크롤 끝에서 성 스프라이트가 잘리지 않도록 배경 지면을 조금 더 그린다 */
+const BOARD = { top:1.06, bot:-0.03 };
 const WALL_BAND = { lo:0.49, hi:0.51, wall:true };
 const STONE_WALLS = [
   { ent:'wall', x0:0.235, x1:0.375, y:0.50 },
@@ -1141,30 +1143,33 @@ const stage = document.getElementById('stage');
 const cv = document.getElementById('cv');
 const g = cv.getContext('2d');
 let dpr = 1, cvw = 0, cvh = 0;
-const field = { cx:0, worldH:1000, halfWBot:160, ax:0.5 };
+const field = { cx:0, worldH:1000, halfWBot:160, ax:0.5, span:0.92, base:0.96 };
 
-/* v3.3 카메라 — camY 0.18~0.82가 지도 0~1 전체를 맡는다(확대 시 스크롤 여유 100%) */
+/* v3.3 카메라 — camY 0.18(아군 끝) ~ 0.82(적진 끝)가 지도 전체와 위아래 여유를 맡는다 */
 const CAM_MIN = 0.18, CAM_MAX = 0.82;
+let camTop = 0, camBot = 0;   // layout()에서 계산하는 스크롤 한계(px)
 function camOffsetPx(){
-  const maxScroll = Math.max(0, field.worldH - cvh);
-  const norm = clamp((state.camY - CAM_MIN) / (CAM_MAX - CAM_MIN), 0, 1);
-  return -maxScroll * (1 - norm);
+  if (state.overview) return 0;
+  const t = clamp((state.camY - CAM_MIN) / (CAM_MAX - CAM_MIN), 0, 1);
+  return camBot + (camTop - camBot) * t;
 }
 
-/* v2.8 탑뷰 투영 — 원경 축소를 0.72→0.90으로 완화해 위에서 내려다보는 평행감을 준다 */
+/* v2.8 탑뷰 투영 — 원경 축소를 0.72→0.90으로 완화해 위에서 내려다보는 평평감을 준다 */
 const VIEW = {
   worldK: 2.0,    // v3.3 확대 배율 — 전장이 화면 2배 길이로 펼쳐져 위아래로 훑어본다
   halfW: 0.505,   // 바닥 절반 폭 비율
   nearS: 1.0,     // 화면 아랫변(내 진영) 배율
   farS: 0.98,     // 화면 윗변(적 진영) 배율 — 원근 왜곡 완화
-  span: 1.0,      // 월드 y 0~1이 차지하는 세로 비율(스크롤 끝에서 지도 경계가 화면 끝에 맞닿는다)
-  base: 1.0
+  span: 1.0,      // 확대 시 월드 y 0~1의 세로 비율(스크롤 끝에서 지도 경계가 화면 끝에 맞닿는다)
+  base: 1.0,
+  ovSpan: 0.86,   // 전체 조망 시 매핑 — 성 스프라이트가 잘리지 않게 위아래 여백을 둔다
+  ovBase: 1.0
 };
 
 function proj(x, y){
-  const t = clamp(y, -0.05, 1.05);
+  const t = clamp(y, -0.06, 1.10);
   const s = lerp(VIEW.nearS, VIEW.farS, t);
-  const wy = field.worldH * VIEW.base - t * (field.worldH * VIEW.span);
+  const wy = field.worldH * field.base - t * (field.worldH * field.span);
   return {
     x: field.cx + (x - 0.5) * 2 * field.halfWBot * s,
     y: wy + camOffsetPx(),
@@ -1173,7 +1178,7 @@ function proj(x, y){
 }
 function unproj(px, py){
   const wy = py - camOffsetPx();
-  const t = (field.worldH * VIEW.base - wy) / (field.worldH * VIEW.span);
+  const t = (field.worldH * field.base - wy) / (field.worldH * field.span);
   const s = lerp(VIEW.nearS, VIEW.farS, clamp(t, -0.2, 1.2));
   return {
     x: (px - field.cx) / (2 * field.halfWBot * s) + 0.5,
@@ -1192,8 +1197,15 @@ function layout(){
   cv.height = Math.max(1, Math.round(h*dpr));
   field.cx = w / 2;
   field.worldH = h * (state.overview ? 1.0 : VIEW.worldK);
+  field.span = state.overview ? VIEW.ovSpan : VIEW.span;
+  field.base = state.overview ? VIEW.ovBase : VIEW.base;
   field.halfWBot = w * VIEW.halfW;
-  field.ax = (Math.min(w, 480) * 2 * VIEW.halfW) / (h * VIEW.worldK * VIEW.span);
+  field.ax = (Math.min(w, 480) * 2 * VIEW.halfW) / (field.worldH * field.span);
+  /* 스크롤 한계: t=0이면 지도 아래끝이 화면 아래, t=1이면 지도 위끝이 화면 위 */
+  const top0 = field.worldH * (field.base - BOARD.top * field.span);
+  const bot0 = field.worldH * (field.base - BOARD.bot * field.span);
+  camTop = -top0;
+  camBot = h - bot0;
 }
 
 /* =========================================================
@@ -1252,9 +1264,11 @@ function tintedSprite(key, team){
 function drawGroundTex(){
   const img = SPRITES_IMG.grass;
   if (!img || !img.complete || !img.naturalWidth) return false;
-  const N = 48, SW = img.naturalWidth, SH = img.naturalHeight;
+  const N = 50, SW = img.naturalWidth, SH = img.naturalHeight;
+  const y0 = BOARD.bot, y1 = BOARD.top;
   for (let i = 0; i < N; i++){
-    const far = proj(0, (i + 1) / N), near = proj(0, i / N), nr = proj(1, i / N);
+    const ya = y0 + (y1 - y0) * (i / N), yb = y0 + (y1 - y0) * ((i + 1) / N);
+    const far = proj(0, yb), near = proj(0, ya), nr = proj(1, ya);
     const hgt = near.y - far.y;
     if (hgt <= 0.2) continue;
     g.drawImage(img, 0, (i / N) * SH, SW, SH / N + 0.6, far.x, far.y, nr.x - far.x, hgt + 0.7);
@@ -1449,7 +1463,7 @@ function drawStoneWall(wall){
 }
 
 function drawBattlefield(time){
-  const p0 = proj(0,0), p1 = proj(1,0), p2 = proj(1,1), p3 = proj(0,1);
+  const p0 = proj(0,BOARD.bot), p1 = proj(1,BOARD.bot), p2 = proj(1,BOARD.top), p3 = proj(0,BOARD.top);
   g.save();
   g.beginPath(); g.moveTo(p0.x,p0.y); g.lineTo(p1.x,p1.y); g.lineTo(p2.x,p2.y); g.lineTo(p3.x,p3.y); g.closePath();
   g.clip();
@@ -3696,7 +3710,7 @@ function rollLog(z){
     z.hit.add(u.id);
     hitEntity(u,ROLLING_LOG.damage,z.atk);
     if (!u.alive) continue;
-    const distance = Math.min(ROLLING_LOG.shovePx,cvh*0.31) / (cvh*VIEW.span);
+    const distance = Math.min(ROLLING_LOG.shovePx,cvh*0.31) / (cvh * field.span);
     let endY = clamp(u.y+z.dir*distance,0.025,0.975);
     for (const strip of (z.dir > 0 ? TERRAIN_STRIPS : [...TERRAIN_STRIPS].reverse())){
       const entry = z.dir > 0 ? strip.lo : strip.hi;
@@ -4804,8 +4818,7 @@ function syncUpg(){
 let dragScroll = null;
 /* 스와이프→스크롤 배율: 손가락 이동량과 지면 이동량을 1:1로 맞춘다(worldK가 바뀌어도 유지) */
 function dragCamPerPx(){
-  const spanPx = Math.max(1, field.worldH - cvh);
-  return (CAM_MAX - CAM_MIN) * cvh / spanPx;
+  return (CAM_MAX - CAM_MIN) / Math.max(1, camBot - camTop);
 }
 cv.addEventListener('pointerdown', ev=>{
   ev.preventDefault(); Sfx.init();
