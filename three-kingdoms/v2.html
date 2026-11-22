@@ -1778,13 +1778,13 @@ function drawGateWall(w, time){
     const openK = clamp(w.open, 0, 1);
     const archTop = pg.y - 8 * s - archH;
     g.save();
-    g.fillStyle = 'rgba(8,10,9,.92)';
+    g.fillStyle = 'rgba(22,24,20,.90)';
     roundRect(g, pg.x - gwHalf, archTop, gwHalf * 2, archH + 8 * s, Math.min(gwHalf * 0.32, 10 * s));
     g.fill();
     if (openK > 0.01){
       const glow = g.createLinearGradient(0, archTop, 0, pg.y);
-      glow.addColorStop(0, 'rgba(255,198,116,' + (0.03 + 0.16 * openK).toFixed(3) + ')');
-      glow.addColorStop(0.7, 'rgba(255,176,86,' + (0.02 + 0.10 * openK).toFixed(3) + ')');
+      glow.addColorStop(0, 'rgba(255,198,116,' + (0.05 + 0.26 * openK).toFixed(3) + ')');
+      glow.addColorStop(0.7, 'rgba(255,176,86,' + (0.03 + 0.15 * openK).toFixed(3) + ')');
       glow.addColorStop(1, 'rgba(255,168,80,0)');
       g.fillStyle = glow;
       g.fillRect(pg.x - gwHalf, archTop, gwHalf * 2, archH);
