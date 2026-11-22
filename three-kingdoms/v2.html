@@ -2882,14 +2882,26 @@ function drawSoldier(u, p, time){
     g.strokeStyle = '#ffd76e'; g.lineWidth = 1.5;
     g.beginPath(); g.ellipse(x, y + 1, 11.0 * s, 5.0 * s, 0, 0, Math.PI * 2); g.stroke();
   }
-  // 보호막 — 푸른 반투명 돔 / v3.7 방패 진형 — 금빗 돔
+  // 보호막 — 푸른 반투명 돔 / v3.7 방패 진형 — 금빛 돔 + 금빛 발치 링
   const braced = u.braceUntil > state.t;
-  if (braced || (u.shieldHp > 0 && u.shieldUntil > state.t)){
+  if (braced){
+    g.save();
+    const pulse = 0.5 + 0.18 * Math.sin(time * 6 + u.seed);
+    g.strokeStyle = SHIELD_LINE.color;
+    g.globalAlpha = pulse;
+    g.lineWidth = 2.4;
+    g.beginPath(); g.ellipse(x, y - 2 * s, 9.6 * s, 13 * s, 0, Math.PI * 1.02, Math.PI * 1.98); g.stroke();
+    g.fillStyle = 'rgba(249,217,150,.16)';
+    g.beginPath(); g.ellipse(x, y - 2 * s, 9.6 * s, 13 * s, 0, Math.PI * 1.02, Math.PI * 1.98); g.fill();
+    g.globalAlpha = pulse * 0.95; g.lineWidth = 1.8;
+    g.beginPath(); g.ellipse(x, y + 1, 11.4 * s, 5.2 * s, 0, 0, Math.PI * 2); g.stroke();
+    g.restore();
+  } else if (u.shieldHp > 0 && u.shieldUntil > state.t){
     g.save();
     g.globalAlpha = 0.36 + 0.16 * Math.sin(time * 6 + u.seed);
-    g.strokeStyle = braced ? SHIELD_LINE.color : '#bfeaff'; g.lineWidth = braced ? 2 : 1.5;
+    g.strokeStyle = '#bfeaff'; g.lineWidth = 1.5;
     g.beginPath(); g.ellipse(x, y - 2 * s, 8.6 * s, 12 * s, 0, Math.PI * 1.02, Math.PI * 1.98); g.stroke();
-    g.fillStyle = braced ? 'rgba(249,217,150,.14)' : 'rgba(150,225,255,.10)';
+    g.fillStyle = 'rgba(150,225,255,.10)';
     g.beginPath(); g.ellipse(x, y - 2 * s, 8.6 * s, 12 * s, 0, Math.PI * 1.02, Math.PI * 1.98); g.fill();
     g.restore();
   }
